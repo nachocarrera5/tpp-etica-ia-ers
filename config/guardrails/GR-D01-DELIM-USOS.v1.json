@@ -1,0 +1,53 @@
+{
+  "codigo": "GR-D01-DELIM-USOS",
+  "nombre": "Usos previstos y limites de uso",
+  "version": 1,
+  "estado": "activa",
+  "familia": "G-DELIM",
+  "descripcion": "Revisa si la ERS delimita el proposito del sistema, sus usos previstos y restricciones de uso.",
+  "dimensiones": [
+    {
+      "codigo": "D01",
+      "principal": true
+    }
+  ],
+  "criterios": ["D01-C1", "D01-C2"],
+  "marcos_referencia": ["ISO/IEC/IEEE 29148", "NIST AI RMF", "Microsoft Responsible AI Standard"],
+  "aplicabilidad": {
+    "dominios": ["general"],
+    "condiciones": ["sistema_ia"],
+    "exclusiones": []
+  },
+  "evidencia_esperada": {
+    "tipo": ["requisito", "restriccion", "criterio_aceptacion"],
+    "descripcion": "Objetivo del sistema, alcance, usos previstos, usos no previstos o condiciones de no uso."
+  },
+  "senales": {
+    "keywords": ["proposito", "objetivo", "alcance", "uso previsto", "uso no previsto", "restriccion", "limite"],
+    "patrones": [],
+    "senales_calidad": ["formulacion_generica", "ausencia_de_condicion"]
+  },
+  "clasificacion": {
+    "ausente": "No se encuentra evidencia documental sobre proposito, alcance o usos previstos.",
+    "parcial": "Se menciona el proposito o alcance, pero sin delimitar usos, destinatarios o restricciones.",
+    "explicito": "La ERS define proposito, contexto de aplicacion, usos previstos y limites documentales revisables."
+  },
+  "prioridad": {
+    "base": "Media",
+    "elevar_a_alta_si": ["decision_alto_impacto", "uso_con_personas_vulnerables"]
+  },
+  "revision_humana": {
+    "requerida_por_defecto": false,
+    "requerir_si": ["evidencia_ambigua", "conflicto_entre_fragmentos"]
+  },
+  "recomendacion": {
+    "plantilla": "Precisar el proposito, contexto, destinatarios, usos previstos y restricciones de uso del sistema.",
+    "tipo_mejora": "precisar"
+  },
+  "salida": {
+    "genera_hallazgo": true,
+    "nivel_salida": ["Ausente", "Parcial", "Explicito"],
+    "evidencia_permitida": ["Soporta", "Contradice", "Contextualiza"]
+  }
+}
+
