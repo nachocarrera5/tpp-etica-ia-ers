@@ -18,22 +18,20 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 Esta base corresponde a la primera tarea del Sprint 6: crear la estructura inicial del proyecto.
 
-Incluye contratos de dominio, configuración base, un ejemplo de guardrail versionado y pruebas mínimas de importación/configuración. Todavía no implementa carga real de documentos, normalización, almacenamiento ni endpoints.
+Incluye solamente la organización inicial del repositorio y las carpetas previstas para evolucionar el prototipo. Todavía no implementa carga real de documentos, normalización, almacenamiento, motor de evaluación ni endpoints.
 
 ## Estructura
 
 ```text
 config/
-├── analysis.default.json
+├── .gitkeep
 └── guardrails/
-    └── GR-D01-DELIM-USOS.v1.json
+    └── .gitkeep
 data/
 ├── input/
 │   └── .gitkeep
 └── output/
     └── .gitkeep
-docs/
-└── sprint-6-estructura-inicial.md
 src/
 └── etica_ia_ers/
     ├── configuration/
@@ -44,12 +42,5 @@ src/
     ├── reporting/
     └── storage/
 tests/
-```
-
-## Verificación local
-
-Desde esta carpeta:
-
-```bash
-python3 -m unittest discover -s tests
+└── .gitkeep
 ```
