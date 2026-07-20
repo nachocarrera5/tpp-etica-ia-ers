@@ -11,7 +11,19 @@ requires-python = ">=3.9"
 authors = [
   { name = "TPP" }
 ]
-dependencies = []
+dependencies = [
+  "pypdf>=5.0",
+  "python-docx>=1.1"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8,<9"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
