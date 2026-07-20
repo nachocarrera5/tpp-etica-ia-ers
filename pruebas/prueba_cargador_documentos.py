@@ -8,8 +8,8 @@ import pytest
 from docx import Document
 from pypdf import PdfWriter
 
-from etica_ia_ers.domain import FormatoDocumento
-from etica_ia_ers.ingestion import (
+from etica_ia_ers.dominio import FormatoDocumento
+from etica_ia_ers.entrada_documental import (
     DocumentoIlegibleError,
     DocumentoVacioError,
     FormatoNoSoportadoError,
@@ -65,7 +65,7 @@ def _crear_docx() -> bytes:
     return salida.getvalue()
 
 
-def test_carga_txt_con_metadatos_y_trazabilidad() -> None:
+def prueba_carga_txt_con_metadatos_y_trazabilidad() -> None:
     contenido = "El sistema deberá explicar sus decisiones.".encode("utf-8")
 
     documento = cargar_documento(
@@ -81,7 +81,7 @@ def test_carga_txt_con_metadatos_y_trazabilidad() -> None:
     assert documento.metadatos == {"dominio": "crediticio"}
 
 
-def test_hash_es_estable_para_el_mismo_archivo() -> None:
+def prueba_hash_es_estable_para_el_mismo_archivo() -> None:
     contenido = b"El sistema debera registrar cada decision."
 
     primero = cargar_documento("ers.txt", contenido)
@@ -91,13 +91,13 @@ def test_hash_es_estable_para_el_mismo_archivo() -> None:
     assert primero.hash_contenido == segundo.hash_contenido
 
 
-def test_acepta_txt_con_bom_utf8() -> None:
+def prueba_acepta_txt_con_bom_utf8() -> None:
     documento = cargar_documento("ers.txt", b"\xef\xbb\xbfRequisito")
 
     assert documento.contenido_extraido == "Requisito"
 
 
-def test_extrae_paginas_pdf_en_orden() -> None:
+def prueba_extrae_paginas_pdf_en_orden() -> None:
     escritor = PdfWriter()
     escritor.append(BytesIO(_crear_pdf_con_texto("Primera pagina")))
     escritor.append(BytesIO(_crear_pdf_con_texto("Segunda pagina")))
@@ -112,7 +112,7 @@ def test_extrae_paginas_pdf_en_orden() -> None:
     )
 
 
-def test_extrae_parrafos_y_tablas_docx_en_orden() -> None:
+def prueba_extrae_parrafos_y_tablas_docx_en_orden() -> None:
     documento = cargar_documento("ers.docx", _crear_docx())
 
     texto = documento.contenido_extraido
@@ -122,7 +122,7 @@ def test_extrae_parrafos_y_tablas_docx_en_orden() -> None:
     assert "Responsable\tEquipo de IA" in texto
 
 
-def test_carga_desde_ruta(tmp_path: Path) -> None:
+def prueba_carga_desde_ruta(tmp_path: Path) -> None:
     ruta = tmp_path / "ers.txt"
     ruta.write_text("Contenido de la ERS", encoding="utf-8")
 
@@ -132,35 +132,35 @@ def test_carga_desde_ruta(tmp_path: Path) -> None:
     assert documento.contenido_extraido == "Contenido de la ERS"
 
 
-def test_ruta_inexistente() -> None:
+def prueba_ruta_inexistente() -> None:
     with pytest.raises(FileNotFoundError):
         cargar_documento_desde_ruta("no-existe.txt")
 
 
 @pytest.mark.parametrize("nombre", ["ers.md", "ers.doc", "ers"])
-def test_rechaza_formato_no_soportado(nombre: str) -> None:
+def prueba_rechaza_formato_no_soportado(nombre: str) -> None:
     with pytest.raises(FormatoNoSoportadoError):
         cargar_documento(nombre, b"contenido")
 
 
 @pytest.mark.parametrize("contenido", [b"", b"   \n"])
-def test_rechaza_txt_vacio(contenido: bytes) -> None:
+def prueba_rechaza_txt_vacio(contenido: bytes) -> None:
     with pytest.raises(DocumentoVacioError):
         cargar_documento("ers.txt", contenido)
 
 
-def test_rechaza_txt_con_codificacion_invalida() -> None:
+def prueba_rechaza_txt_con_codificacion_invalida() -> None:
     with pytest.raises(DocumentoIlegibleError):
         cargar_documento("ers.txt", b"\xff\xfe\xfa")
 
 
 @pytest.mark.parametrize("nombre", ["ers.pdf", "ers.docx"])
-def test_rechaza_documento_corrupto(nombre: str) -> None:
+def prueba_rechaza_documento_corrupto(nombre: str) -> None:
     with pytest.raises(DocumentoIlegibleError):
         cargar_documento(nombre, b"contenido que no corresponde al formato")
 
 
-def test_rechaza_pdf_sin_texto_extraible() -> None:
+def prueba_rechaza_pdf_sin_texto_extraible() -> None:
     escritor = PdfWriter()
     escritor.add_blank_page(width=612, height=792)
     salida = BytesIO()

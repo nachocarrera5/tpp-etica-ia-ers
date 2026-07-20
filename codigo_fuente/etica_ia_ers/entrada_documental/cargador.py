@@ -10,7 +10,7 @@ from docx.table import Table
 from docx.text.paragraph import Paragraph
 from pypdf import PdfReader
 
-from etica_ia_ers.domain import DocumentoERS, FormatoDocumento
+from etica_ia_ers.dominio import DocumentoERS, FormatoDocumento
 
 from .errores import (
     DocumentoIlegibleError,

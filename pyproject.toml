@@ -22,8 +22,10 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
-testpaths = ["tests"]
+pythonpath = ["codigo_fuente"]
+testpaths = ["pruebas"]
+python_files = ["prueba_*.py"]
+python_functions = ["prueba_*"]
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["codigo_fuente"]
