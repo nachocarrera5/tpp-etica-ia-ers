@@ -45,6 +45,25 @@ print(documento.contenido_extraido)
 
 El cargador valida el formato y que exista texto procesable. La extracción no modifica el documento original ni escribe resultados en `datos/`.
 
+## Endpoints
+Para levantar la API ejecutar:
+```bash
+cd codigo_fuente
+python3 -m etica_ia_ers.api
+```
+
+### Carga
+```bash
+curl -X POST "http://127.0.0.1:8000/documentos" \
+  -F "archivo=@datos/entrada/ers.txt" \
+  -F 'metadatos={"dominio":"crediticio"}'
+```
+
+### Estado de análisis
+```bash
+curl "http://127.0.0.1:8000/documentos/<carga_id>/estado"
+```
+
 ## Pruebas
 
 Las pruebas generan en memoria documentos TXT, PDF y DOCX mínimos. También construyen entradas vacías, corruptas o sin texto para verificar los errores esperados; no utilizan documentos externos ni archivos del material académico.
@@ -79,4 +98,5 @@ codigo_fuente/
     └── persistencia_y_trazabilidad/
 pruebas/
 └── prueba_cargador_documentos.py
+└── prueba_api_documentos.py
 ```
