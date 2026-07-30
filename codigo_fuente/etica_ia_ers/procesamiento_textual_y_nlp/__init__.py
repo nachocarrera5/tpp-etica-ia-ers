@@ -7,6 +7,7 @@ from .errores import (
     TextoVacioError,
 )
 from .normalizador import NormalizadorDeTexto
+from .segmentador import segmentar
 
 __all__ = [
     "ErrorEnPasoDeNormalizacion",
@@ -14,4 +15,5 @@ __all__ = [
     "NormalizadorDeTexto",
     "PasoDesconocidoError",
     "TextoVacioError",
+    "segmentar",
 ]
