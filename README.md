@@ -45,6 +45,25 @@ print(documento.contenido_extraido)
 
 El cargador valida el formato y que exista texto procesable. La extracción no modifica el documento original ni escribe resultados en `datos/`.
 
+## Endpoints
+Para levantar la API ejecutar:
+```bash
+cd codigo_fuente
+python3 -m etica_ia_ers.api
+```
+
+### Carga
+```bash
+curl -X POST "http://127.0.0.1:8000/documentos" \
+  -F "archivo=@datos/entrada/ers.txt" \
+  -F 'metadatos={"dominio":"crediticio"}'
+```
+
+### Estado de análisis
+```bash
+curl "http://127.0.0.1:8000/documentos/<carga_id>/estado"
+```
+
 ## Almacenamiento de una ERS
 
 El almacenamiento es un repositorio simple sobre el sistema de archivos: no requiere motor de base de datos y lo guardado puede inspeccionarse con un editor de texto.
@@ -144,6 +163,7 @@ codigo_fuente/
         ├── serializacion.py
         └── trazabilidad.py
 pruebas/
+└── prueba_api_documentos.py
 ├── prueba_almacenamiento.py
 ├── prueba_cargador_documentos.py
 └── prueba_normalizador.py
