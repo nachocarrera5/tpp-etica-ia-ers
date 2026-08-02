@@ -1,4 +1,7 @@
+from uuid import UUID
+
 import pytest
+
 from etica_ia_ers.dominio import FragmentoDocumental, TipoFragmento
 from etica_ia_ers.procesamiento_textual_y_nlp import segmentar
 
@@ -20,6 +23,13 @@ def prueba_parrafo_simple() -> None:
     assert len(fragmentos) == 1
     assert fragmentos[0].tipo_fragmento == TipoFragmento.PARRAFO
     assert fragmentos[0].texto == texto
+
+
+def prueba_fragmentos_tienen_identificadores_unicos() -> None:
+    fragmentos = segmentar("Primer parrafo.\n\nSegundo parrafo.")
+
+    assert all(isinstance(fragmento.id, UUID) for fragmento in fragmentos)
+    assert fragmentos[0].id != fragmentos[1].id
 
 
 def prueba_encabezado_simple() -> None:
@@ -47,6 +57,14 @@ def prueba_requisito_con_numeracion_compuesta() -> None:
     assert len(fragmentos) == 1
     assert fragmentos[0].tipo_fragmento == TipoFragmento.REQUISITO
     assert fragmentos[0].identificador_ers == "3.1.1"
+
+
+def prueba_requisito_normativo_de_primer_nivel() -> None:
+    texto = "1. El sistema deberá registrar decisiones."
+    fragmentos = segmentar(texto)
+
+    assert fragmentos[0].tipo_fragmento == TipoFragmento.REQUISITO
+    assert fragmentos[0].identificador_ers == "1"
 
 
 def prueba_item_de_lista() -> None:
@@ -109,11 +127,22 @@ def prueba_posiciones_son_correctas() -> None:
     fragmentos = segmentar(texto)
 
     assert fragmentos[0].posicion_inicio == 0
-    assert fragmentos[0].posicion_fin == 8 
-    assert fragmentos[1].posicion_inicio == 10  
+    assert fragmentos[0].posicion_fin == 8
+    assert fragmentos[1].posicion_inicio == 10
     assert texto[fragmentos[1].posicion_inicio:fragmentos[1].posicion_fin] == (
         "El sistema debe cumplir."
     )
+
+
+def prueba_posiciones_delimitan_el_texto_del_fragmento() -> None:
+    texto = "  Requisito trazable  \n  \n  Otro fragmento  "
+    fragmentos = segmentar(texto)
+
+    assert len(fragmentos) == 2
+    for fragmento in fragmentos:
+        assert texto[
+            fragmento.posicion_inicio:fragmento.posicion_fin
+        ] == fragmento.texto
 
 
 def prueba_orden_secuencial() -> None:
@@ -163,6 +192,30 @@ def prueba_multiples_items_lista_separados() -> None:
 
     assert len(fragmentos) == 3
     assert all(f.tipo_fragmento == TipoFragmento.ITEM_LISTA for f in fragmentos)
+
+
+def prueba_requisitos_consecutivos_sin_lineas_vacias() -> None:
+    texto = (
+        "3.1.1. El sistema deberá registrar decisiones.\n"
+        "3.1.2. El sistema deberá explicar resultados."
+    )
+    fragmentos = segmentar(texto)
+
+    assert len(fragmentos) == 2
+    assert [fragmento.identificador_ers for fragmento in fragmentos] == [
+        "3.1.1",
+        "3.1.2",
+    ]
+
+
+def prueba_items_consecutivos_sin_lineas_vacias() -> None:
+    fragmentos = segmentar("- Primero\n- Segundo\n- Tercero")
+
+    assert len(fragmentos) == 3
+    assert all(
+        fragmento.tipo_fragmento == TipoFragmento.ITEM_LISTA
+        for fragmento in fragmentos
+    )
 
 
 def prueba_requisito_multilinea() -> None:
