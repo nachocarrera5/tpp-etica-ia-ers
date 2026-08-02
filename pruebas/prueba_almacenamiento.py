@@ -358,6 +358,18 @@ def prueba_trazabilidad_filtra_por_documento(repositorio) -> None:
     assert len(repositorio.trazabilidad.eventos(primero.id)) == 1
 
 
+def prueba_trazabilidad_en_memoria_no_expone_su_estado_interno() -> None:
+    repositorio = RepositorioEnMemoria()
+    documento = _documento()
+    repositorio.guardar(documento)
+
+    eventos = repositorio.trazabilidad.eventos(documento.id)
+    eventos[0].detalle["estado"] = "ALTERADO"
+
+    evento_guardado = repositorio.trazabilidad.eventos(documento.id)[0]
+    assert evento_guardado.detalle["estado"] == EstadoAnalisis.CARGADO.value
+
+
 def prueba_metadatos_almacenados_no_se_comparten_con_el_llamador(repositorio) -> None:
     metadatos = {"dominio": "crediticio"}
     documento = _documento(metadatos=metadatos)

@@ -75,15 +75,12 @@ def colapsar_lineas_en_blanco(texto: str) -> str:
 
 
 def eliminar_marcadores_de_pagina(texto: str) -> str:
-
-    texto = re.sub(
+    return re.sub(
         r"^\s*(Página|Page)\s+\d+\s+(de|of)\s+\d+\s*$",
         "",
         texto,
         flags=re.MULTILINE | re.IGNORECASE,
     )
-    texto = re.sub(r"^\s*\d{1,4}\s*$", "", texto, flags=re.MULTILINE)
-    return texto
 
 
 def normalizar_numeracion(texto: str) -> str:
