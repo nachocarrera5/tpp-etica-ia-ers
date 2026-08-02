@@ -1,5 +1,6 @@
 """Bitacora append-only de acciones sobre los documentos almacenados."""
 
+from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Protocol, Union
@@ -42,11 +43,11 @@ class TrazabilidadEnMemoria:
         self._eventos: List[EventoTrazabilidad] = []
 
     def registrar(self, evento: EventoTrazabilidad) -> None:
-        self._eventos.append(evento)
+        self._eventos.append(deepcopy(evento))
 
     def eventos(self, id_documento: Optional[UUID] = None) -> List[EventoTrazabilidad]:
         return [
-            evento
+            deepcopy(evento)
             for evento in self._eventos
             if id_documento is None or evento.id_documento == id_documento
         ]

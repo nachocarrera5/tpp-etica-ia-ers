@@ -18,7 +18,7 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 Esta base corresponde al Sprint 6 del proyecto. Actualmente permite cargar documentos ERS, extraer y normalizar su contenido textual, y almacenar ambos junto con el estado del análisis y una bitácora de trazabilidad.
 
-La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. Todavía no implementa OCR, segmentación, motor de evaluación ni endpoints.
+La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, segmentación ni motor de evaluación.
 
 ## Instalación para desarrollo
 
@@ -46,10 +46,11 @@ print(documento.contenido_extraido)
 El cargador valida el formato y que exista texto procesable. La extracción no modifica el documento original ni escribe resultados en `datos/`.
 
 ## Endpoints
-Para levantar la API ejecutar:
+
+Para levantar la API desde la raíz del proyecto:
+
 ```bash
-cd codigo_fuente
-python3 -m etica_ia_ers.api
+python3 -m uvicorn etica_ia_ers.api:app --app-dir codigo_fuente
 ```
 
 ### Carga
@@ -61,8 +62,10 @@ curl -X POST "http://127.0.0.1:8000/documentos" \
 
 ### Estado de análisis
 ```bash
-curl "http://127.0.0.1:8000/documentos/<carga_id>/estado"
+curl "http://127.0.0.1:8000/documentos/<documento_id>/estado"
 ```
+
+La carga devuelve el mismo UUID en `id` y `documento_id`, junto con el campo `estado`. Una respuesta exitosa queda en estado `NORMALIZADO`, con el documento, el texto normalizado y la trazabilidad persistidos en `datos/almacenamiento/`.
 
 ## Almacenamiento de una ERS
 
@@ -93,7 +96,7 @@ Los estados posibles son `CARGADO`, `NORMALIZADO`, `EVALUADO` y `ERROR`, y acomp
 
 Guardar una normalización exige que su texto original sea el contenido extraído de ese documento; si no coincide se rechaza con `TextoNormalizadoInvalidoError`, para que lo almacenado no mezcle el texto de una ERS con la normalización de otra.
 
-`RepositorioEnMemoria` implementa el mismo contrato (`RepositorioDeDocumentos`) sin escribir en disco, para pruebas y para desarrollar el endpoint de carga y estado.
+`RepositorioEnMemoria` implementa el mismo contrato (`RepositorioDeDocumentos`) sin escribir en disco y se utiliza en las pruebas. La API usa `RepositorioEnArchivos` por defecto.
 
 ### Qué queda escrito
 
@@ -118,6 +121,8 @@ El contenido de `datos/almacenamiento/` está ignorado por Git: son datos de tra
 Las pruebas generan en memoria documentos TXT, PDF y DOCX mínimos. También construyen entradas vacías, corruptas o sin texto para verificar los errores esperados; no utilizan documentos externos ni archivos del material académico.
 
 Las del almacenamiento se ejecutan contra las dos implementaciones del repositorio y escriben en directorios temporales, nunca en `datos/`.
+
+GitHub Actions ejecuta esta misma suite automáticamente en cada pull request hacia `main` y después de cada cambio fusionado en `main`.
 
 ```bash
 python3 -m pytest

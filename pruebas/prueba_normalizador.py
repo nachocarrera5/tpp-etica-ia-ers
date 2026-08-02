@@ -66,10 +66,22 @@ def prueba_eliminar_marcadores_de_pagina() -> None:
     texto = "Contenido\nPágina 5 de 20\nMás\n\n42\n\nFin"
     resultado = eliminar_marcadores_de_pagina(texto)
     assert "Página 5 de 20" not in resultado
-    assert "42" not in resultado
+    assert "42" in resultado
     assert "Contenido" in resultado and "Fin" in resultado
     assert eliminar_marcadores_de_pagina("requisito 42 dice") == "requisito 42 dice"
     assert "12345" in eliminar_marcadores_de_pagina("x\n12345\ny")
+
+
+def prueba_pipeline_preserva_valores_numericos_en_lineas_separadas() -> None:
+    texto = (
+        "Cantidad maxima de reintentos\n\n"
+        "3\n\n"
+        "El sistema debera bloquear nuevos intentos."
+    )
+
+    resultado = NormalizadorDeTexto().normalizar(texto)
+
+    assert "\n\n3\n\n" in resultado.normalizado
 
 
 def prueba_normalizar_numeracion() -> None:
