@@ -16,9 +16,9 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 ## Alcance de esta versión
 
-Esta base corresponde al Sprint 6 del proyecto. Actualmente permite cargar documentos ERS, extraer y normalizar su contenido textual, y almacenar ambos junto con el estado del análisis y una bitácora de trazabilidad.
+El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo en fragmentos y clasificar esos fragmentos mediante reglas trazables. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad.
 
-La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, segmentación ni motor de evaluación.
+La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, extracción de actores, detección de ambigüedades ni el motor de evaluación ética.
 
 ## Instalación para desarrollo
 
@@ -44,6 +44,29 @@ print(documento.contenido_extraido)
 ```
 
 El cargador valida el formato y que exista texto procesable. La extracción no modifica el documento original ni escribe resultados en `datos/`.
+
+## Segmentación y clasificación
+
+La clasificación distingue requisitos funcionales, requisitos no funcionales, restricciones, contexto y otros fragmentos. Cada resultado conserva el fragmento original e informa las señales y la justificación de la regla aplicada.
+
+```python
+from etica_ia_ers.entrada_documental import cargar_documento_desde_ruta
+from etica_ia_ers.procesamiento_textual_y_nlp import (
+    NormalizadorDeTexto,
+    clasificar_fragmentos,
+    segmentar,
+)
+
+documento = cargar_documento_desde_ruta("datos/entrada/ers.txt")
+normalizado = NormalizadorDeTexto().normalizar(documento.contenido_extraido)
+fragmentos = segmentar(normalizado.normalizado)
+resultados = clasificar_fragmentos(fragmentos)
+
+for resultado in resultados:
+    print(resultado.clasificacion.value, resultado.justificacion)
+```
+
+Las reglas normalizan mayúsculas y acentos sólo para buscar señales; no modifican el texto ni los offsets del fragmento. La clasificación tampoco asigna niveles éticos `Ausente`, `Parcial` o `Explícito`: esa decisión corresponde al futuro motor de evaluación.
 
 ## Endpoints
 
@@ -146,7 +169,9 @@ codigo_fuente/
 └── etica_ia_ers/
     ├── configuracion/
     ├── dominio/
+    │   ├── clasificacion_fragmento.py
     │   ├── documento.py
+    │   ├── fragmento.py
     │   ├── registro_documento.py
     │   ├── texto_normalizado.py
     │   └── trazabilidad.py
@@ -154,8 +179,10 @@ codigo_fuente/
     │   ├── cargador.py
     │   └── errores.py
     ├── procesamiento_textual_y_nlp/
+    │   ├── clasificador.py
     │   ├── errores.py
-    │   └── normalizador.py
+    │   ├── normalizador.py
+    │   └── segmentador.py
     ├── modelo_etico_y_guardrails/
     ├── evaluacion_documental/
     ├── rubrica_y_agregacion/
@@ -168,8 +195,10 @@ codigo_fuente/
         ├── serializacion.py
         └── trazabilidad.py
 pruebas/
-└── prueba_api_documentos.py
+├── prueba_api_documentos.py
 ├── prueba_almacenamiento.py
 ├── prueba_cargador_documentos.py
-└── prueba_normalizador.py
+├── prueba_clasificador.py
+├── prueba_normalizador.py
+└── prueba_segmentador.py
 ```
