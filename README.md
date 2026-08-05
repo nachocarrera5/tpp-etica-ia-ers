@@ -16,9 +16,9 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 ## Alcance de esta versión
 
-El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo en fragmentos y clasificar esos fragmentos mediante reglas trazables. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad.
+El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones y condiciones. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad.
 
-La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, extracción de actores, detección de ambigüedades ni el motor de evaluación ética.
+La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, detección de ambigüedades ni el motor de evaluación ética.
 
 ## Instalación para desarrollo
 
@@ -28,6 +28,8 @@ source .venv/bin/activate
 python3 -m pip install --upgrade pip
 python3 -m pip install -e ".[dev]"
 ```
+
+La instalación incluye spaCy 3.8.7 y el modelo español `es_core_news_sm` 3.8.0. El procesamiento se realiza localmente: los fragmentos no se envían a servicios externos. spaCy se distribuye bajo licencia MIT y el [modelo español](https://spacy.io/models/es) bajo GNU GPL 3.0; el modelo se instala desde su wheel oficial y no se almacena en este repositorio.
 
 ## Carga de una ERS
 
@@ -67,6 +69,25 @@ for resultado in resultados:
 ```
 
 Las reglas normalizan mayúsculas y acentos sólo para buscar señales; no modifican el texto ni los offsets del fragmento. La clasificación tampoco asigna niveles éticos `Ausente`, `Parcial` o `Explícito`: esa decisión corresponde al futuro motor de evaluación.
+
+## Extracción de actores, acciones y condiciones
+
+El extractor combina el análisis morfológico y de dependencias de spaCy con reglas explícitas para condiciones y roles habituales en una ERS. Cada señal conserva el UUID del fragmento, su texto exacto, offsets, metadatos lingüísticos y las versiones del procesador y del modelo.
+
+```python
+from etica_ia_ers.procesamiento_textual_y_nlp import extraer_de_fragmentos
+
+anotaciones = extraer_de_fragmentos(fragmentos)
+
+for anotacion in anotaciones:
+    print(
+        anotacion.tipo_senal.value,
+        anotacion.valor_detectado,
+        anotacion.metadatos,
+    )
+```
+
+Los actores incluyen sujetos responsables, agentes pasivos, destinatarios y personas u organizaciones afectadas. Las acciones contienen el verbo principal y sus complementos; las condiciones conservan expresiones como `cuando`, `si`, `ante` o `dentro de`. La extracción no interpreta todavía ambigüedad, suficiencia de evidencia ni cumplimiento ético.
 
 ## Endpoints
 
@@ -169,6 +190,7 @@ codigo_fuente/
 └── etica_ia_ers/
     ├── configuracion/
     ├── dominio/
+    │   ├── anotacion_nlp.py
     │   ├── clasificacion_fragmento.py
     │   ├── documento.py
     │   ├── fragmento.py
@@ -181,6 +203,7 @@ codigo_fuente/
     ├── procesamiento_textual_y_nlp/
     │   ├── clasificador.py
     │   ├── errores.py
+    │   ├── extractor_elementos.py
     │   ├── normalizador.py
     │   └── segmentador.py
     ├── modelo_etico_y_guardrails/
@@ -199,6 +222,7 @@ pruebas/
 ├── prueba_almacenamiento.py
 ├── prueba_cargador_documentos.py
 ├── prueba_clasificador.py
+├── prueba_extractor_elementos.py
 ├── prueba_normalizador.py
 └── prueba_segmentador.py
 ```
