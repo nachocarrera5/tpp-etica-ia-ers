@@ -1,4 +1,8 @@
 """Contratos y entidades de dominio."""
+from .clasificacion_fragmento import (
+    FragmentoClasificado,
+    TipoClasificacionFragmento,
+)
 from .documento import DocumentoERS, FormatoDocumento
 from .registro_documento import EstadoAnalisis, RegistroDocumento, ResumenDocumento
 from .texto_normalizado import TextoNormalizado
@@ -10,10 +14,12 @@ __all__ = [
     "DocumentoERS",
     "EstadoAnalisis",
     "EventoTrazabilidad",
+    "FragmentoClasificado",
     "FormatoDocumento",
     "RegistroDocumento",
     "ResumenDocumento",
     "TextoNormalizado",
+    "TipoClasificacionFragmento",
     "FragmentoDocumental",
     "TipoFragmento",
 ]
