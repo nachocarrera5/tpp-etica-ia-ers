@@ -4,6 +4,7 @@ import re
 from typing import List, Optional
 
 from etica_ia_ers.dominio import FragmentoDocumental, TipoFragmento
+from etica_ia_ers.dominio.fragmento import _AMBIGUEDADES, _TERMINOS_VAGOS
 
 
 _PATRON_ENCABEZADO = re.compile(
@@ -39,16 +40,30 @@ def segmentar(texto_normalizado: str) -> List[FragmentoDocumental]:
         if tipo == TipoFragmento.ENCABEZADO:
             seccion_actual = texto_bloque.strip()
 
+        texto_limpio = texto_bloque.strip()
+        terminos_vagos = tuple(
+            termino
+            for termino in sorted(_TERMINOS_VAGOS)
+            if termino in texto_limpio.lower()
+        )
+        ambiguedades = tuple(
+            expresion
+            for expresion in sorted(_AMBIGUEDADES)
+            if expresion in texto_limpio.lower()
+        )
+
         orden += 1
         fragmentos.append(
             FragmentoDocumental(
                 secuencia_orden=orden,
                 tipo_fragmento=tipo,
-                texto=texto_bloque.strip(),
+                texto=texto_limpio,
                 seccion_origen=seccion_actual,
                 identificador_ers=identificador,
                 posicion_inicio=pos_inicio,
                 posicion_fin=pos_fin,
+                terminos_vagos=terminos_vagos,
+                ambiguedades=ambiguedades,
             )
         )
 
