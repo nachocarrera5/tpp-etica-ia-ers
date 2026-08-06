@@ -8,9 +8,11 @@ from .errores import (
     TextoVacioError,
 )
 from .normalizador import NormalizadorDeTexto
+from .pipeline import analizar_texto
 from .segmentador import segmentar
 
 __all__ = [
+    "analizar_texto",
     "clasificar_fragmento",
     "clasificar_fragmentos",
     "ErrorEnPasoDeNormalizacion",

@@ -1,0 +1,26 @@
+1. Objetivo
+
+El objetivo del sistema es asistir a los profesionales médicos en el diagnóstico temprano de enfermedades a partir de imágenes clínicas.
+
+2. Requisitos Funcionales
+
+2.1. El sistema deberá clasificar cada imagen clínica según el nivel de riesgo detectado.
+
+2.2. El sistema deberá generar un informe con la explicación de cada diagnóstico sugerido.
+
+2.3. El sistema deberá permitir que un profesional revise y confirme cada resultado.
+
+3. Requisitos No Funcionales
+
+3.1. El sistema deberá garantizar una disponibilidad del 99% durante el horario de atención.
+
+3.2. El sistema deberá proteger la confidencialidad de los datos de los pacientes mediante cifrado.
+
+4. Restricciones
+
+4.1. El sistema no deberá emitir un diagnóstico definitivo sin la validación de un profesional.
+
+Las siguientes condiciones aplican a la operación del sistema:
+
+- El sistema se utilizará únicamente como apoyo a la decisión médica.
+- Los resultados se conservarán durante el tiempo que exija la normativa vigente.

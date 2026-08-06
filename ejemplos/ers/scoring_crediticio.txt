@@ -1,0 +1,29 @@
+1. Introducción
+
+1.1. Propósito
+
+El propósito de este sistema es asistir a los analistas de riesgo en la evaluación crediticia de solicitantes de préstamos personales.
+
+1.2. Alcance
+
+El alcance del sistema abarca el cálculo de un puntaje crediticio a partir de datos financieros. Queda fuera del alcance la aprobación automática de créditos.
+
+2. Requisitos Funcionales
+
+2.1. El sistema deberá calcular un puntaje crediticio para cada solicitante.
+
+2.2. El sistema deberá registrar cada evaluación realizada junto con sus variables de entrada.
+
+2.3. El sistema deberá mostrar al analista los factores que influyeron en el puntaje.
+
+3. Requisitos No Funcionales
+
+3.1. El sistema deberá responder cada consulta en menos de tres segundos.
+
+3.2. El sistema deberá garantizar la confidencialidad de los datos financieros de los solicitantes.
+
+4. Restricciones
+
+4.1. El sistema no deberá utilizar el género ni la etnia del solicitante como variables de decisión.
+
+4.2. El sistema únicamente podrá operar con datos provistos por entidades autorizadas.

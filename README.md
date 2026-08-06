@@ -68,6 +68,26 @@ for resultado in resultados:
 
 Las reglas normalizan mayúsculas y acentos sólo para buscar señales; no modifican el texto ni los offsets del fragmento. La clasificación tampoco asigna niveles éticos `Ausente`, `Parcial` o `Explícito`: esa decisión corresponde al futuro motor de evaluación.
 
+`analizar_texto` encadena los tres pasos (normalizar, segmentar y clasificar) en una sola llamada y devuelve los fragmentos clasificados de un texto de ERS ya extraído:
+
+```python
+from etica_ia_ers.procesamiento_textual_y_nlp import analizar_texto
+
+for resultado in analizar_texto(documento.contenido_extraido):
+    print(resultado.fragmento.tipo_fragmento.value, resultado.clasificacion.value)
+```
+
+## Ejemplos de ERS y prueba del pipeline NLP
+
+`ejemplos/ers/` contiene tres ERS de ejemplo (material propio, no académico) para los dominios de scoring crediticio, diagnóstico médico y sistema recomendador. El script `ejemplos/analizar_ers.py` corre el pipeline NLP sobre ellas e imprime un reporte con la clasificación de cada fragmento y un resumen por categoría, sin escribir en disco:
+
+```bash
+python3 ejemplos/analizar_ers.py
+python3 ejemplos/analizar_ers.py ruta/a/otra_ers.txt
+```
+
+`ejemplos/HALLAZGOS-nlp.md` resume qué se probó y deja registrada una limitación conocida del segmentador (los requisitos redactados sin verbo normativo y cortos se toman como encabezados). La prueba automatizada equivalente es `pruebas/prueba_nlp_ers_ejemplo.py`.
+
 ## Endpoints
 
 Para levantar la API desde la raíz del proyecto:
@@ -145,6 +165,8 @@ Las pruebas generan en memoria documentos TXT, PDF y DOCX mínimos. También con
 
 Las del almacenamiento se ejecutan contra las dos implementaciones del repositorio y escriben en directorios temporales, nunca en `datos/`.
 
+La prueba del pipeline NLP (`prueba_nlp_ers_ejemplo.py`) es la única que lee archivos del repositorio: las ERS de ejemplo versionadas en `ejemplos/ers/`.
+
 GitHub Actions ejecuta esta misma suite automáticamente en cada pull request hacia `main` y después de cada cambio fusionado en `main`.
 
 ```bash
@@ -182,6 +204,7 @@ codigo_fuente/
     │   ├── clasificador.py
     │   ├── errores.py
     │   ├── normalizador.py
+    │   ├── pipeline.py
     │   └── segmentador.py
     ├── modelo_etico_y_guardrails/
     ├── evaluacion_documental/
@@ -194,11 +217,19 @@ codigo_fuente/
         ├── repositorio_archivos.py
         ├── serializacion.py
         └── trazabilidad.py
+ejemplos/
+├── HALLAZGOS-nlp.md
+├── analizar_ers.py
+└── ers/
+    ├── diagnostico_medico.txt
+    ├── scoring_crediticio.txt
+    └── sistema_recomendador.txt
 pruebas/
 ├── prueba_api_documentos.py
 ├── prueba_almacenamiento.py
 ├── prueba_cargador_documentos.py
 ├── prueba_clasificador.py
+├── prueba_nlp_ers_ejemplo.py
 ├── prueba_normalizador.py
 └── prueba_segmentador.py
 ```
