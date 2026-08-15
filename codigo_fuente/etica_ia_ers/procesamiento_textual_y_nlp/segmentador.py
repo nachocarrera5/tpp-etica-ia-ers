@@ -17,7 +17,9 @@ _PATRON_INICIO_ESTRUCTURAL = re.compile(
 _PATRON_ITEM_LISTA = re.compile(r"^- (.+)", re.DOTALL)
 _PATRON_VERBO_NORMATIVO = re.compile(
     r"\b(?:debe|deben|debera|deberan|deberá|deberán|"
-    r"tendra\s+que|tendran\s+que|tendrá\s+que|tendrán\s+que)\b",
+    r"podra|podran|podrá|podrán|"
+    r"tendra\s+que|tendran\s+que|tendrá\s+que|tendrán\s+que|"
+    r"queda\s+prohibid[oa]s?|se\s+proh[ií]be)\b",
     re.IGNORECASE,
 )
 

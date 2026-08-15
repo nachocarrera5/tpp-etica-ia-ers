@@ -1,17 +1,19 @@
-"""Punto de entrada del pipeline NLP: normalizar, segmentar y clasificar.
+"""Punto de entrada del pipeline NLP de una ERS.
 
-Encadena los pasos ya existentes (SCRUM-96, SCRUM-99 y SCRUM-100) en una sola
-llamada, para tener una representacion unica de "lo que produce el NLP" sobre
-un texto de ERS. Es el insumo que consumira el motor de evaluacion del Sprint 8.
+Encadena normalizacion, segmentacion, clasificacion y extraccion de senales en
+una sola llamada. El resultado conserva todos los datos que consumira el motor
+de evaluacion.
 """
 
 from __future__ import annotations
 
 from typing import List, Optional
 
-from etica_ia_ers.dominio import FragmentoClasificado
+from etica_ia_ers.dominio import AnotacionNLP, ResultadoAnalisisNLP
 
 from .clasificador import clasificar_fragmentos
+from .detector_ambiguedades import detectar_ambiguedades_y_terminos_vagos
+from .extractor_elementos import extraer_actores_acciones_condiciones
 from .normalizador import NormalizadorDeTexto
 from .segmentador import segmentar
 
@@ -19,15 +21,33 @@ from .segmentador import segmentar
 def analizar_texto(
     texto: str,
     normalizador: Optional[NormalizadorDeTexto] = None,
-) -> List[FragmentoClasificado]:
-    """Devuelve los fragmentos clasificados de un texto de ERS ya extraido.
+) -> ResultadoAnalisisNLP:
+    """Procesa un texto de ERS ya extraido y devuelve un resultado trazable."""
 
-    El texto se normaliza, se segmenta en fragmentos y cada fragmento se
-    clasifica con reglas trazables. Es equivalente a encadenar a mano
-    ``NormalizadorDeTexto().normalizar``, ``segmentar`` y
-    ``clasificar_fragmentos``.
-    """
     normalizador = normalizador or NormalizadorDeTexto()
     texto_normalizado = normalizador.normalizar(texto)
     fragmentos = segmentar(texto_normalizado.normalizado)
-    return clasificar_fragmentos(fragmentos)
+    fragmentos_clasificados = clasificar_fragmentos(fragmentos)
+
+    anotaciones: List[AnotacionNLP] = []
+    for fragmento in fragmentos:
+        senales_fragmento = extraer_actores_acciones_condiciones(fragmento)
+        senales_fragmento.extend(
+            detectar_ambiguedades_y_terminos_vagos(fragmento)
+        )
+        anotaciones.extend(
+            sorted(
+                senales_fragmento,
+                key=lambda senal: (
+                    senal.posicion_inicio,
+                    senal.posicion_fin,
+                    senal.tipo_senal.value,
+                ),
+            )
+        )
+
+    return ResultadoAnalisisNLP(
+        texto_normalizado=texto_normalizado,
+        fragmentos_clasificados=tuple(fragmentos_clasificados),
+        anotaciones=tuple(anotaciones),
+    )

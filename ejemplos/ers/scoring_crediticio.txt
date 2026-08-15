@@ -20,7 +20,7 @@ El alcance del sistema abarca el cálculo de un puntaje crediticio a partir de d
 
 3.1. El sistema deberá responder cada consulta en menos de tres segundos.
 
-3.2. El sistema deberá garantizar la confidencialidad de los datos financieros de los solicitantes.
+3.2. El sistema deberá garantizar una protección adecuada de la confidencialidad de los datos financieros de los solicitantes.
 
 4. Restricciones
 

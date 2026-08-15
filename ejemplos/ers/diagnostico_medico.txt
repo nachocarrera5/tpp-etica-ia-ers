@@ -6,7 +6,7 @@ El objetivo del sistema es asistir a los profesionales médicos en el diagnósti
 
 2.1. El sistema deberá clasificar cada imagen clínica según el nivel de riesgo detectado.
 
-2.2. El sistema deberá generar un informe con la explicación de cada diagnóstico sugerido.
+2.2. El sistema deberá generar un informe completo con la explicación de cada diagnóstico sugerido.
 
 2.3. El sistema deberá permitir que un profesional revise y confirme cada resultado.
 

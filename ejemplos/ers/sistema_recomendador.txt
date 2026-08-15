@@ -12,7 +12,7 @@ El sistema opera en el dominio del entretenimiento digital y está destinado a u
 
 2.1. El sistema deberá generar una lista de recomendaciones personalizadas para cada usuario.
 
-2.2. El sistema deberá permitir que el usuario indique que no le interesa una recomendación.
+2.2. Cuando sea apropiado, el sistema deberá permitir que el usuario indique que no le interesa una recomendación.
 
 3. Requisitos No Funcionales
 

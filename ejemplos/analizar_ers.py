@@ -1,9 +1,8 @@
 """Demostracion del pipeline NLP sobre ERS de ejemplo (SCRUM-103).
 
 Carga cada ERS de `ejemplos/ers/` (o las rutas pasadas como argumento), ejecuta
-normalizacion, segmentacion y clasificacion, e imprime un reporte legible con un
-resumen por categoria. Sirve para "probar" el NLP de forma visible, sin escribir
-nada en disco.
+el pipeline NLP completo e imprime un reporte legible con clasificaciones y
+senales extraidas. No escribe resultados en disco.
 
 Uso desde la raiz del proyecto:
 
@@ -16,7 +15,7 @@ from collections import Counter
 from pathlib import Path
 from typing import List, Sequence
 
-from etica_ia_ers.dominio import FragmentoClasificado
+from etica_ia_ers.dominio import ResultadoAnalisisNLP
 from etica_ia_ers.entrada_documental import cargar_documento_desde_ruta
 from etica_ia_ers.procesamiento_textual_y_nlp import analizar_texto
 
@@ -36,26 +35,32 @@ def _truncar(texto: str, largo: int = 60) -> str:
     return una_linea[: largo - 1] + "…"
 
 
-def _imprimir_reporte(ruta: Path, resultados: List[FragmentoClasificado]) -> None:
+def _imprimir_reporte(ruta: Path, resultado: ResultadoAnalisisNLP) -> None:
+    fragmentos = resultado.fragmentos_clasificados
     print("=" * 78)
-    print(f"ERS: {ruta.name}  ({len(resultados)} fragmentos)")
+    print(
+        f"ERS: {ruta.name}  "
+        f"({len(fragmentos)} fragmentos, {len(resultado.anotaciones)} senales)"
+    )
     print("-" * 78)
     print(f"{'#':>3}  {'TIPO':<11} {'ID':<6} {'CLASIFICACION':<22} TEXTO")
-    for resultado in resultados:
-        fragmento = resultado.fragmento
+    for fragmento_clasificado in fragmentos:
+        fragmento = fragmento_clasificado.fragmento
         print(
             f"{fragmento.secuencia_orden:>3}  "
             f"{fragmento.tipo_fragmento.value:<11} "
             f"{(fragmento.identificador_ers or '-'):<6} "
-            f"{resultado.clasificacion.value:<22} "
+            f"{fragmento_clasificado.clasificacion.value:<22} "
             f"{_truncar(fragmento.texto)}"
         )
 
-    por_clasificacion = Counter(r.clasificacion.value for r in resultados)
-    por_tipo = Counter(r.fragmento.tipo_fragmento.value for r in resultados)
+    por_clasificacion = Counter(r.clasificacion.value for r in fragmentos)
+    por_tipo = Counter(r.fragmento.tipo_fragmento.value for r in fragmentos)
+    por_senal = Counter(r.tipo_senal.value for r in resultado.anotaciones)
     print("-" * 78)
     print("Por clasificacion: " + _resumen(por_clasificacion))
     print("Por tipo:          " + _resumen(por_tipo))
+    print("Por senal NLP:     " + _resumen(por_senal))
     print()
 
 
