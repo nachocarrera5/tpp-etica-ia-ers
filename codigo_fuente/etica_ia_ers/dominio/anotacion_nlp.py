@@ -8,6 +8,8 @@ class TipoSenalNLP(str, Enum):
     ACTOR = "ACTOR"
     ACCION = "ACCION"
     CONDICION = "CONDICION"
+    TERMINO_VAGO = "TERMINO_VAGO"
+    AMBIGUEDAD = "AMBIGUEDAD"
 
 
 @dataclass(frozen=True)

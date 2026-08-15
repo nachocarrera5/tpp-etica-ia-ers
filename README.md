@@ -16,9 +16,9 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 ## Alcance de esta versión
 
-El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones y condiciones. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad.
+El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones, condiciones, términos vagos y expresiones ambiguas. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad.
 
-La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, detección de ambigüedades ni el motor de evaluación ética.
+La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR ni el motor de evaluación ética.
 
 ## Instalación para desarrollo
 
@@ -87,7 +87,22 @@ for anotacion in anotaciones:
     )
 ```
 
-Los actores incluyen sujetos responsables, agentes pasivos, destinatarios y personas u organizaciones afectadas. Las acciones contienen el verbo principal y sus complementos; las condiciones conservan expresiones como `cuando`, `si`, `ante` o `dentro de`. La extracción no interpreta todavía ambigüedad, suficiencia de evidencia ni cumplimiento ético.
+Los actores incluyen sujetos responsables, agentes pasivos, destinatarios y personas u organizaciones afectadas. Las acciones contienen el verbo principal y sus complementos; las condiciones conservan expresiones como `cuando`, `si`, `ante` o `dentro de`.
+
+## Detección de ambigüedades y términos vagos
+
+El detector aplica patrones léxicos auditables sobre cada fragmento. Las coincidencias respetan palabras completas y variantes habituales de género, número y acentuación, evitando falsos positivos como detectar `util` dentro de `utilizar`. El resultado usa el mismo contrato `AnotacionNLP`, con UUID, offsets relativos al fragmento y la regla aplicada.
+
+```python
+from etica_ia_ers.procesamiento_textual_y_nlp import detectar_en_fragmentos
+
+senales_calidad = detectar_en_fragmentos(fragmentos)
+
+for senal in senales_calidad:
+    print(senal.tipo_senal.value, senal.valor_detectado, senal.metadatos["regla"])
+```
+
+Estas coincidencias son señales para revisión y no prueban por sí solas que el requisito sea incorrecto. La suficiencia de evidencia, el contexto del dominio y los niveles éticos corresponden al motor de evaluación.
 
 ## Endpoints
 
@@ -202,6 +217,7 @@ codigo_fuente/
     │   └── errores.py
     ├── procesamiento_textual_y_nlp/
     │   ├── clasificador.py
+    │   ├── detector_ambiguedades.py
     │   ├── errores.py
     │   ├── extractor_elementos.py
     │   ├── normalizador.py
@@ -222,6 +238,7 @@ pruebas/
 ├── prueba_almacenamiento.py
 ├── prueba_cargador_documentos.py
 ├── prueba_clasificador.py
+├── prueba_detector_ambiguedades.py
 ├── prueba_extractor_elementos.py
 ├── prueba_normalizador.py
 └── prueba_segmentador.py
