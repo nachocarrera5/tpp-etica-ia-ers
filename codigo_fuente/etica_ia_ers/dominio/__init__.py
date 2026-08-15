@@ -1,4 +1,5 @@
 """Contratos y entidades de dominio."""
+from .anotacion_nlp import AnotacionNLP, TipoSenalNLP
 from .clasificacion_fragmento import (
     FragmentoClasificado,
     TipoClasificacionFragmento,
@@ -11,6 +12,7 @@ from .fragmento import FragmentoDocumental, TipoFragmento
 
 __all__ = [
     "AccionTrazabilidad",
+    "AnotacionNLP",
     "DocumentoERS",
     "EstadoAnalisis",
     "EventoTrazabilidad",
@@ -22,4 +24,5 @@ __all__ = [
     "TipoClasificacionFragmento",
     "FragmentoDocumental",
     "TipoFragmento",
+    "TipoSenalNLP",
 ]

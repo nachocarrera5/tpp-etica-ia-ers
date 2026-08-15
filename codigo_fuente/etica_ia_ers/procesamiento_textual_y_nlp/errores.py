@@ -19,3 +19,11 @@ class ErrorEnPasoDeNormalizacion(ErrorNormalizacion):
         super().__init__(
             f"Error en el paso '{nombre_paso}': {causa}"
         )
+
+
+class ErrorProcesamientoNLP(Exception):
+    """Error esperado durante el analisis NLP de una ERS."""
+
+
+class ModeloNLPNoDisponibleError(ErrorProcesamientoNLP):
+    pass
