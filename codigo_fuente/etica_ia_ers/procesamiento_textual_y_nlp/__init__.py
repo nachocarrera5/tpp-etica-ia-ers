@@ -1,6 +1,10 @@
 """Normalizacion, segmentacion y senales NLP."""
 
 from .clasificador import clasificar_fragmento, clasificar_fragmentos
+from .detector_ambiguedades import (
+    detectar_ambiguedades_y_terminos_vagos,
+    detectar_en_fragmentos,
+)
 from .errores import (
     ErrorEnPasoDeNormalizacion,
     ErrorNormalizacion,
@@ -19,6 +23,8 @@ from .segmentador import segmentar
 __all__ = [
     "clasificar_fragmento",
     "clasificar_fragmentos",
+    "detectar_ambiguedades_y_terminos_vagos",
+    "detectar_en_fragmentos",
     "ErrorEnPasoDeNormalizacion",
     "ErrorNormalizacion",
     "ErrorProcesamientoNLP",

@@ -229,15 +229,3 @@ def prueba_requisito_multilinea() -> None:
     assert len(fragmentos) == 1
     assert fragmentos[0].tipo_fragmento == TipoFragmento.REQUISITO
     assert "usuarios finales" in fragmentos[0].texto
-
-
-def prueba_detecta_ambiguedades_y_terminos_vagos() -> None:
-    texto = (
-        "El sistema debe ser adecuado y, según corresponda, "
-        "proporcionar explicaciones comprensibles."
-    )
-    fragmentos = segmentar(texto)
-
-    assert len(fragmentos) == 1
-    assert "adecuado" in fragmentos[0].terminos_vagos
-    assert "según corresponda" in fragmentos[0].ambiguedades
