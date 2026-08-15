@@ -6,6 +6,7 @@ from .clasificacion_fragmento import (
 )
 from .documento import DocumentoERS, FormatoDocumento
 from .registro_documento import EstadoAnalisis, RegistroDocumento, ResumenDocumento
+from .resultado_analisis_nlp import ResultadoAnalisisNLP
 from .texto_normalizado import TextoNormalizado
 from .trazabilidad import AccionTrazabilidad, EventoTrazabilidad
 from .fragmento import FragmentoDocumental, TipoFragmento
@@ -19,6 +20,7 @@ __all__ = [
     "FragmentoClasificado",
     "FormatoDocumento",
     "RegistroDocumento",
+    "ResultadoAnalisisNLP",
     "ResumenDocumento",
     "TextoNormalizado",
     "TipoClasificacionFragmento",

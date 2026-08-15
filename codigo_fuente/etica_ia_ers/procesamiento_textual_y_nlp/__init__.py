@@ -18,9 +18,11 @@ from .extractor_elementos import (
     extraer_de_fragmentos,
 )
 from .normalizador import NormalizadorDeTexto
+from .pipeline import analizar_texto
 from .segmentador import segmentar
 
 __all__ = [
+    "analizar_texto",
     "clasificar_fragmento",
     "clasificar_fragmentos",
     "detectar_ambiguedades_y_terminos_vagos",

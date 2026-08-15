@@ -70,6 +70,20 @@ for resultado in resultados:
 
 Las reglas normalizan mayúsculas y acentos sólo para buscar señales; no modifican el texto ni los offsets del fragmento. La clasificación tampoco asigna niveles éticos `Ausente`, `Parcial` o `Explícito`: esa decisión corresponde al futuro motor de evaluación.
 
+`analizar_texto` ejecuta el pipeline NLP completo sobre un texto de ERS ya extraído. Devuelve el texto normalizado, los fragmentos clasificados y las anotaciones de actores, acciones, condiciones, ambigüedades y términos vagos:
+
+```python
+from etica_ia_ers.procesamiento_textual_y_nlp import analizar_texto
+
+resultado = analizar_texto(documento.contenido_extraido)
+
+for fragmento in resultado.fragmentos_clasificados:
+    print(fragmento.fragmento.texto, fragmento.clasificacion.value)
+
+for anotacion in resultado.anotaciones:
+    print(anotacion.tipo_senal.value, anotacion.valor_detectado)
+```
+
 ## Extracción de actores, acciones y condiciones
 
 El extractor combina el análisis morfológico y de dependencias de spaCy con reglas explícitas para condiciones y roles habituales en una ERS. Cada señal conserva el UUID del fragmento, su texto exacto, offsets, metadatos lingüísticos y las versiones del procesador y del modelo.
@@ -103,6 +117,17 @@ for senal in senales_calidad:
 ```
 
 Estas coincidencias son señales para revisión y no prueban por sí solas que el requisito sea incorrecto. La suficiencia de evidencia, el contexto del dominio y los niveles éticos corresponden al motor de evaluación.
+
+## Ejemplos de ERS y prueba del pipeline NLP
+
+`ejemplos/ers/` contiene tres ERS de ejemplo, de elaboración propia, para los dominios de scoring crediticio, diagnóstico médico y sistema recomendador. El script `ejemplos/analizar_ers.py` ejecuta el pipeline completo e imprime clasificaciones y señales NLP sin escribir en disco:
+
+```bash
+python3 ejemplos/analizar_ers.py
+python3 ejemplos/analizar_ers.py ruta/a/otra_ers.txt
+```
+
+`ejemplos/HALLAZGOS-nlp.md` resume el alcance y los resultados observados. La validación automatizada equivalente está en `pruebas/prueba_nlp_ers_ejemplo.py`.
 
 ## Endpoints
 
@@ -181,6 +206,8 @@ Las pruebas generan en memoria documentos TXT, PDF y DOCX mínimos. También con
 
 Las del almacenamiento se ejecutan contra las dos implementaciones del repositorio y escriben en directorios temporales, nunca en `datos/`.
 
+La prueba del pipeline NLP (`prueba_nlp_ers_ejemplo.py`) es la única que lee archivos del repositorio: las ERS de ejemplo versionadas en `ejemplos/ers/`.
+
 GitHub Actions ejecuta esta misma suite automáticamente en cada pull request hacia `main` y después de cada cambio fusionado en `main`.
 
 ```bash
@@ -221,6 +248,7 @@ codigo_fuente/
     │   ├── errores.py
     │   ├── extractor_elementos.py
     │   ├── normalizador.py
+    │   ├── pipeline.py
     │   └── segmentador.py
     ├── modelo_etico_y_guardrails/
     ├── evaluacion_documental/
@@ -233,6 +261,13 @@ codigo_fuente/
         ├── repositorio_archivos.py
         ├── serializacion.py
         └── trazabilidad.py
+ejemplos/
+├── HALLAZGOS-nlp.md
+├── analizar_ers.py
+└── ers/
+    ├── diagnostico_medico.txt
+    ├── scoring_crediticio.txt
+    └── sistema_recomendador.txt
 pruebas/
 ├── prueba_api_documentos.py
 ├── prueba_almacenamiento.py
@@ -240,6 +275,7 @@ pruebas/
 ├── prueba_clasificador.py
 ├── prueba_detector_ambiguedades.py
 ├── prueba_extractor_elementos.py
+├── prueba_nlp_ers_ejemplo.py
 ├── prueba_normalizador.py
 └── prueba_segmentador.py
 ```

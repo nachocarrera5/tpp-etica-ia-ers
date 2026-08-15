@@ -1,0 +1,27 @@
+1. Introducción
+
+1.1. Propósito
+
+El propósito del sistema es recomendar contenidos audiovisuales a los usuarios de una plataforma de streaming.
+
+1.2. Contexto
+
+El sistema opera en el dominio del entretenimiento digital y está destinado a usuarios registrados.
+
+2. Requisitos Funcionales
+
+2.1. El sistema deberá generar una lista de recomendaciones personalizadas para cada usuario.
+
+2.2. Cuando sea apropiado, el sistema deberá permitir que el usuario indique que no le interesa una recomendación.
+
+3. Requisitos No Funcionales
+
+3.1. El sistema deberá actualizar las recomendaciones con una latencia menor a un segundo.
+
+3.2. El sistema deberá cumplir con criterios de accesibilidad para personas con discapacidad visual.
+
+4. Restricciones
+
+4.1. El sistema no deberá recomendar contenidos no aptos a usuarios menores de edad.
+
+4.2. Queda prohibido el uso de datos de ubicación sin el consentimiento del usuario.
