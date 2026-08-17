@@ -16,9 +16,9 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 ## Alcance de esta versión
 
-El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones, condiciones, términos vagos y expresiones ambiguas. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad.
+El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones, condiciones, términos vagos y expresiones ambiguas. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad, e incorpora la infraestructura extensible del motor de evaluación ética.
 
-La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR ni el motor de evaluación ética.
+La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, guardrails reales D01-D10, agregación por dimensión ni exposición del motor mediante endpoints.
 
 ## Instalación para desarrollo
 
@@ -68,7 +68,7 @@ for resultado in resultados:
     print(resultado.clasificacion.value, resultado.justificacion)
 ```
 
-Las reglas normalizan mayúsculas y acentos sólo para buscar señales; no modifican el texto ni los offsets del fragmento. La clasificación tampoco asigna niveles éticos `Ausente`, `Parcial` o `Explícito`: esa decisión corresponde al futuro motor de evaluación.
+Las reglas normalizan mayúsculas y acentos sólo para buscar señales; no modifican el texto ni los offsets del fragmento. La clasificación tampoco asigna niveles éticos `Ausente`, `Parcial` o `Explícito`: esa decisión corresponde a cada guardrail aplicable del motor de evaluación.
 
 `analizar_texto` ejecuta el pipeline NLP completo sobre un texto de ERS ya extraído. Devuelve el texto normalizado, los fragmentos clasificados y las anotaciones de actores, acciones, condiciones, ambigüedades y términos vagos:
 
@@ -117,6 +117,30 @@ for senal in senales_calidad:
 ```
 
 Estas coincidencias son señales para revisión y no prueban por sí solas que el requisito sea incorrecto. La suficiencia de evidencia, el contexto del dominio y los niveles éticos corresponden al motor de evaluación.
+
+## Motor de evaluación ética
+
+`MotorEvaluacionEtica` consume un `ResultadoAnalisisNLP`, selecciona las versiones activas del repositorio y registra cada ejecución como `APLICADO`, `NO_APLICABLE` o `ERROR`. Cada guardrail decide su aplicabilidad, nivel, prioridad y evidencias; el motor coordina esas reglas, verifica la trazabilidad de los fragmentos y aísla los errores para continuar con las reglas restantes.
+
+```python
+from etica_ia_ers.dominio import SolicitudEvaluacionEtica
+from etica_ia_ers.evaluacion_documental import MotorEvaluacionEtica
+from etica_ia_ers.modelo_etico_y_guardrails import (
+    RepositorioGuardrailsEnMemoria,
+)
+
+repositorio_guardrails = RepositorioGuardrailsEnMemoria()
+motor = MotorEvaluacionEtica(repositorio_guardrails)
+resultado_etico = motor.evaluar(
+    SolicitudEvaluacionEtica(
+        documento_id=documento.id,
+        resultado_nlp=resultado,
+        metadatos={"dominio": "crediticio"},
+    )
+)
+```
+
+El repositorio queda vacío hasta incorporar los guardrails D01-D10 en las tareas siguientes. La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones, agregación por dimensión, indicadores ni recomendaciones finales.
 
 ## Ejemplos de ERS y prueba del pipeline NLP
 
@@ -235,7 +259,9 @@ codigo_fuente/
     │   ├── anotacion_nlp.py
     │   ├── clasificacion_fragmento.py
     │   ├── documento.py
+    │   ├── evaluacion_etica.py
     │   ├── fragmento.py
+    │   ├── guardrail.py
     │   ├── registro_documento.py
     │   ├── texto_normalizado.py
     │   └── trazabilidad.py
@@ -251,7 +277,11 @@ codigo_fuente/
     │   ├── pipeline.py
     │   └── segmentador.py
     ├── modelo_etico_y_guardrails/
+    │   ├── errores.py
+    │   └── repositorio.py
     ├── evaluacion_documental/
+    │   ├── errores.py
+    │   └── motor.py
     ├── rubrica_y_agregacion/
     ├── recomendaciones/
     ├── resultados_y_presentacion/
@@ -275,6 +305,7 @@ pruebas/
 ├── prueba_clasificador.py
 ├── prueba_detector_ambiguedades.py
 ├── prueba_extractor_elementos.py
+├── prueba_motor_evaluacion_etica.py
 ├── prueba_nlp_ers_ejemplo.py
 ├── prueba_normalizador.py
 └── prueba_segmentador.py
