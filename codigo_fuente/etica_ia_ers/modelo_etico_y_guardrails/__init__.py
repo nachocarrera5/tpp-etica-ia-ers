@@ -20,6 +20,15 @@ from .guardrails_d03_d04 import (
     GUARDRAILS_D03_D04,
     GUARDRAILS_D04,
 )
+from .guardrails_d01_d02 import (
+    GR_D01_PRES_PROPOSITO,
+    GR_D02_CONTEXTO,
+    GR_D02_IMPACTO,
+    GR_D02_STAKEHOLDERS,
+    GUARDRAILS_D01,
+    GUARDRAILS_D01_D02,
+    GUARDRAILS_D02,
+)
 from .repositorio import (
     GuardrailEvaluable,
     RepositorioGuardrails,
@@ -44,6 +53,13 @@ __all__ = [
     "GUARDRAILS_D03",
     "GUARDRAILS_D03_D04",
     "GUARDRAILS_D04",
+    "GR_D01_PRES_PROPOSITO",
+    "GR_D02_CONTEXTO",
+    "GR_D02_IMPACTO",
+    "GR_D02_STAKEHOLDERS",
+    "GUARDRAILS_D01",
+    "GUARDRAILS_D01_D02",
+    "GUARDRAILS_D02",
     "GuardrailDuplicadoError",
     "GuardrailEvaluable",
     "GuardrailLexico",
