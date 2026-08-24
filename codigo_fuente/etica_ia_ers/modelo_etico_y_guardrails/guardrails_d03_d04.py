@@ -32,20 +32,32 @@ GR_D03_PRES_DATOS = GuardrailLexico(
     senales_explicitas=(
         senal(
             "categorias_datos_especificas",
-            r"datos\s+(?:personales|sensibles|biometricos|de\s+salud|"
-            r"financieros|de\s+ubicacion|de\s+identificacion)",
+            r"datos\s+(?:de\s+entrenamiento|de\s+validacion|de\s+inferencia|"
+            r"personales|sensibles|biometricos|clinicos|de\s+salud|"
+            r"financieros|crediticios|demograficos|de\s+ubicacion|"
+            r"de\s+identificacion)",
         ),
         senal(
             "origen_de_datos_especifico",
-            r"(?:proceden|proceder|provendran|provenir|se\s+obtendran)"
-            r"\s+de\s+(?:registros|fuentes|bases\s+de\s+datos)\s+"
-            r"(?:autorizad[oa]s|oficiales|internas)",
+            r"(?:proceden|proceder|procederan|provienen|provenir|provendran|"
+            r"obtenerse|recopilarse|se\s+obtienen|"
+            r"se\s+obtendran|se\s+recopilan|se\s+recopilaran)\s+de\s+"
+            r"(?:registros|fuentes|bases\s+de\s+datos|formularios|sensores|"
+            r"historias\s+clinicas)(?:\s+(?:autorizad[oa]s|oficiales|"
+            r"internas|institucionales))?",
         ),
     ),
     senales_parciales=(
-        senal("mencion_datos_usuario", r"datos\s+del\s+usuario"),
-        senal("mencion_informacion_usuario", r"informacion\s+del\s+usuario"),
-        senal("mencion_generica_datos", r"(?:usar[a]?|utilizar[a]?)\s+datos"),
+        senal("mencion_datos_usuario", r"datos\s+(?:del|de\s+los)\s+usuarios?"),
+        senal(
+            "mencion_informacion_usuario",
+            r"informacion\s+(?:del|de\s+los)\s+usuarios?",
+        ),
+        senal(
+            "mencion_generica_datos",
+            r"(?:usar|usara|utilizar|utilizara|procesar|procesara)\s+"
+            r"(?:los\s+)?datos",
+        ),
     ),
 )
 
@@ -69,18 +81,30 @@ GR_D03_DELIM_FINALIDAD = GuardrailLexico(
     senales_explicitas=(
         senal(
             "finalidad_declarada_con_limite",
-            r"(?:se\s+limitaran|excluir[a]?|solo\s+se\s+usaran)\s+"
-            r"(?:a\s+)?(?:variables|datos)\s+necesari[oa]s\s+"
-            r"para\s+la\s+finalidad",
+            r"(?:(?:se\s+limitaran|se\s+restringiran|solo\s+se\s+usaran|"
+            r"unicamente\s+se\s+utilizaran)\s+(?:a\s+)?(?:variables|datos)"
+            r"\s+(?:estrictamente\s+)?necesari[oa]s|(?:excluir[a]?|"
+            r"se\s+excluiran)\s+(?:variables|datos)\s+no\s+necesari[oa]s)"
+            r"\s+para\s+(?:la\s+)?(?:finalidad|objetivo|proposito)",
         ),
         senal(
-            "finalidad_para_proposito",
-            r"para\s+la\s+finalidad\s+declarada",
+            "datos_vinculados_a_finalidad",
+            r"(?:datos|informacion|variables).{0,60}"
+            r"(?:para|con\s+el\s+fin\s+de|con\s+la\s+finalidad\s+de)\s+"
+            r"(?:entrenar|validar|calcular|generar|predecir|clasificar|"
+            r"recomendar|detectar|evaluar|priorizar)",
         ),
     ),
     senales_parciales=(
-        senal("mencion_finalidad", r"finalidad(?:es)?\s+de\s+uso"),
-        senal("mencion_proposito_datos", r"para\s+generar\s+una?\s+\w+"),
+        senal(
+            "mencion_finalidad",
+            r"finalidad(?:es)?\s+(?:de\s+uso|del\s+tratamiento|de\s+los\s+datos)",
+        ),
+        senal("mencion_uso_datos", r"uso\s+de\s+(?:los\s+)?datos"),
+        senal(
+            "mencion_minimizacion",
+            r"variables\s+necesarias|minimizacion\s+de\s+datos",
+        ),
     ),
 )
 
@@ -107,13 +131,31 @@ GR_D03_VERIF_CALIDAD = GuardrailLexico(
         ),
         senal(
             "periodo_de_datos",
+            r"(?:datos|dataset|registros|fuentes).{0,90}"
             r"(?:ultimos?|periodo\s+de)\s+\d+\s+mes(?:es)?",
+        ),
+        senal(
+            "criterio_cuantificado_de_calidad",
+            r"(?:calidad|completitud|cobertura|precision).{0,35}"
+            r"(?:\d+(?:[.,]\d+)?\s*%|umbral|criterio\s+de\s+aceptacion)",
+        ),
+        senal(
+            "frecuencia_de_actualizacion",
+            r"(?:datos|dataset).{0,60}(?:se\s+actualizaran|actualizacion)"
+            r".{0,35}(?:mensual|trimestral|semestral|anual)(?:mente)?|"
+            r"(?:datos|dataset).{0,60}(?:se\s+actualizaran|actualizacion)"
+            r".{0,35}cada\s+\d+",
         ),
     ),
     senales_parciales=(
         senal("mencion_calidad", r"calidad\s+(?:de\s+los?\s+)?datos?"),
+        senal("mencion_completitud", r"completitud|datos\s+completos"),
+        senal("mencion_cobertura", r"cobertura\s+(?:de\s+los?\s+)?datos?"),
         senal("mencion_representatividad", r"representativ[oa]s?"),
-        senal("mencion_actualizacion_datos", r"actualizaci[oó]n\s+de\s+datos"),
+        senal(
+            "mencion_actualizacion_datos",
+            r"actualizacion\s+de\s+datos|datos.{0,20}actualizar",
+        ),
     ),
 )
 
@@ -135,12 +177,19 @@ GR_D03_RESP_ACCESO = GuardrailLexico(
     senales_explicitas=(
         senal(
             "roles_autorizados_definidos",
-            r"(?:roles?|responsables?)\s+autorizad[oa]s?\s+"
-            r"(?:para\s+)?(?:acced|con\s+acceso)",
+            r"(?:roles?|responsables?|personal|equipo|administradores?|"
+            r"analistas?)\s+(?:autorizad[oa]s?|designad[oa]s?)?.{0,25}"
+            r"(?:acceder|podran\s+acceder|con\s+acceso|tendran\s+acceso)"
+            r".{0,40}(?:datos|dataset|informacion)",
         ),
         senal(
             "control_de_acceso_especifico",
             r"control(?:es)?\s+de\s+acceso\s+(?:basad[oa]\s+en|por)\s+rol",
+        ),
+        senal(
+            "proteccion_tecnica_especifica",
+            r"(?:cifrad[oa]s?|encriptad[oa]s?).{0,30}"
+            r"(?:en\s+reposo|en\s+transito|aes|tls)",
         ),
     ),
     senales_parciales=(
@@ -174,7 +223,13 @@ GR_D03_CTRL_RETENCION = GuardrailLexico(
         ),
         senal(
             "plazo_numerico_retencion",
-            r"(?:plazo|periodo)\s+de\s+retencion\s+de\s+\d+",
+            r"(?:plazo|periodo)\s+de\s+(?:retencion|conservacion)\s+de\s+"
+            r"\d+\s*(?:dias|meses|anos)?",
+        ),
+        senal(
+            "eliminacion_condicionada",
+            r"(?:eliminaran|borraran|anonimizaran).{0,50}"
+            r"(?:despues|tras|cuando|al\s+finalizar|en\s+un\s+plazo)",
         ),
     ),
     senales_parciales=(
@@ -208,7 +263,13 @@ GR_D03_QUAL_PRIVACIDAD = GuardrailLexico(
         ),
         senal(
             "base_legal_definida",
-            r"base\s+legal\s+(?:para|de)\s+el\s+tratamiento",
+            r"base\s+legal\s+(?:para|de)\s+(?:el\s+)?tratamiento",
+        ),
+        senal(
+            "trazabilidad_del_uso",
+            r"(?:registrar|registrara|mantendra).{0,45}"
+            r"(?:accesos|uso\s+de\s+datos|datos\s+utilizados|"
+            r"fuente\s+de\s+datos|version\s+del\s+dataset)",
         ),
     ),
     senales_parciales=(
@@ -245,13 +306,20 @@ GR_D04_PRES_SESGOS = GuardrailLexico(
     senales_explicitas=(
         senal(
             "reporte_diferenciado_por_grupo",
-            r"reportar[a]?\s+(?:desempeno|falsos\s+negativos|"
-            r"falsos\s+positivos)\s+por\s+grupo",
+            r"(?:reportar|reportara|medir|medira|evaluar|evaluara)\s+"
+            r"(?:el\s+)?(?:desempeno|precision|tasa\s+de\s+error|"
+            r"falsos\s+negativos|falsos\s+positivos)\s+por\s+"
+            r"(?:grupo|subgrupo|subpoblacion)",
         ),
         senal(
             "umbral_diferencia_subgrupos",
             r"diferencia\s+de\s+\w+\s+entre\s+subgrupos\s+"
-            r"supera\s+el?\s+umbral",
+            r"supera\s+(?:el\s+)?umbral",
+        ),
+        senal(
+            "riesgo_desigual_especificado",
+            r"(?:riesgo|diferencia|brecha).{0,45}"
+            r"(?:sesgo|discriminacion|trato\s+desigual|error\s+desigual)",
         ),
     ),
     senales_parciales=(
@@ -281,16 +349,28 @@ GR_D04_DELIM_GRUPOS = GuardrailLexico(
     senales_explicitas=(
         senal(
             "desempeno_por_grupo_especifico",
-            r"desempeno\s+por\s+grupo\s+(?:etario|de\s+edad)\s+y\s+genero",
+            r"(?:desempeno|precision|tasa\s+de\s+error).{0,30}por\s+"
+            r"(?:grupo|subgrupo|subpoblacion).{0,30}"
+            r"(?:etari[oa]|edad|genero|sexo|discapacidad|origen|zona)",
         ),
         senal(
             "subgrupos_definidos",
             r"por\s+(?:subgrupos?|subpoblaci(?:on|ones))\s+"
             r"(?:etari[oa]s?|de\s+genero|relevantes?)",
         ),
+        senal(
+            "grupos_concretos_identificados",
+            r"(?:mujeres|hombres|personas\s+mayores|personas\s+con\s+"
+            r"discapacidad|poblacion\s+rural|poblacion\s+urbana|"
+            r"comunidades\s+indigenas).{0,45}(?:mujeres|hombres|"
+            r"personas\s+mayores|personas\s+con\s+discapacidad|"
+            r"poblacion\s+rural|poblacion\s+urbana|"
+            r"comunidades\s+indigenas)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_grupos", r"grupos?\s+(?:afectad[oa]s|vulnerables?)"),
+        senal("comparacion_generica_por_grupo", r"(?:por|entre)\s+grupos?"),
         senal("mencion_subpoblacion", r"subpoblaci(?:on|ones)"),
         senal("mencion_usuarios_afectados", r"usuarios?\s+afectad[oa]s"),
     ),
@@ -318,6 +398,12 @@ GR_D04_DELIM_PROXIES = GuardrailLexico(
             r"(?:como|tales\s+como|incluyen)",
         ),
         senal("variable_proxy_identificada", r"variables?\s+proxy"),
+        senal(
+            "proxy_con_atributo_sensible",
+            r"(?:codigo\s+postal|zona\s+geografica|apellido|idioma|"
+            r"historial\s+laboral).{0,45}(?:proxy|sustitut[oa]).{0,45}"
+            r"(?:origen|etnia|raza|genero|sexo|ingreso|discapacidad)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_atributos_sensibles", r"atributos?\s+sensibles?"),
@@ -344,11 +430,21 @@ GR_D04_VERIF_METRICAS = GuardrailLexico(
     senales_explicitas=(
         senal(
             "metrica_falsos_negativos_por_grupo",
-            r"falsos\s+negativos\s+entre\s+subgrupos",
+            r"(?:tasa\s+de\s+)?(?:falsos\s+negativos|falsos\s+positivos|"
+            r"precision|recall|tasa\s+de\s+error).{0,45}"
+            r"(?:por|entre).{0,35}(?:grupos?|subgrupos?|subpoblaciones?|"
+            r"mujeres|hombres)",
         ),
         senal(
             "prueba_por_subpoblacion_definida",
             r"prueba(?:s)?\s+por\s+subpoblaci(?:on|ones)",
+        ),
+        senal(
+            "brecha_con_umbral_numerico",
+            r"(?:diferencia|brecha).{0,45}\d+(?:[.,]\d+)?\s*"
+            r"(?:%|puntos?|puntos\s+porcentuales).{0,35}"
+            r"(?:entre|por).{0,35}(?:grupos?|subgrupos?|subpoblaciones?|"
+            r"mujeres|hombres)",
         ),
     ),
     senales_parciales=(
@@ -377,10 +473,16 @@ GR_D04_CTRL_MITIGACION = GuardrailLexico(
     senales_explicitas=(
         senal(
             "activacion_revision_por_umbral",
-            r"activar[a]?\s+revision\s+(?:del\s+responsable\s+)?"
+            r"(?:activar|activara)\s+revision\s+(?:del\s+responsable\s+)?"
             r"(?:designado\s+)?si\s+la\s+diferencia",
         ),
-        senal("umbral_definido_para_dominio", r"umbral\s+definido\s+para\s+el?\s+dominio"),
+        senal(
+            "accion_condicionada_ante_brecha",
+            r"(?:si|cuando|en\s+caso\s+de).{0,90}"
+            r"(?:brecha|diferencia|sesgo|umbral).{0,130}"
+            r"(?:suspendera|detendra|revisara|ajustara|reentrenara|"
+            r"corregira|mitigara)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_accion_correctiva", r"acci(?:on|ones)\s+correctiv[oa]s?"),
@@ -407,15 +509,25 @@ GR_D04_RESP_REVISION = GuardrailLexico(
     senales_explicitas=(
         senal(
             "responsable_designado_explicito",
-            r"responsable\s+designado",
+            r"responsable\s+designado.{0,60}"
+            r"(?:diferencia|brecha|sesgo|equidad|desviacion)",
         ),
         senal(
             "rol_encargado_de_revision",
             r"rol\s+(?:encargado|responsable)\s+de\s+revisar",
         ),
+        senal(
+            "responsable_con_accion_de_revision",
+            r"(?:comite|equipo|responsable|auditor|area).{0,45}"
+            r"(?:revisara|monitoreara|evaluara|investigara|actuara).{0,60}"
+            r"(?:sesgo|equidad|brecha|diferencia|desempeno\s+por\s+grupo)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_responsable_generico", r"responsable\s+de\s+(?:la\s+)?revisi[oó]n"),
+        senal(
+            "mencion_responsable_generico",
+            r"responsable\s+de\s+(?:la\s+)?revisi[oó]n",
+        ),
     ),
 )
 
@@ -439,14 +551,27 @@ GR_D04_QUAL_DECLARATIVO = GuardrailLexico(
         senal(
             "monitoreo_periodico_definido",
             r"monitoreo\s+(?:periodico|continuo)\s+"
-            r"(?:de|ante)\s+cambios?",
+            r"(?:de|ante)\s+(?:sesgos?|brechas?|cambios?\s+(?:en|de)\s+"
+            r"(?:los?\s+)?(?:datos|contexto|poblacion))",
         ),
-        senal("revision_periodica_definida", r"revisi[oó]n\s+periodica\s+"
-             r"(?:de|ante)\s+cambios?\s+(?:en|de)\s+(?:los?\s+)?datos"),
+        senal(
+            "revision_periodica_definida",
+            r"revision\s+periodica\s+(?:de|ante)\s+(?:sesgos?|brechas?|"
+            r"cambios?\s+(?:en|de)\s+(?:los?\s+)?(?:datos|contexto|"
+            r"poblacion))",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_seguimiento", r"seguimiento\s+posterior"),
-        senal("mencion_monitoreo_generico", r"monitoreo"),
+        senal(
+            "mencion_seguimiento",
+            r"seguimiento\s+posterior.{0,50}"
+            r"(?:sesgo|equidad|grupos?|subpoblaciones?)",
+        ),
+        senal(
+            "mencion_monitoreo_generico",
+            r"monitoreo.{0,50}(?:sesgo|equidad|grupos?|subpoblaciones?|"
+            r"cambios?\s+(?:en|de)\s+(?:los?\s+)?(?:datos|contexto))",
+        ),
     ),
 )
 

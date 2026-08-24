@@ -16,7 +16,9 @@ from etica_ia_ers.dominio import (
     DimensionEtica,
     EstadoAplicacionGuardrail,
     NivelCobertura,
+    PrioridadDocumental,
     SolicitudEvaluacionEtica,
+    TipoVinculoEvidencia,
 )
 from etica_ia_ers.evaluacion_documental import MotorEvaluacionEtica
 from etica_ia_ers.modelo_etico_y_guardrails import (
@@ -95,6 +97,9 @@ def prueba_ejemplo_datos_genericos_es_parcial() -> None:
     aplicacion = _hallazgo_de(resultado, "GR-D03-PRES-DATOS")
     assert aplicacion.estado == EstadoAplicacionGuardrail.APLICADO
     assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.PARCIAL
+    assert aplicacion.hallazgo.evidencias[0].tipo_vinculo == (
+        TipoVinculoEvidencia.CONTEXTUALIZA
+    )
 
 
 def prueba_texto_sin_mencion_de_datos_es_ausente() -> None:
@@ -114,13 +119,115 @@ def prueba_ejemplo_equidad_declarativa_es_parcial() -> None:
     assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.PARCIAL
 
 
+def prueba_mencion_incidental_de_finalidad_no_es_evidencia_explicita() -> None:
+    texto = "La documentacion estara disponible para la finalidad declarada."
+    resultado = _evaluar_texto(texto, GR_D03_DELIM_FINALIDAD)
+
+    aplicacion = _hallazgo_de(resultado, "GR-D03-DELIM-FINALIDAD")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+
+
+@pytest.mark.parametrize(
+    ("guardrail", "texto"),
+    [
+        (
+            GR_D03_VERIF_CALIDAD,
+            "El contrato tendra un periodo de 12 meses.",
+        ),
+        (
+            GR_D03_RESP_ACCESO,
+            "Los roles autorizados podran acceder al sistema.",
+        ),
+        (
+            GR_D04_RESP_REVISION,
+            "Se nombro un responsable designado para el despliegue.",
+        ),
+        (
+            GR_D04_QUAL_DECLARATIVO,
+            "Habra monitoreo continuo de la infraestructura.",
+        ),
+    ],
+)
+def prueba_no_confunde_contexto_tecnico_generico_con_evidencia_etica(
+    guardrail,
+    texto: str,
+) -> None:
+    resultado = _evaluar_texto(texto, guardrail)
+
+    assert resultado.hallazgos[0].nivel_preliminar == NivelCobertura.AUSENTE
+
+
+@pytest.mark.parametrize(
+    ("guardrail", "texto"),
+    [
+        (
+            GR_D03_DELIM_FINALIDAD,
+            "Los datos personales se usaran exclusivamente para calcular "
+            "el puntaje crediticio.",
+        ),
+        (
+            GR_D03_VERIF_CALIDAD,
+            "Los datos deberan estar completos al 95% y se actualizaran "
+            "mensualmente.",
+        ),
+        (
+            GR_D03_RESP_ACCESO,
+            "El personal autorizado podra acceder unicamente a los datos "
+            "personales necesarios.",
+        ),
+        (
+            GR_D03_CTRL_RETENCION,
+            "Se establece un periodo de retencion de 12 meses.",
+        ),
+        (
+            GR_D03_QUAL_PRIVACIDAD,
+            "Se solicitara el consentimiento informado de los usuarios.",
+        ),
+        (
+            GR_D04_DELIM_GRUPOS,
+            "La precision se medira para mujeres, personas mayores y "
+            "poblacion rural.",
+        ),
+        (
+            GR_D04_DELIM_PROXIES,
+            "Los atributos sensibles como genero y discapacidad seran "
+            "revisados antes del entrenamiento.",
+        ),
+        (
+            GR_D04_VERIF_METRICAS,
+            "La tasa de falsos positivos no debera diferir mas de 5 puntos "
+            "entre mujeres y hombres.",
+        ),
+        (
+            GR_D04_CTRL_MITIGACION,
+            "Si la brecha supera el 5%, el comite suspendera el despliegue "
+            "y ajustara el modelo.",
+        ),
+        (
+            GR_D04_RESP_REVISION,
+            "El comite evaluara las diferencias de desempeno por grupo.",
+        ),
+        (
+            GR_D04_QUAL_DECLARATIVO,
+            "Habra monitoreo continuo ante cambios en los datos.",
+        ),
+    ],
+)
+def prueba_reconoce_evidencia_explicita_con_formulaciones_equivalentes(
+    guardrail,
+    texto: str,
+) -> None:
+    resultado = _evaluar_texto(texto, guardrail)
+
+    assert resultado.hallazgos[0].nivel_preliminar == NivelCobertura.EXPLICITO
+
+
 def prueba_ausencia_total_de_mencion_a_sesgos_es_ausente() -> None:
     texto = "3.1. El sistema debera clasificar solicitudes de credito."
     resultado = _evaluar_texto(texto, GR_D04_PRES_SESGOS)
 
     aplicacion = _hallazgo_de(resultado, "GR-D04-PRES-SESGOS")
     assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
-
 
 
 def prueba_ejemplo_evidencia_explicita_d03() -> None:
@@ -146,6 +253,11 @@ def prueba_ejemplo_evidencia_explicita_d03() -> None:
     assert _hallazgo_de(
         resultado, "GR-D03-VERIF-CALIDAD"
     ).hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+    assert all(
+        evidencia.tipo_vinculo == TipoVinculoEvidencia.SOPORTA
+        for hallazgo in resultado.hallazgos
+        for evidencia in hallazgo.evidencias
+    )
 
 
 def prueba_ejemplo_evidencia_explicita_d04() -> None:
@@ -177,16 +289,12 @@ def prueba_ejemplo_evidencia_explicita_d04() -> None:
     ).hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
 
 
-
-
 def prueba_nivel_ausente_tiene_prioridad_alta_y_revision() -> None:
     texto = "5.1. El sistema debera procesar solicitudes en tiempo real."
     resultado = _evaluar_texto(texto, GR_D03_PRES_DATOS)
 
     hallazgo = _hallazgo_de(resultado, "GR-D03-PRES-DATOS").hallazgo
     assert hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
-    from etica_ia_ers.dominio import PrioridadDocumental
-
     assert hallazgo.prioridad_documental == PrioridadDocumental.ALTA
     assert hallazgo.requiere_revision_humana is True
 
@@ -204,6 +312,29 @@ def prueba_nivel_explicito_igual_requiere_revision_humana() -> None:
     assert "no certifica" in hallazgo.motivo_revision_humana.lower()
 
 
+@pytest.mark.parametrize(
+    ("texto", "nivel"),
+    [
+        (
+            "El sistema debera responder en menos de dos segundos.",
+            NivelCobertura.AUSENTE,
+        ),
+        (
+            "Los datos personales procederan de registros autorizados.",
+            NivelCobertura.EXPLICITO,
+        ),
+    ],
+)
+def prueba_prioridad_es_independiente_del_nivel(
+    texto: str,
+    nivel: NivelCobertura,
+) -> None:
+    resultado = _evaluar_texto(texto, GR_D03_PRES_DATOS)
+
+    hallazgo = resultado.hallazgos[0]
+    assert hallazgo.nivel_preliminar == nivel
+    assert hallazgo.prioridad_documental == PrioridadDocumental.ALTA
+    assert "independiente del nivel" in hallazgo.justificacion_prioridad
 
 
 def prueba_documento_solo_encabezados_no_aplica() -> None:
@@ -213,8 +344,6 @@ def prueba_documento_solo_encabezados_no_aplica() -> None:
     aplicacion = _hallazgo_de(resultado, "GR-D03-PRES-DATOS")
     assert aplicacion.estado == EstadoAplicacionGuardrail.NO_APLICABLE
     assert aplicacion.hallazgo is None
-
-
 
 
 def prueba_evidencia_referencia_fragmento_real_del_documento() -> None:
@@ -232,8 +361,6 @@ def prueba_evidencia_referencia_fragmento_real_del_documento() -> None:
     hallazgo = _hallazgo_de(resultado, "GR-D03-PRES-DATOS").hallazgo
     assert hallazgo.evidencias[0].fragmento_id == fragmento.id
     assert hallazgo.evidencias[0].texto == fragmento.texto
-
-
 
 
 def prueba_catalogo_completo_sobre_documento_con_evidencia_mixta() -> None:
