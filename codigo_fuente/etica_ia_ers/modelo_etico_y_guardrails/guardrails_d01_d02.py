@@ -16,245 +16,251 @@ from .guardrail_lexico import GuardrailLexico, senal
 GR_D01_PRES_PROPOSITO = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D01-PRES-PROPOSITO",
-        nombre="Presencia y definicion del proposito del sistema",
+        nombre="Presencia del proposito del sistema",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.DELIMITACION,
+        familia=FamiliaGuardrail.PRESENCIA,
         dimensiones=(DimensionEtica.D01,),
         descripcion=(
-            "Verifica si la ERS describe claramente el proposito o "
-            "finalidad general del sistema (p.ej. objetivos y alcance)."
+            "Verifica si la ERS identifica el objetivo o problema que el "
+            "sistema busca resolver."
         ),
         criterios=("D01-C1",),
-        prioridad_base=PrioridadDocumental.MEDIA,
-        requiere_revision_por_defecto=True,
-    ),
-    senales_explicitas=(
-        senal("proposito_declarado", r"prop[oó]sito\s+del\s+sistema"),
-        senal("finalidad_declarada", r"finalidad\s+(?:del|de\s+uso)\s+del\s+sistema"),
-    ),
-    senales_parciales=(
-        senal("mencion_proposito_generica", r"proposito|finalidad"),
-        senal("mencion_objetivos", r"objetivos\s+(?:del\s+)?sistema"),
-    ),
-)
-
-
-GR_D02_CONTEXTO = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D02-CONTEXTO",
-        nombre="Contexto y entorno de despliegue",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.DELIMITACION,
-        dimensiones=(DimensionEtica.D02,),
-        descripcion=(
-            "Verifica si se describe el contexto de uso, entornos de "
-            "despliegue y limitaciones operativas del sistema."
-        ),
-        criterios=("D02-C1",),
-        prioridad_base=PrioridadDocumental.MEDIA,
-    ),
-    senales_explicitas=(
-        senal("contexto_de_uso", r"contexto\s+de\s+uso|entorno\s+de\s+despliegue"),
-        senal("ambito_aplicacion", r"\bambito\s+de\s+aplicaci[oó]n\b"),
-    ),
-    senales_parciales=(
-        senal("mencion_contexto_generico", r"contexto|entorno|ambito"),
-    ),
-)
-
-
-GR_D02_STAKEHOLDERS = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D02-STAKEHOLDERS",
-        nombre="Identificacion de stakeholders y responsables",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.RESPONSABILIDAD,
-        dimensiones=(DimensionEtica.D02,),
-        descripcion=(
-            "Verifica si la ERS identifica stakeholders, partes "
-            "interesadas y responsables relacionados con el sistema."
-        ),
-        criterios=("D02-C2",),
         prioridad_base=PrioridadDocumental.ALTA,
         requiere_revision_por_defecto=True,
     ),
     senales_explicitas=(
-        senal("stakeholders_identificados", r"stakeholders|partes?\s+interesadas"),
-        senal("responsables_definidos", r"responsables?\s+(?:designad[oa]s?|identificad[oa]s|del\s+sistema)"),
-    ),
-    senales_parciales=(
-        senal("mencion_responsable_generico", r"responsable|equipo\s+responsable"),
-    ),
-)
-
-
-GR_D02_IMPACTO = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D02-IMPACTO",
-        nombre="Evaluacion de impacto y riesgos",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.VERIFICABILIDAD,
-        dimensiones=(DimensionEtica.D02,),
-        descripcion=(
-            "Verifica si se realiza una evaluacion de impacto, se "
-            "identifican riesgos y consecuencias para usuarios o grupos."
+        senal(
+            "proposito_con_resultado",
+            r"(?:objetivo|proposito|finalidad)\s+(?:principal\s+)?"
+            r"(?:del\s+sistema\s+)?(?:es|consiste\s+en|sera).{0,90}"
+            r"(?:resolver|asistir|priorizar|recomendar|detectar|clasificar|"
+            r"predecir|evaluar|optimizar|reducir|mejorar)",
         ),
-        criterios=("D02-C3",),
-        prioridad_base=PrioridadDocumental.ALTA,
-        requiere_revision_por_defecto=True,
-    ),
-    senales_explicitas=(
-        senal("evaluacion_impacto", r"evaluaci[oó]n\s+de\s+impacto"),
-        senal("riesgos_identificados", r"riesgos?\s+identificados|impacto[s]?\s+en\s+usuarios"),
+        senal(
+            "problema_y_resultado_esperado",
+            r"(?:problema\s+a\s+resolver|resultado\s+esperado).{0,90}\w+",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_riesgo_generico", r"riesgo|impacto|consecuencia[s]?")
+        senal("mencion_proposito", r"(?:objetivo|proposito|finalidad)\s+del\s+sistema"),
+        senal(
+            "comportamiento_orientado_a_finalidad",
+            r"el\s+sistema\s+(?:debera\s+)?(?:asistir(?:a)?|priorizar(?:a)?|"
+            r"recomendar(?:a)?|detectar(?:a)?|clasificar(?:a)?|"
+            r"predecir(?:a)?|evaluar(?:a)?|optimizar(?:a)?)",
+        ),
     ),
-)
-
-
-GUARDRAILS_D01: Tuple[GuardrailLexico, ...] = (
-    GR_D01_PRES_PROPOSITO,
 )
 
 
 GR_D01_DELIM_ALCANCE = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D01-DELIM-ALCANCE",
-        nombre="Delimitacion del alcance",
+        nombre="Delimitacion del dominio y alcance operativo",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.DELIMITACION,
         dimensiones=(DimensionEtica.D01,),
         descripcion=(
-            "Verifica si se delimita el alcance operacional y limites del proposito."
+            "Verifica si se delimita el dominio, contexto institucional o "
+            "entorno operativo del sistema."
         ),
         criterios=("D01-C2",),
         prioridad_base=PrioridadDocumental.MEDIA,
     ),
     senales_explicitas=(
-        senal("alcance_definido", r"alcance\s+del\s+sistema|alcance\s+operacional"),
+        senal(
+            "dominio_o_entorno_definido",
+            r"(?:dominio|contexto|entorno|sector|ambito)\s+"
+            r"(?:de\s+aplicacion|institucional|operativo|organizacional|"
+            r"de\s+uso).{0,70}\w+",
+        ),
+        senal(
+            "area_de_aplicacion_concreta",
+            r"(?:solicitudes\s+internas\s+de\s+\w+|"
+            r"(?:en|para)\s+(?:salud|credito|empleo|educacion|justicia|"
+            r"soporte\s+tecnico|diagnostico\s+medico|gestion\s+publica))",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_alcance_generico", r"alcance"),
+        senal("mencion_alcance", r"alcance\s+(?:del\s+)?sistema"),
+        senal("mencion_contexto", r"contexto\s+(?:operativo|de\s+uso)"),
+        senal("mencion_dominio", r"dominio\s+(?:de\s+aplicacion)?"),
     ),
 )
+
 
 GR_D01_DELIM_USOS = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D01-DELIM-USOS",
-        nombre="Delimitacion de usos aceptables",
+        nombre="Delimitacion de usos previstos y prohibidos",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.DELIMITACION,
         dimensiones=(DimensionEtica.D01,),
         descripcion=(
-            "Verifica si se especifican usos aceptables o restricciones de uso."
+            "Verifica si se documentan usos previstos y usos no previstos "
+            "o prohibidos."
+        ),
+        criterios=("D01-C4", "D01-C5"),
+        prioridad_base=PrioridadDocumental.ALTA,
+        requiere_revision_por_defecto=True,
+    ),
+    senales_explicitas=(
+        senal(
+            "uso_prohibido_con_finalidad",
+            r"(?:no\s+se\s+(?:usara|utilizara|empleara)|queda\s+prohibid[oa]|"
+            r"no\s+estara\s+permitido).{0,90}(?:para|en)\s+\w+",
+        ),
+        senal(
+            "uso_previsto_delimitado",
+            r"(?:uso[s]?\s+previsto[s]?|solo\s+se\s+(?:usara|utilizara)|"
+            r"se\s+utilizara\s+exclusivamente).{0,90}\w+",
+        ),
+        senal("fuera_de_alcance", r"fuera\s+de\s+alcance.{0,80}\w+"),
+    ),
+    senales_parciales=(
+        senal("mencion_uso_previsto", r"uso[s]?\s+(?:previsto[s]?|permitido[s]?)"),
+        senal("mencion_restriccion_uso", r"restriccion(?:es)?\s+de\s+uso"),
+    ),
+)
+
+
+GR_D01_DELIM_ACTORES = GuardrailLexico(
+    definicion=DefinicionGuardrail(
+        codigo="GR-D01-DELIM-ACTORES",
+        nombre="Delimitacion de usuarios y actores principales",
+        version=1,
+        estado=EstadoGuardrail.ACTIVA,
+        familia=FamiliaGuardrail.DELIMITACION,
+        dimensiones=(DimensionEtica.D01,),
+        descripcion=(
+            "Verifica si se identifican usuarios o actores principales que "
+            "operaran o interactuaran con el sistema."
         ),
         criterios=("D01-C3",),
         prioridad_base=PrioridadDocumental.MEDIA,
     ),
     senales_explicitas=(
-        senal("usos_aceptables", r"usos?\s+aceptables|prohibid[oa]s|no\s+permitido"),
+        senal(
+            "actores_principales_definidos",
+            r"(?:usuarios?|actores?|roles?)\s+(?:principales|autorizados|"
+            r"operativos).{0,70}\w+",
+        ),
+        senal(
+            "rol_que_opera_el_sistema",
+            r"(?:sera\s+(?:utilizado|operado)\s+por|"
+            r"(?:analistas?|profesionales?|operadores?|administradores?)"
+            r".{0,35}(?:utilizaran|operaran|interactuaran|revisaran))",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_usos_generico", r"uso[s]?|aplicaci[oó]n"),
+        senal("mencion_usuarios", r"usuarios?\s+(?:del\s+)?sistema"),
+        senal("mencion_actores", r"actores?\s+(?:del\s+)?sistema"),
+        senal("mencion_roles", r"roles?\s+(?:del\s+)?sistema"),
     ),
 )
 
-GR_D01_DELIM_ACTORES = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D01-DELIM-ACTORES",
-        nombre="Delimitacion de actores y roles",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.DELIMITACION,
-        dimensiones=(DimensionEtica.D01,),
-        descripcion=(
-            "Verifica si se describen actores, roles y responsabilidades en el proposito."
-        ),
-        criterios=("D01-C4",),
-        prioridad_base=PrioridadDocumental.MEDIA,
-    ),
-    senales_explicitas=(
-        senal("actores_definidos", r"actores\s+involucrad[oa]s|roles\s+definidos"),
-    ),
-    senales_parciales=(
-        senal("mencion_actores_generico", r"actores|roles|partes?\s+interesadas"),
-    ),
-)
 
 GR_D01_VERIF_SUPUESTOS = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D01-VERIF-SUPUESTOS",
-        nombre="Verificabilidad de supuestos",
+        nombre="Verificabilidad de supuestos operativos",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.VERIFICABILIDAD,
         dimensiones=(DimensionEtica.D01,),
         descripcion=(
-            "Verifica si los supuestos operativos del proposito estan documentados y verificables."
-        ),
-        criterios=("D01-C5",),
-        prioridad_base=PrioridadDocumental.MEDIA,
-    ),
-    senales_explicitas=(
-        senal("supuestos_documentados", r"supuestos\s+operativ[oa]s|supuestos\s+del\s+sistema"),
-    ),
-    senales_parciales=(
-        senal("mencion_supuestos_generico", r"supuestos"),
-    ),
-)
-
-GR_D01_VERIF_LIMITACIONES = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D01-VERIF-LIMITACIONES",
-        nombre="Verificabilidad de limitaciones",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.VERIFICABILIDAD,
-        dimensiones=(DimensionEtica.D01,),
-        descripcion=(
-            "Verifica si se documentan limitaciones conocidas del proposito y su impacto."
+            "Verifica si se documentan supuestos o condiciones previas "
+            "necesarias para el funcionamiento."
         ),
         criterios=("D01-C6",),
         prioridad_base=PrioridadDocumental.MEDIA,
     ),
     senales_explicitas=(
-        senal("limitaciones_documentadas", r"limitaciones\s+conocidas|limites\s+operativos"),
+        senal(
+            "supuesto_con_condicion",
+            r"(?:se\s+asume\s+que|bajo\s+el\s+supuesto\s+de|"
+            r"condicion\s+previa|requiere\s+que|siempre\s+que).{0,90}\w+",
+        ),
+        senal(
+            "supuestos_operativos_documentados",
+            r"supuestos?\s+(?:operativos?|del\s+contexto).{0,70}\w+",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_limitaciones_generico", r"limitacion|limitaciones|limite"),
+        senal("mencion_supuesto", r"supuestos?\s+(?:del\s+)?sistema"),
     ),
 )
+
+
+GR_D01_VERIF_LIMITACIONES = GuardrailLexico(
+    definicion=DefinicionGuardrail(
+        codigo="GR-D01-VERIF-LIMITACIONES",
+        nombre="Verificabilidad de limitaciones conocidas",
+        version=1,
+        estado=EstadoGuardrail.ACTIVA,
+        familia=FamiliaGuardrail.VERIFICABILIDAD,
+        dimensiones=(DimensionEtica.D01,),
+        descripcion="Verifica si se reconocen limitaciones conocidas del sistema.",
+        criterios=("D01-C7",),
+        prioridad_base=PrioridadDocumental.MEDIA,
+    ),
+    senales_explicitas=(
+        senal(
+            "limitacion_concreta",
+            r"(?:limitaciones?\s+conocidas?|limitado\s+a|solo\s+funciona|"
+            r"no\s+(?:podra|puede|garantiza|reemplaza|admite)).{0,90}\w+",
+        ),
+        senal(
+            "limite_operativo",
+            r"limites?\s+(?:operativos?|tecnicos?|de\s+datos|del\s+dominio)"
+            r".{0,70}\w+",
+        ),
+    ),
+    senales_parciales=(
+        senal("mencion_limitacion", r"limitaciones?\s+(?:del\s+)?sistema"),
+    ),
+)
+
 
 GR_D01_QUAL_PROPOSITO = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D01-QUAL-PROPOSITO",
-        nombre="Calidad documental del proposito",
+        nombre="Calidad documental y proporcionalidad del proposito",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.CALIDAD_DOCUMENTAL,
         dimensiones=(DimensionEtica.D01,),
         descripcion=(
-            "Verifica si las declaraciones sobre el proposito son verificables y no puramente declarativas."
+            "Verifica si el proposito tiene criterios verificables o "
+            "justifica por que corresponde utilizar IA."
         ),
-        criterios=("D01-C7",),
+        criterios=("D01-C1", "D01-C8"),
         prioridad_base=PrioridadDocumental.MEDIA,
     ),
     senales_explicitas=(
-        senal("proposito_verificable", r"proposito\s+verificable|objetivos\s+medibles"),
+        senal(
+            "proposito_cuantificado",
+            r"(?:objetivo|proposito|resultado\s+esperado|criterio\s+de\s+exito)"
+            r".{0,90}\d+(?:[.,]\d+)?\s*%",
+        ),
+        senal(
+            "uso_ia_justificado",
+            r"(?:uso|utilizacion)\s+de\s+(?:ia|inteligencia\s+artificial)"
+            r".{0,80}(?:se\s+justifica|es\s+(?:adecuado|necesario)|"
+            r"debido\s+a|porque)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_calidad_proposito", r"verificable|medible|traceable|rastreable"),
+        senal("mencion_objetivo_medible", r"objetivo[s]?\s+medibles?"),
+        senal("mencion_uso_ia", r"uso\s+de\s+(?:ia|inteligencia\s+artificial)"),
     ),
 )
 
-GUARDRAILS_D01 = (
+
+GUARDRAILS_D01: Tuple[GuardrailLexico, ...] = (
     GR_D01_PRES_PROPOSITO,
     GR_D01_DELIM_ALCANCE,
     GR_D01_DELIM_USOS,
@@ -268,24 +274,39 @@ GUARDRAILS_D01 = (
 GR_D02_PRES_ACTORES = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D02-PRES-ACTORES",
-        nombre="Presencia de actores relacionados",
+        nombre="Presencia de usuarios, operadores y afectados",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.PRESENCIA,
         dimensiones=(DimensionEtica.D02,),
         descripcion=(
-            "Verifica si se listan actores directos e indirectos afectados por el sistema."
+            "Verifica si la ERS identifica quienes interactuan con el sistema "
+            "o se ven afectados por el."
         ),
-        criterios=("D02-C1",),
+        criterios=("D02-C1", "D02-C2", "D02-C3"),
         prioridad_base=PrioridadDocumental.ALTA,
+        requiere_revision_por_defecto=True,
     ),
     senales_explicitas=(
-        senal("actores_listados", r"actores\s+afectad[oa]s|grupos\s+afectad[oa]s"),
+        senal(
+            "actores_concretos_identificados",
+            r"(?:usuarios?|operadores?|responsables?|afectados?)\s+"
+            r"(?:directos|principales|internos|indirectos).{0,70}\w+",
+        ),
+        senal(
+            "rol_usuario_definido",
+            r"(?:sera\s+(?:utilizado|operado)\s+por|"
+            r"(?:analistas?|profesionales?|operadores?|administradores?)"
+            r".{0,35}(?:utilizaran|operaran|supervisaran))",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_actores_generico", r"actores|grupos|usuarios"),
+        senal("mencion_usuario", r"usuarios?\s+(?:finales|del\s+sistema)"),
+        senal("mencion_afectados", r"personas?\s+afectadas?|afectados?"),
+        senal("mencion_stakeholders", r"stakeholders?|partes?\s+interesadas"),
     ),
 )
+
 
 GR_D02_DELIM_INDIRECTOS = GuardrailLexico(
     definicion=DefinicionGuardrail(
@@ -296,130 +317,226 @@ GR_D02_DELIM_INDIRECTOS = GuardrailLexico(
         familia=FamiliaGuardrail.DELIMITACION,
         dimensiones=(DimensionEtica.D02,),
         descripcion=(
-            "Verifica si se consideran impactos en afectados indirectos o por externalidades."
-        ),
-        criterios=("D02-C2",),
-        prioridad_base=PrioridadDocumental.MEDIA,
-    ),
-    senales_explicitas=(
-        senal("afectados_indirectos", r"afectados\s+indirectos|externalidades"),
-    ),
-    senales_parciales=(
-        senal("mencion_indirectos_generico", r"indirectos|externalidad"),
-    ),
-)
-
-GR_D02_DELIM_VULNERABLES = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D02-DELIM-VULNERABLES",
-        nombre="Delimitacion de grupos vulnerables",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.DELIMITACION,
-        dimensiones=(DimensionEtica.D02,),
-        descripcion=(
-            "Verifica si se identifican grupos vulnerables y consideraciones especiales."
+            "Verifica si se identifican personas o grupos que reciben "
+            "consecuencias sin interactuar directamente con el sistema."
         ),
         criterios=("D02-C3",),
         prioridad_base=PrioridadDocumental.ALTA,
         requiere_revision_por_defecto=True,
     ),
     senales_explicitas=(
-        senal("grupos_vulnerables", r"vulnerables|grupos\s+vulnerables"),
+        senal(
+            "afectados_indirectos_identificados",
+            r"(?:afectados?|personas?|grupos?)\s+indirectos?.{0,70}\w+",
+        ),
+        senal(
+            "terceros_con_consecuencias",
+            r"terceros?.{0,60}(?:afectados?|consecuencias?|impactos?|"
+            r"decisiones?)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_vulnerables_generico", r"vulnerabl[e|es]?"),
+        senal("mencion_indirectos", r"afectados?\s+indirectos?"),
+        senal("mencion_externalidad", r"externalidades?"),
+        senal("mencion_terceros", r"terceros?\s+afectados?"),
     ),
 )
+
+
+GR_D02_DELIM_VULNERABLES = GuardrailLexico(
+    definicion=DefinicionGuardrail(
+        codigo="GR-D02-DELIM-VULNERABLES",
+        nombre="Delimitacion de grupos vulnerables o expuestos",
+        version=1,
+        estado=EstadoGuardrail.ACTIVA,
+        familia=FamiliaGuardrail.DELIMITACION,
+        dimensiones=(DimensionEtica.D02,),
+        descripcion=(
+            "Verifica si se identifican grupos con mayor exposicion al "
+            "riesgo o condiciones de vulnerabilidad."
+        ),
+        criterios=("D02-C4",),
+        prioridad_base=PrioridadDocumental.ALTA,
+        requiere_revision_por_defecto=True,
+    ),
+    senales_explicitas=(
+        senal(
+            "grupo_vulnerable_identificado",
+            r"(?:grupos?|personas?|poblaciones?)\s+(?:vulnerables?|"
+            r"con\s+mayor\s+(?:exposicion|riesgo)).{0,70}\w+",
+        ),
+        senal(
+            "grupo_con_riesgo_especifico",
+            r"grupos?\s+con\s+\w+(?:\s+\w+){0,5}.{0,45}"
+            r"(?:riesgo|exclusion|discriminacion|perjuicio)",
+        ),
+        senal(
+            "riesgo_en_grupo_especifico",
+            r"(?:riesgo|exclusion|discriminacion|perjuicio).{0,50}"
+            r"grupos?\s+con\s+\w+(?:\s+\w+){0,5}",
+        ),
+    ),
+    senales_parciales=(
+        senal("mencion_vulnerabilidad", r"(?:grupo[s]?\s+)?vulnerables?"),
+        senal("mencion_exposicion", r"mayor\s+exposicion\s+al\s+riesgo"),
+    ),
+)
+
 
 GR_D02_VERIF_IMPACTOS = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D02-VERIF-IMPACTOS",
-        nombre="Verificabilidad de impactos",
+        nombre="Verificabilidad de impactos negativos previsibles",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.VERIFICABILIDAD,
         dimensiones=(DimensionEtica.D02,),
         descripcion=(
-            "Verifica si los impactos previstos estan documentados con criterios verificables."
+            "Verifica si se documentan impactos negativos previsibles con "
+            "destinatarios concretos."
         ),
-        criterios=("D02-C4",),
+        criterios=("D02-C6",),
         prioridad_base=PrioridadDocumental.ALTA,
+        requiere_revision_por_defecto=True,
     ),
     senales_explicitas=(
-        senal("impactos_documentados", r"impactos?\s+documentad[oa]s|impacto[s]?\s+previstos"),
+        senal(
+            "impacto_negativo_con_destinatario",
+            r"(?:riesgo\s+de|dano|exclusion|perjuicio|impacto\s+negativo|"
+            r"consecuencia\s+adversa).{0,70}(?:usuarios?|solicitantes?|"
+            r"personas?|grupos?|comunidades?|trabajadores?|pacientes?)",
+        ),
+        senal(
+            "destinatario_con_impacto_negativo",
+            r"(?:usuarios?|solicitantes?|personas?|grupos?|comunidades?|"
+            r"trabajadores?|pacientes?).{0,70}(?:riesgo|dano|exclusion|"
+            r"perjuicio|impacto\s+negativo|consecuencia\s+adversa)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_impacto_generico", r"impacto|consecuencia"),
+        senal(
+            "mencion_impacto_negativo",
+            r"(?:impactos?\s+negativos?|riesgos?\s+sociales?|danos?\s+"
+            r"previsibles?|riesgo\s+de\s+exclusion)",
+        ),
     ),
 )
+
 
 GR_D02_VERIF_BENEFICIOS = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D02-VERIF-BENEFICIOS",
-        nombre="Verificabilidad de beneficios",
+        nombre="Verificabilidad de beneficios esperados",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.VERIFICABILIDAD,
         dimensiones=(DimensionEtica.D02,),
         descripcion=(
-            "Verifica si los beneficios esperados del sistema estan descritos y medibles."
+            "Verifica si se indican beneficios esperados con destinatario "
+            "y condicion de aplicacion."
         ),
         criterios=("D02-C5",),
         prioridad_base=PrioridadDocumental.MEDIA,
     ),
     senales_explicitas=(
-        senal("beneficios_descriptos", r"beneficios?\s+esperados|ganancias\s+esperadas"),
+        senal(
+            "beneficio_con_destinatario",
+            r"(?:beneficio[s]?\s+esperados?|mejora|reduccion|aumento)"
+            r".{0,70}(?:para|a)\s+(?:los?\s+|las\s+)?(?:usuarios?|"
+            r"solicitantes?|personas?|grupos?|comunidades?|trabajadores?|"
+            r"pacientes?)",
+        ),
+        senal(
+            "destinatario_con_beneficio_cuantificado",
+            r"(?:usuarios?|solicitantes?|personas?|grupos?|comunidades?|"
+            r"trabajadores?|pacientes?).{0,70}\d+(?:[.,]\d+)?\s*%"
+            r".{0,40}(?:mejora|reduccion|aumento|beneficio)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_beneficio_generico", r"beneficio|mejora|ganancia"),
+        senal("mencion_beneficio", r"beneficios?\s+esperados?"),
+        senal("mencion_mejora", r"mejora\s+para\s+(?:los\s+)?usuarios?"),
     ),
 )
+
 
 GR_D02_CTRL_REVISION = GuardrailLexico(
     definicion=DefinicionGuardrail(
         codigo="GR-D02-CTRL-REVISION",
-        nombre="Control y plan de revision de impactos",
+        nombre="Control de impactos no anticipados",
         version=1,
         estado=EstadoGuardrail.ACTIVA,
         familia=FamiliaGuardrail.CONTROL,
         dimensiones=(DimensionEtica.D02,),
         descripcion=(
-            "Verifica si existe un plan de revision y control para mitigar impactos adversos."
-        ),
-        criterios=("D02-C6",),
-        prioridad_base=PrioridadDocumental.ALTA,
-    ),
-    senales_explicitas=(
-        senal("plan_revision", r"plan\s+de\s+revision|control\s+de\s+impactos"),
-    ),
-    senales_parciales=(
-        senal("mencion_revision_generico", r"revision|monitoreo|control"),
-    ),
-)
-
-GR_D02_RESP_ACTORES = GuardrailLexico(
-    definicion=DefinicionGuardrail(
-        codigo="GR-D02-RESP-ACTORES",
-        nombre="Responsabilidad sobre accion y remedios",
-        version=1,
-        estado=EstadoGuardrail.ACTIVA,
-        familia=FamiliaGuardrail.RESPONSABILIDAD,
-        dimensiones=(DimensionEtica.D02,),
-        descripcion=(
-            "Verifica si se asignan responsabilidades por acciones y remedios ante impactos."
+            "Verifica si se preven mecanismos para detectar y atender "
+            "impactos no anticipados."
         ),
         criterios=("D02-C7",),
         prioridad_base=PrioridadDocumental.ALTA,
         requiere_revision_por_defecto=True,
     ),
     senales_explicitas=(
-        senal("responsabilidad_asignada", r"responsabilidad[s]?\s+asignad[oa]s?|responsables?\s+designad[oa]s"),
+        senal(
+            "mecanismo_ante_impacto_no_previsto",
+            r"(?:si|cuando|en\s+caso\s+de).{0,60}"
+            r"(?:impactos?|consecuencias?)\s+no\s+(?:previstos?|"
+            r"anticipadas?).{0,90}(?:revisara|registrara|atendera|"
+            r"investigara|corregira)",
+        ),
+        senal(
+            "revision_periodica_de_impactos",
+            r"(?:revision|monitoreo)\s+(?:periodica|continuo).{0,60}"
+            r"(?:impactos?|consecuencias?|afectados?)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_responsable_generico", r"responsable|remedio|accion\s+correctiva"),
+        senal(
+            "mencion_revision_impactos",
+            r"(?:revision|monitoreo|control)\s+de\s+(?:impactos?|"
+            r"consecuencias?)",
+        ),
     ),
 )
+
+
+GR_D02_RESP_ACTORES = GuardrailLexico(
+    definicion=DefinicionGuardrail(
+        codigo="GR-D02-RESP-ACTORES",
+        nombre="Responsabilidad sobre afectados e impactos",
+        version=1,
+        estado=EstadoGuardrail.ACTIVA,
+        familia=FamiliaGuardrail.RESPONSABILIDAD,
+        dimensiones=(DimensionEtica.D02,),
+        descripcion=(
+            "Verifica si se asigna un responsable de gestionar la relacion "
+            "con afectados o revisar impactos."
+        ),
+        criterios=("D02-C2", "D02-C7"),
+        prioridad_base=PrioridadDocumental.ALTA,
+        requiere_revision_por_defecto=True,
+    ),
+    senales_explicitas=(
+        senal(
+            "responsable_con_accion_sobre_impactos",
+            r"(?:comite|equipo|responsable|rol|area).{0,45}"
+            r"(?:revisara|gestionara|atendera|investigara|respondera).{0,60}"
+            r"(?:impactos?|afectados?|reclamos?|consecuencias?)",
+        ),
+        senal(
+            "responsable_de_relacion_con_afectados",
+            r"responsable\s+(?:designado\s+)?(?:de|para).{0,45}"
+            r"(?:afectados?|impactos?|reclamos?|consecuencias?)",
+        ),
+    ),
+    senales_parciales=(
+        senal(
+            "mencion_responsable_impactos",
+            r"responsable\s+(?:de|para)\s+(?:la\s+)?revision\s+de\s+impactos?",
+        ),
+    ),
+)
+
 
 GR_D02_QUAL_IMPACTO = GuardrailLexico(
     definicion=DefinicionGuardrail(
@@ -430,21 +547,39 @@ GR_D02_QUAL_IMPACTO = GuardrailLexico(
         familia=FamiliaGuardrail.CALIDAD_DOCUMENTAL,
         dimensiones=(DimensionEtica.D02,),
         descripcion=(
-            "Verifica si el analisis de impacto es verificable y basado en evidencia."
+            "Verifica si impactos y beneficios tienen destinatario, "
+            "condicion o mecanismo verificable."
         ),
-        criterios=("D02-C8",),
+        criterios=("D02-C5", "D02-C6", "D02-C8"),
         prioridad_base=PrioridadDocumental.MEDIA,
     ),
     senales_explicitas=(
-        senal("impacto_verificable", r"impacto\s+verificable|evidencia\s+de\s+impacto"),
+        senal(
+            "impacto_con_destinatario_y_condicion",
+            r"(?:impacto|riesgo|beneficio).{0,60}(?:sobre|para|en)\s+"
+            r"(?:usuarios?|solicitantes?|personas?|grupos?|comunidades?|"
+            r"trabajadores?|pacientes?).{0,90}(?:si|cuando|mediante|"
+            r"mecanismo|revision|umbral|con\s+\w+(?:\s+\w+){0,4}\s+"
+            r"limitad[oa])",
+        ),
+        senal(
+            "asimetria_y_mecanismo",
+            r"(?:asimetria\s+de\s+poder|relacion\s+de\s+dependencia|"
+            r"capacidad\s+de\s+reclamo|posibilidad\s+de\s+impugnacion)"
+            r".{0,90}(?:mecanismo|canal|revision|reclamo|impugnacion)",
+        ),
     ),
     senales_parciales=(
-        senal("mencion_calidad_impacto", r"verificable|evidencia|documentado"),
+        senal(
+            "mencion_analisis_impacto",
+            r"(?:analisis|evaluacion)\s+de\s+impacto(?:s)?",
+        ),
+        senal("mencion_asimetria", r"asimetria\s+de\s+poder"),
     ),
 )
 
-GUARDRAILS_D02 = (
-    GR_D02_CONTEXTO,
+
+GUARDRAILS_D02: Tuple[GuardrailLexico, ...] = (
     GR_D02_PRES_ACTORES,
     GR_D02_DELIM_INDIRECTOS,
     GR_D02_DELIM_VULNERABLES,
@@ -455,4 +590,7 @@ GUARDRAILS_D02 = (
     GR_D02_QUAL_IMPACTO,
 )
 
-GUARDRAILS_D01_D02 = GUARDRAILS_D01 + GUARDRAILS_D02
+
+GUARDRAILS_D01_D02: Tuple[GuardrailLexico, ...] = (
+    GUARDRAILS_D01 + GUARDRAILS_D02
+)
