@@ -13,7 +13,6 @@ from etica_ia_ers.dominio import (
     EvaluacionPreliminarGuardrail,
     FragmentoDocumental,
     NivelCobertura,
-    PrioridadDocumental,
     ReferenciaEvidencia,
     TipoFragmento,
     TipoVinculoEvidencia,
@@ -22,7 +21,6 @@ from etica_ia_ers.dominio import (
 
 @dataclass(frozen=True)
 class SenalLexica:
-
     nombre: str
     patron: Pattern[str]
 
@@ -54,7 +52,7 @@ def _fragmentos_evaluables(
 def _buscar_coincidencias(
     fragmentos: Tuple[FragmentoDocumental, ...],
     senales: Tuple[SenalLexica, ...],
-) -> "Dict[UUID, List[str]]":
+) -> Dict[UUID, List[str]]:
     coincidencias: Dict[UUID, List[str]] = {}
     for fragmento in fragmentos:
         texto = _normalizar_para_busqueda(fragmento.texto)
@@ -65,12 +63,13 @@ def _buscar_coincidencias(
 
 
 def _crear_evidencias(
-    coincidencias: "Dict[UUID, List[str]]",
+    coincidencias: Dict[UUID, List[str]],
+    tipo_vinculo: TipoVinculoEvidencia,
 ) -> Tuple[ReferenciaEvidencia, ...]:
     return tuple(
         ReferenciaEvidencia(
             fragmento_id=fragmento_id,
-            tipo_vinculo=TipoVinculoEvidencia.SOPORTA,
+            tipo_vinculo=tipo_vinculo,
             observacion="Senales detectadas: " + ", ".join(sorted(set(nombres))),
         )
         for fragmento_id, nombres in coincidencias.items()
@@ -79,7 +78,6 @@ def _crear_evidencias(
 
 @dataclass(frozen=True)
 class GuardrailLexico:
-
     definicion: DefinicionGuardrail
     senales_explicitas: Tuple[SenalLexica, ...] = ()
     senales_parciales: Tuple[SenalLexica, ...] = ()
@@ -118,16 +116,19 @@ class GuardrailLexico:
                     + ", ".join(nombres)
                     + "."
                 ),
-                prioridad=PrioridadDocumental.BAJA,
+                prioridad=self.definicion.prioridad_base,
                 justificacion_prioridad=(
-                    "La evidencia es explicita, pero requiere validacion "
-                    "humana por contexto o dominio."
+                    "La prioridad responde a la criticidad documental "
+                    "definida para el guardrail y es independiente del nivel."
                 ),
-                evidencias=_crear_evidencias(explicitas),
+                evidencias=_crear_evidencias(
+                    explicitas,
+                    TipoVinculoEvidencia.SOPORTA,
+                ),
                 requiere_revision_humana=True,
                 motivo_revision_humana=(
-                    "Un nivel Explicito no certifica adecuacion real de "
-                    "datos, privacidad o equidad; requiere revision humana."
+                    "Un nivel Explicito no certifica la adecuacion real del "
+                    "sistema; requiere revision humana."
                 ),
             )
 
@@ -141,12 +142,15 @@ class GuardrailLexico:
                     + ", ".join(nombres)
                     + "."
                 ),
-                prioridad=PrioridadDocumental.MEDIA,
+                prioridad=self.definicion.prioridad_base,
                 justificacion_prioridad=(
-                    "La mencion es generica; faltan responsables, metricas "
-                    "o acciones correctivas verificables."
+                    "La prioridad responde a la criticidad documental "
+                    "definida para el guardrail y es independiente del nivel."
                 ),
-                evidencias=_crear_evidencias(parciales),
+                evidencias=_crear_evidencias(
+                    parciales,
+                    TipoVinculoEvidencia.CONTEXTUALIZA,
+                ),
                 requiere_revision_humana=True,
                 motivo_revision_humana=(
                     "La evidencia parcial requiere revision humana para "
@@ -160,10 +164,10 @@ class GuardrailLexico:
                 "No se hallo evidencia documental relevante para este "
                 "guardrail."
             ),
-            prioridad=PrioridadDocumental.ALTA,
+            prioridad=self.definicion.prioridad_base,
             justificacion_prioridad=(
-                "La ausencia de evidencia documental amerita revision "
-                "prioritaria temprana."
+                "La prioridad responde a la criticidad documental "
+                "definida para el guardrail y es independiente del nivel."
             ),
             evidencias=(),
             requiere_revision_humana=True,
