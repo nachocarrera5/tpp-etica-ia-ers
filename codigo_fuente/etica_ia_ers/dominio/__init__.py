@@ -1,5 +1,14 @@
 """Contratos y entidades de dominio."""
 from .anotacion_nlp import AnotacionNLP, TipoSenalNLP
+from .cobertura_etica import (
+    GrupoTematico,
+    IndicadoresGlobales,
+    IndicadoresGrupoTematico,
+    IndicadoresGuardrails,
+    IndicadoresPrioridad,
+    ResultadoCoberturaEtica,
+    ResultadoDimensionEtica,
+)
 from .evaluacion_etica import (
     ContextoEvaluacionEtica,
     DecisionAplicabilidad,
@@ -50,14 +59,21 @@ __all__ = [
     "FragmentoClasificado",
     "FamiliaGuardrail",
     "FormatoDocumento",
+    "GrupoTematico",
     "HallazgoEvaluacion",
     "IdentidadGuardrailVersionada",
+    "IndicadoresGlobales",
+    "IndicadoresGrupoTematico",
+    "IndicadoresGuardrails",
+    "IndicadoresPrioridad",
     "NivelCobertura",
     "PrioridadDocumental",
     "ReferenciaEvidencia",
     "RegistroDocumento",
     "ResultadoAnalisisNLP",
     "ResultadoAplicacionGuardrail",
+    "ResultadoCoberturaEtica",
+    "ResultadoDimensionEtica",
     "ResultadoEvaluacionEtica",
     "ResumenDocumento",
     "SolicitudEvaluacionEtica",

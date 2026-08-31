@@ -143,9 +143,29 @@ resultado_etico = motor.evaluar(
 )
 ```
 
+## Cobertura ética documental e indicadores
+
+La capa `rubrica_y_agregacion` consolida los hallazgos del motor por dimensión y calcula indicadores globales, por grupo temático, familia de guardrail y prioridad documental:
+
+```python
+from etica_ia_ers.rubrica_y_agregacion import calcular_cobertura_etica
+
+cobertura = calcular_cobertura_etica(resultado_etico)
+
+print(cobertura.resultados_por_dimension)
+print(cobertura.indicadores_globales)
+print(cobertura.indicadores_por_grupo)
+```
+
+Cuando una dimensión contiene hallazgos mixtos, se conserva el nivel más débil para producir una lectura prudente y explicable. La prioridad máxima y la necesidad de revisión humana se calculan de manera independiente del nivel.
+
+Los porcentajes se calculan únicamente sobre dimensiones efectivamente evaluadas. Si el catálogo todavía no produjo hallazgos para alguna dimensión, ésta se informa en `dimensiones_no_evaluadas` y no se interpreta como `AUSENTE`. El resultado también advierte sobre guardrails con error o evaluaciones sin dimensiones cubiertas.
+
+Estos indicadores resumen cobertura documental; no constituyen un puntaje ético, una aprobación ni una certificación. El cálculo opera en memoria y no incluye persistencia, endpoints, visualización, exportación o recomendaciones.
+
 El catálogo actual incorpora guardrails léxicos y auditables para D01 (propósito y contexto), D02 (stakeholders e impacto), D03 (datos y privacidad) y D04 (equidad y sesgos). Cada regla conserva las señales y fragmentos que justifican el nivel, mientras que la prioridad responde a la criticidad configurada para el guardrail y no se deriva automáticamente de `AUSENTE`, `PARCIAL` o `EXPLICITO`.
 
-Los guardrails restantes se incorporan en las tareas siguientes. La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones, agregación por dimensión, indicadores ni recomendaciones finales.
+Los guardrails restantes se incorporan en las tareas siguientes. La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones ni recomendaciones finales.
 
 ## Ejemplos de ERS y prueba del pipeline NLP
 
