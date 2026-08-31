@@ -128,10 +128,15 @@ from etica_ia_ers.evaluacion_documental import MotorEvaluacionEtica
 from etica_ia_ers.modelo_etico_y_guardrails import (
     GUARDRAILS_D01_D02,
     GUARDRAILS_D03_D04,
+    GUARDRAILS_D05_D07,
     RepositorioGuardrailsEnMemoria,
 )
 
-guardrails = GUARDRAILS_D01_D02 + GUARDRAILS_D03_D04
+guardrails = (
+    GUARDRAILS_D01_D02
+    + GUARDRAILS_D03_D04
+    + GUARDRAILS_D05_D07
+)
 repositorio_guardrails = RepositorioGuardrailsEnMemoria(guardrails)
 motor = MotorEvaluacionEtica(repositorio_guardrails)
 resultado_etico = motor.evaluar(
@@ -163,9 +168,9 @@ Los porcentajes se calculan únicamente sobre dimensiones efectivamente evaluada
 
 Estos indicadores resumen cobertura documental; no constituyen un puntaje ético, una aprobación ni una certificación. El cálculo opera en memoria y no incluye persistencia, endpoints, visualización, exportación o recomendaciones.
 
-El catálogo actual incorpora guardrails léxicos y auditables para D01 (propósito y contexto), D02 (stakeholders e impacto), D03 (datos y privacidad) y D04 (equidad y sesgos). Cada regla conserva las señales y fragmentos que justifican el nivel, mientras que la prioridad responde a la criticidad configurada para el guardrail y no se deriva automáticamente de `AUSENTE`, `PARCIAL` o `EXPLICITO`.
+El catálogo actual incorpora guardrails léxicos y auditables para D01-D07: propósito y contexto, stakeholders e impacto, datos y privacidad, equidad y sesgos, transparencia, explicabilidad y supervisión humana. Cada regla conserva las señales y fragmentos que justifican el nivel, mientras que la prioridad responde a la criticidad configurada para el guardrail y no se deriva automáticamente de `AUSENTE`, `PARCIAL` o `EXPLICITO`.
 
-Los guardrails restantes se incorporan en las tareas siguientes. La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones ni recomendaciones finales.
+Los guardrails D08-D10 se incorporan en la tarea siguiente. La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones ni recomendaciones finales.
 
 ## Ejemplos de ERS y prueba del pipeline NLP
 
