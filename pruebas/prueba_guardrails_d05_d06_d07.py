@@ -10,6 +10,7 @@ import pytest
 
 from etica_ia_ers.dominio import (
     DimensionEtica,
+    FamiliaGuardrail,
     NivelCobertura,
     SolicitudEvaluacionEtica,
 )
@@ -22,6 +23,34 @@ from etica_ia_ers.modelo_etico_y_guardrails import (
     RepositorioGuardrailsEnMemoria,
 )
 from etica_ia_ers.procesamiento_textual_y_nlp import analizar_texto
+from etica_ia_ers.rubrica_y_agregacion import calcular_cobertura_etica
+
+
+_CODIGOS_ESPERADOS = (
+    "GR-D05-PRES-IA",
+    "GR-D05-DELIM-DESTINATARIOS",
+    "GR-D05-DELIM-CONTENIDO",
+    "GR-D05-VERIF-CANAL",
+    "GR-D05-VERIF-LIMITES",
+    "GR-D05-RESP-ACTUALIZACION",
+    "GR-D05-QUAL-DECLARATIVO",
+    "GR-D06-PRES-EXPLICACION",
+    "GR-D06-DELIM-SALIDAS",
+    "GR-D06-DELIM-DESTINATARIOS",
+    "GR-D06-VERIF-FORMATO",
+    "GR-D06-VERIF-UTILIDAD",
+    "GR-D06-CTRL-REVISION",
+    "GR-D06-RESP-EXPLICACION",
+    "GR-D06-QUAL-DECLARATIVO",
+    "GR-D07-PRES-HUMANO",
+    "GR-D07-DELIM-DECISIONES",
+    "GR-D07-DELIM-ROLES",
+    "GR-D07-CTRL-INTERVENCION",
+    "GR-D07-VERIF-ACTIVACION",
+    "GR-D07-VERIF-PROCEDIMIENTO",
+    "GR-D07-RESP-REGISTRO",
+    "GR-D07-QUAL-DECLARATIVO",
+)
 
 
 def _evaluar_texto(texto: str, *guardrails):
@@ -42,7 +71,7 @@ def _nivel(resultado, codigo: str) -> NivelCobertura:
 
 def prueba_catalogo_d05_d07_tiene_23_guardrails_sin_duplicados() -> None:
     codigos = [guardrail.definicion.codigo for guardrail in GUARDRAILS_D05_D07]
-    assert len(codigos) == 23
+    assert tuple(codigos) == _CODIGOS_ESPERADOS
     assert len(codigos) == len(set(codigos))
 
 
@@ -56,6 +85,17 @@ def prueba_catalogo_d05_d07_tiene_23_guardrails_sin_duplicados() -> None:
 )
 def prueba_catalogos_estan_asociados_a_su_dimension(catalogo, dimension) -> None:
     assert all(dimension in guardrail.definicion.dimensiones for guardrail in catalogo)
+
+
+def prueba_catalogo_cubre_las_seis_familias_y_declara_criterios() -> None:
+    familias = {
+        guardrail.definicion.familia for guardrail in GUARDRAILS_D05_D07
+    }
+    assert familias == set(FamiliaGuardrail)
+    assert all(
+        guardrail.definicion.criterios
+        for guardrail in GUARDRAILS_D05_D07
+    )
 
 
 def prueba_transparencia_generica_es_parcial() -> None:
@@ -74,14 +114,18 @@ def prueba_transparencia_con_ia_destinatario_canal_y_limites_es_explicita() -> N
     )
     resultado = _evaluar_texto(texto, *GUARDRAILS_D05)
     assert _nivel(resultado, "GR-D05-PRES-IA") == NivelCobertura.EXPLICITO
-    assert _nivel(resultado, "GR-D05-DELIM-DESTINATARIOS") == NivelCobertura.EXPLICITO
+    assert _nivel(
+        resultado,
+        "GR-D05-DELIM-DESTINATARIOS",
+    ) == NivelCobertura.EXPLICITO
     assert _nivel(resultado, "GR-D05-VERIF-CANAL") == NivelCobertura.EXPLICITO
     assert _nivel(resultado, "GR-D05-VERIF-LIMITES") == NivelCobertura.EXPLICITO
 
 
 def prueba_explicabilidad_declarativa_es_parcial() -> None:
     resultado = _evaluar_texto(
-        "2.1. El sistema debera proporcionar explicaciones adecuadas para las recomendaciones.",
+        "2.1. El sistema debera proporcionar explicaciones adecuadas para "
+        "las recomendaciones.",
         GUARDRAILS_D06[0],
     )
     assert _nivel(resultado, "GR-D06-PRES-EXPLICACION") == NivelCobertura.PARCIAL
@@ -91,7 +135,8 @@ def prueba_explicabilidad_con_factores_para_analista_es_explicita() -> None:
     texto = (
         "2.1. Ante una decision de rechazo, el sistema debera proporcionar "
         "una explicacion para el operador en formato de texto con los tres "
-        "factores principales considerados y usar la explicacion para la revision."
+        "factores principales considerados y usar la explicacion para la "
+        "revision."
     )
     resultado = _evaluar_texto(texto, *GUARDRAILS_D06)
     assert _nivel(resultado, "GR-D06-PRES-EXPLICACION") == NivelCobertura.EXPLICITO
@@ -107,7 +152,7 @@ def prueba_supervision_humana_generica_es_parcial() -> None:
     assert _nivel(resultado, "GR-D07-PRES-HUMANO") == NivelCobertura.PARCIAL
 
 
-def prueba_supervision_con_autoridad_condicion_procedimiento_y_registro_es_explicita() -> None:
+def prueba_supervision_completa_es_explicita() -> None:
     texto = (
         "3.1. Toda recomendacion de alto riesgo debera ser revisada por un "
         "supervisor autorizado, quien podra aprobarla, rechazarla o escalarla "
@@ -119,6 +164,116 @@ def prueba_supervision_con_autoridad_condicion_procedimiento_y_registro_es_expli
     assert _nivel(resultado, "GR-D07-CTRL-INTERVENCION") == NivelCobertura.EXPLICITO
     assert _nivel(resultado, "GR-D07-VERIF-PROCEDIMIENTO") == NivelCobertura.EXPLICITO
     assert _nivel(resultado, "GR-D07-RESP-REGISTRO") == NivelCobertura.EXPLICITO
+
+
+def prueba_ejemplo_oficial_d05_reconoce_voz_pasiva_y_limites() -> None:
+    resultado = _evaluar_texto(
+        "El usuario sera informado cuando una recomendacion sea generada "
+        "por IA y recibira una descripcion de sus limites antes de "
+        "confirmar la accion.",
+        *GUARDRAILS_D05,
+    )
+
+    for codigo in (
+        "GR-D05-PRES-IA",
+        "GR-D05-DELIM-DESTINATARIOS",
+        "GR-D05-DELIM-CONTENIDO",
+        "GR-D05-VERIF-CANAL",
+        "GR-D05-VERIF-LIMITES",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_ejemplo_oficial_d06_reconoce_decision_y_analista() -> None:
+    resultado = _evaluar_texto(
+        "Ante una decision de rechazo, el sistema debera informar al "
+        "analista los tres factores principales que influyeron en la "
+        "salida y registrar la explicacion asociada.",
+        *GUARDRAILS_D06,
+    )
+
+    for codigo in (
+        "GR-D06-PRES-EXPLICACION",
+        "GR-D06-DELIM-SALIDAS",
+        "GR-D06-DELIM-DESTINATARIOS",
+        "GR-D06-VERIF-FORMATO",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_ejemplo_oficial_d07_reconoce_singular_y_alto_riesgo() -> None:
+    resultado = _evaluar_texto(
+        "Toda recomendacion de alto riesgo debera ser revisada por un "
+        "supervisor autorizado, quien podra aprobarla, rechazarla o "
+        "escalarla, registrando motivo y decision.",
+        *GUARDRAILS_D07,
+    )
+
+    for codigo in (
+        "GR-D07-PRES-HUMANO",
+        "GR-D07-DELIM-DECISIONES",
+        "GR-D07-DELIM-ROLES",
+        "GR-D07-CTRL-INTERVENCION",
+        "GR-D07-VERIF-ACTIVACION",
+        "GR-D07-RESP-REGISTRO",
+        "GR-D07-QUAL-DECLARATIVO",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+@pytest.mark.parametrize(
+    "texto",
+    (
+        "El sistema debera registrar las decisiones en la base de datos.",
+        "El sistema mostrara los factores configurados en formato JSON.",
+        "El operador responsable revisara la calidad de los datos.",
+        "Cuando el servidor falle, se ejecutara una revision tecnica.",
+        "El sistema notificara al usuario por correo cuando cambie su contrasena.",
+    ),
+)
+def prueba_contextos_tecnicos_no_generan_evidencia_etica(texto: str) -> None:
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D05_D07)
+
+    assert all(
+        aplicacion.hallazgo is not None
+        and aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+        for aplicacion in resultado.aplicaciones
+    )
+
+
+def prueba_deteccion_no_depende_de_mayusculas_ni_acentos() -> None:
+    resultado = _evaluar_texto(
+        "TODA DECISIÓN DE ALTO RIESGO DEBERÁ SER REVISADA POR UN "
+        "SUPERVISOR AUTORIZADO.",
+        *GUARDRAILS_D07,
+    )
+
+    assert _nivel(
+        resultado,
+        "GR-D07-DELIM-DECISIONES",
+    ) == NivelCobertura.EXPLICITO
+    assert _nivel(
+        resultado,
+        "GR-D07-VERIF-ACTIVACION",
+    ) == NivelCobertura.EXPLICITO
+
+
+def prueba_integra_guardrails_d05_d07_con_calculo_de_cobertura() -> None:
+    resultado = _evaluar_texto(
+        "El usuario sera informado cuando una recomendacion sea generada "
+        "por IA. La decision debera incluir una explicacion para el analista. "
+        "Toda recomendacion de alto riesgo debera ser revisada por un "
+        "supervisor autorizado.",
+        *GUARDRAILS_D05_D07,
+    )
+
+    cobertura = calcular_cobertura_etica(resultado)
+
+    assert tuple(
+        dimension.dimension
+        for dimension in cobertura.resultados_por_dimension
+    ) == (DimensionEtica.D05, DimensionEtica.D06, DimensionEtica.D07)
+    assert cobertura.indicadores_guardrails.guardrails_aplicados == 23
 
 
 @pytest.mark.parametrize(
