@@ -80,6 +80,7 @@ class EvidenciaHallazgoResponse(BaseModel):
 
 class HallazgoResponse(BaseModel):
     hallazgo_id: UUID
+    analisis_id: UUID
     guardrail_codigo: str
     guardrail_version: int
     familia_guardrail: FamiliaGuardrail
@@ -98,12 +99,14 @@ class HallazgoResponse(BaseModel):
 
 class ResultadoDimensionResponse(BaseModel):
     dimension_codigo: DimensionEtica
+    dimension_nombre: str
     grupo_tematico: str
     nivel_consolidado: NivelCobertura
     valor_auxiliar: int
     prioridad_documental: PrioridadDocumental
     justificacion: str
     requiere_revision_humana: bool
+    motivo_revision_humana: Optional[str] = None
     brechas_principales: Tuple[str, ...]
     hallazgos_relacionados: Tuple[UUID, ...]
 
@@ -132,6 +135,10 @@ class IndicadoresGlobalesResponse(BaseModel):
     hallazgos_prioridad_media: int
     hallazgos_prioridad_baja: int
     dimensiones_prioridad_alta: Tuple[DimensionEtica, ...]
+    guardrails_aplicados: int
+    guardrails_no_aplicables: int
+    guardrails_con_error: int
+    familias_guardrail_cubiertas: Tuple[FamiliaGuardrail, ...]
     por_grupo: Tuple[IndicadoresPorGrupoResponse, ...]
 
 

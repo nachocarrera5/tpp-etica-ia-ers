@@ -102,8 +102,12 @@ from .repositorio import (
     RepositorioGuardrailsEnMemoria,
 )
 
-# Agregar Guardrails D08-D10
-GUARDRAILS_ACTIVOS: tuple = GUARDRAILS_D01_D02 + GUARDRAILS_D03_D04 + GUARDRAILS_D05_D07
+GUARDRAILS_ACTIVOS: tuple = (
+    GUARDRAILS_D01_D02
+    + GUARDRAILS_D03_D04
+    + GUARDRAILS_D05_D07
+    + GUARDRAILS_D08_D10
+)
 
 __all__ = [
     "ErrorRepositorioGuardrails",
