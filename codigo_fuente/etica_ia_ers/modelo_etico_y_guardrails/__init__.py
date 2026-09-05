@@ -102,6 +102,13 @@ from .repositorio import (
     RepositorioGuardrailsEnMemoria,
 )
 
+GUARDRAILS_ACTIVOS: tuple = (
+    GUARDRAILS_D01_D02
+    + GUARDRAILS_D03_D04
+    + GUARDRAILS_D05_D07
+    + GUARDRAILS_D08_D10
+)
+
 __all__ = [
     "ErrorRepositorioGuardrails",
     "GR_D03_CTRL_RETENCION",

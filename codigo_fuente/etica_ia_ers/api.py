@@ -1,19 +1,37 @@
 import json
 from datetime import datetime
 from functools import lru_cache
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID
 
 from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 from starlette import status
 
-from etica_ia_ers.dominio import EstadoAnalisis, FormatoDocumento
+from etica_ia_ers.dominio import (
+    DimensionEtica,
+    EstadoAnalisis,
+    FamiliaGuardrail,
+    FormatoDocumento,
+    NivelCobertura,
+    PrioridadDocumental,
+    SolicitudEvaluacionEtica,
+    TipoVinculoEvidencia,
+)
 from etica_ia_ers.entrada_documental import (
     DocumentoIlegibleError,
     DocumentoVacioError,
     FormatoNoSoportadoError,
     cargar_documento,
+)
+from etica_ia_ers.evaluacion_documental import (
+    ErrorEvaluacionEtica,
+    MotorEvaluacionEtica,
+)
+from etica_ia_ers.modelo_etico_y_guardrails import (
+    GUARDRAILS_ACTIVOS,
+    RepositorioGuardrails,
+    RepositorioGuardrailsEnMemoria,
 )
 from etica_ia_ers.persistencia_y_trazabilidad import (
     DocumentoNoEncontradoError,
@@ -24,8 +42,11 @@ from etica_ia_ers.persistencia_y_trazabilidad import (
 )
 from etica_ia_ers.procesamiento_textual_y_nlp import (
     ErrorNormalizacion,
+    ErrorProcesamientoNLP,
     NormalizadorDeTexto,
+    analizar_texto,
 )
+from etica_ia_ers.resultados_y_presentacion import obtener_resultado_documento
 
 
 class DocumentoCargaResponse(BaseModel):
@@ -45,6 +66,101 @@ class EstadoDocumentoResponse(BaseModel):
     fecha_actualizacion: datetime
 
 
+class EvidenciaHallazgoResponse(BaseModel):
+    fragmento_id: UUID
+    identificador_ers: Optional[str] = None
+    seccion_origen: Optional[str] = None
+    texto: str
+    posicion_inicio: Optional[int] = None
+    posicion_fin: Optional[int] = None
+    tipo_vinculo: TipoVinculoEvidencia
+    relevancia: Optional[float] = None
+    observacion: Optional[str] = None
+
+
+class HallazgoResponse(BaseModel):
+    hallazgo_id: UUID
+    analisis_id: UUID
+    guardrail_codigo: str
+    guardrail_version: int
+    familia_guardrail: FamiliaGuardrail
+    dimensiones_asociadas: Tuple[DimensionEtica, ...]
+    criterios_asociados: Tuple[str, ...]
+    nivel_preliminar: NivelCobertura
+    valor_auxiliar: int
+    prioridad_documental: PrioridadDocumental
+    justificacion: str
+    justificacion_prioridad: str
+    requiere_revision_humana: bool
+    motivo_revision_humana: Optional[str] = None
+    evidencias: List[EvidenciaHallazgoResponse]
+    fecha_generacion: datetime
+
+
+class ResultadoDimensionResponse(BaseModel):
+    dimension_codigo: DimensionEtica
+    dimension_nombre: str
+    grupo_tematico: str
+    nivel_consolidado: NivelCobertura
+    valor_auxiliar: int
+    prioridad_documental: PrioridadDocumental
+    justificacion: str
+    requiere_revision_humana: bool
+    motivo_revision_humana: Optional[str] = None
+    brechas_principales: Tuple[str, ...]
+    hallazgos_relacionados: Tuple[UUID, ...]
+
+
+class IndicadoresPorGrupoResponse(BaseModel):
+    grupo_tematico: str
+    dimensiones_incluidas: Tuple[DimensionEtica, ...]
+    ausentes: int
+    parciales: int
+    explicitas: int
+    prioridad_maxima: PrioridadDocumental
+    requiere_revision_humana: bool
+
+
+class IndicadoresGlobalesResponse(BaseModel):
+    total_dimensiones: int
+    dimensiones_ausentes: int
+    dimensiones_parciales: int
+    dimensiones_explicitas: int
+    porcentaje_cobertura_explicita: float
+    porcentaje_cobertura_no_ausente: float
+    total_hallazgos: int
+    hallazgos_con_revision_humana: int
+    porcentaje_revision_humana: float
+    hallazgos_prioridad_alta: int
+    hallazgos_prioridad_media: int
+    hallazgos_prioridad_baja: int
+    dimensiones_prioridad_alta: Tuple[DimensionEtica, ...]
+    guardrails_aplicados: int
+    guardrails_no_aplicables: int
+    guardrails_con_error: int
+    familias_guardrail_cubiertas: Tuple[FamiliaGuardrail, ...]
+    por_grupo: Tuple[IndicadoresPorGrupoResponse, ...]
+
+
+class MetadatosAnalisisResponse(BaseModel):
+    analisis_id: UUID
+    documento_id: UUID
+    nombre_documento: str
+    fecha_inicio: str
+    fecha_fin: str
+    estado: EstadoAnalisis
+
+
+class ResultadoAnalisisResponse(BaseModel):
+    metadatos: MetadatosAnalisisResponse
+    resumen_ejecutivo: str
+    lectura_global: str
+    indicadores: IndicadoresGlobalesResponse
+    resultados_dimension: Tuple[ResultadoDimensionResponse, ...]
+    hallazgos: Tuple[HallazgoResponse, ...]
+    advertencias: Tuple[str, ...]
+
+
 app = FastAPI(
     title="API de carga de ERS",
     version="0.1.0",
@@ -57,8 +173,12 @@ app = FastAPI(
 
 @lru_cache(maxsize=1)
 def obtener_repositorio() -> RepositorioDeDocumentos:
-    """Repositorio persistente por defecto; las pruebas pueden reemplazarlo."""
     return RepositorioEnArchivos()
+
+
+@lru_cache(maxsize=1)
+def obtener_repositorio_guardrails() -> RepositorioGuardrails:
+    return RepositorioGuardrailsEnMemoria(GUARDRAILS_ACTIVOS)
 
 
 def _parsear_metadatos(metadatos: Optional[str]) -> Dict[str, Any]:
@@ -170,6 +290,69 @@ def estado_documento(
         id=documento_id,
         estado=resumen.estado,
         fecha_actualizacion=resumen.fecha_actualizacion,
+    )
+
+
+@app.get(
+    "/documentos/{documento_id}/resultados",
+    response_model=ResultadoAnalisisResponse,
+)
+def resultados_documento(
+    documento_id: UUID,
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+    guardrails: RepositorioGuardrails = Depends(obtener_repositorio_guardrails),
+) -> ResultadoAnalisisResponse:
+    try:
+        registro = repositorio.obtener(documento_id)
+    except DocumentoNoEncontradoError as error:
+        raise HTTPException(
+            status_code = status.HTTP_404_NOT_FOUND,
+            detail = "Documento no encontrado.",
+        ) from error
+    except ErrorAlmacenamiento as error:
+        raise HTTPException(
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = "Error al consultar el documento.",
+        ) from error
+
+    try:
+        resultado_nlp = analizar_texto(registro.documento.contenido_extraido)
+    except (ErrorNormalizacion, ErrorProcesamientoNLP) as error:
+        _marcar_error(repositorio, documento_id)
+        raise HTTPException(
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = {
+                "mensaje": "No se pudo analizar el documento para evaluarlo.",
+                "documento_id": str(documento_id),
+            },
+        ) from error
+
+    solicitud = SolicitudEvaluacionEtica(
+        documento_id = documento_id,
+        resultado_nlp = resultado_nlp,
+        metadatos = registro.documento.metadatos,
+    )
+
+    try:
+        resultado_evaluacion = MotorEvaluacionEtica(guardrails).evaluar(solicitud)
+    except ErrorEvaluacionEtica as error:
+        _marcar_error(repositorio, documento_id)
+        raise HTTPException(
+            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail = {
+                "mensaje": "No se pudo evaluar el documento.",
+                "documento_id": str(documento_id),
+            },
+        ) from error
+
+    try:
+        repositorio.actualizar_estado(documento_id, EstadoAnalisis.EVALUADO)
+    except ErrorAlmacenamiento:
+        pass
+
+    return obtener_resultado_documento(
+        evaluacion = resultado_evaluacion,
+        nombre_documento = registro.documento.nombre_original,
     )
 
 
