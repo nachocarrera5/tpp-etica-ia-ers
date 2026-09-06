@@ -36,3 +36,6 @@ python_functions = ["prueba_*"]
 
 [tool.setuptools.packages.find]
 where = ["codigo_fuente"]
+
+[tool.setuptools.package-data]
+etica_ia_ers = ["interfaz_web/*"]
