@@ -118,8 +118,8 @@ def prueba_resultados_evalua_documento_y_arma_reporte_completo(entorno_api) -> N
     assert datos["metadatos"]["documento_id"] == str(documento_id)
     assert datos["metadatos"]["estado"] == EstadoAnalisis.EVALUADO.value
 
-    # Se genera un resultado para cada una de las diez dimensiones, incluso
-    # las que no tuvieron guardrails aplicados (quedan AUSENTE).
+    # Se genera una entrada para cada dimension. Las que no fueron evaluadas
+    # no se convierten artificialmente en AUSENTE.
     dimensiones = {r["dimension_codigo"] for r in datos["resultados_dimension"]}
     assert dimensiones == {f"D{n:02d}" for n in range(1, 11)}
 
@@ -127,12 +127,16 @@ def prueba_resultados_evalua_documento_y_arma_reporte_completo(entorno_api) -> N
         r for r in datos["resultados_dimension"] if r["dimension_codigo"] == "D01"
     )
     assert resultado_d01["nivel_consolidado"] == NivelCobertura.EXPLICITO.value
+    assert resultado_d01["resultado_dimension_id"] is not None
     assert len(resultado_d01["hallazgos_relacionados"]) == 1
 
     resultado_d02 = next(
         r for r in datos["resultados_dimension"] if r["dimension_codigo"] == "D02"
     )
-    assert resultado_d02["nivel_consolidado"] == NivelCobertura.AUSENTE.value
+    assert resultado_d02["nivel_consolidado"] is None
+    assert resultado_d02["resultado_dimension_id"] is None
+    assert resultado_d02["valor_auxiliar"] is None
+    assert resultado_d02["prioridad_documental"] is None
     assert resultado_d02["hallazgos_relacionados"] == []
 
     assert len(datos["hallazgos"]) == 1
@@ -148,8 +152,11 @@ def prueba_resultados_evalua_documento_y_arma_reporte_completo(entorno_api) -> N
     indicadores = datos["indicadores"]
     assert indicadores["total_dimensiones"] == 10
     assert indicadores["dimensiones_explicitas"] == 1
-    assert indicadores["dimensiones_ausentes"] == 9
+    assert indicadores["dimensiones_ausentes"] == 0
     assert indicadores["total_hallazgos"] == 1
+    assert indicadores["total_alertas"] == 0
+    assert indicadores["total_recomendaciones"] == 0
+    assert indicadores["recomendaciones_alta_prioridad"] == 0
     assert len(indicadores["por_grupo"]) == 4
     assert {grupo["grupo_tematico"] for grupo in indicadores["por_grupo"]} == {
         "Contexto y afectados",
@@ -160,6 +167,8 @@ def prueba_resultados_evalua_documento_y_arma_reporte_completo(entorno_api) -> N
 
     assert datos["lectura_global"]
     assert datos["resumen_ejecutivo"]
+    assert datos["alertas"] == []
+    assert datos["recomendaciones"] == []
     assert "no constituyen una certificacion etica" not in datos["resumen_ejecutivo"]
 
     # El endpoint deja el documento marcado como evaluado para consultas
@@ -217,6 +226,20 @@ def prueba_resultados_integra_pipeline_real_sobre_ers_de_ejemplo(
     datos = respuesta.json()
     assert len(datos["resultados_dimension"]) == 10
     assert datos["indicadores"]["total_hallazgos"] > 0
+    assert datos["indicadores"]["total_alertas"] == len(datos["alertas"])
+    assert datos["indicadores"]["total_recomendaciones"] == len(
+        datos["recomendaciones"]
+    )
+    assert len(datos["alertas"]) <= 10
+    recomendaciones = {
+        recomendacion["recomendacion_id"]: recomendacion
+        for recomendacion in datos["recomendaciones"]
+    }
+    for alerta in datos["alertas"]:
+        assert alerta["resultado_dimension_id"]
+        assert alerta["hallazgos_relacionados"]
+        assert len(alerta["recomendaciones_asociadas"]) == 1
+        assert alerta["recomendaciones_asociadas"][0] in recomendaciones
     assert datos["lectura_global"] in {
         "Cobertura documental insuficiente",
         "Cobertura documental inicial",

@@ -168,11 +168,32 @@ Cuando una dimensión contiene hallazgos mixtos, se conserva el nivel más débi
 
 Los porcentajes se calculan únicamente sobre dimensiones efectivamente evaluadas. Si el catálogo todavía no produjo hallazgos para alguna dimensión, ésta se informa en `dimensiones_no_evaluadas` y no se interpreta como `AUSENTE`. El resultado también advierte sobre guardrails con error o evaluaciones sin dimensiones cubiertas.
 
-Estos indicadores resumen cobertura documental; no constituyen un puntaje ético, una aprobación ni una certificación. El cálculo opera en memoria y no incluye persistencia, endpoints, visualización, exportación o recomendaciones.
+Estos indicadores resumen cobertura documental; no constituyen un puntaje ético, una aprobación ni una certificación. El cálculo opera en memoria y no incluye persistencia, visualización ni exportación.
 
 El catálogo actual incorpora guardrails léxicos y auditables para D01-D10: propósito y contexto, stakeholders e impacto, datos y privacidad, equidad y sesgos, transparencia, explicabilidad, supervisión humana, robustez y seguridad, accountability y auditoría, e impacto social y ambiental. Cada regla conserva las señales y fragmentos que justifican el nivel, mientras que la prioridad responde a la criticidad configurada para el guardrail y no se deriva automáticamente de `AUSENTE`, `PARCIAL` o `EXPLICITO`.
 
-La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones ni recomendaciones finales.
+La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML ni persistencia de evaluaciones, alertas o recomendaciones.
+
+## Alertas y recomendaciones
+
+La capa `recomendaciones` transforma los resultados `AUSENTE` y `PARCIAL` en una alerta por dimensión y una mejora documental sugerida. Las dimensiones `EXPLICITO` no generan alertas y las dimensiones no evaluadas se mantienen como advertencias del proceso.
+
+```python
+from etica_ia_ers.recomendaciones import generar_alertas_y_recomendaciones
+
+resultado_orientativo = generar_alertas_y_recomendaciones(
+    resultado_etico,
+    cobertura,
+)
+
+for alerta in resultado_orientativo.alertas:
+    print(alerta.dimension.value, alerta.prioridad_documental.value)
+
+for recomendacion in resultado_orientativo.recomendaciones:
+    print(recomendacion.accion_sugerida)
+```
+
+Las recomendaciones usan plantillas locales y versionadas para D01-D10. Orientan qué convendría incorporar o precisar en la ERS, conservan los hallazgos que las motivaron y siempre requieren interpretación humana; no afirman incumplimiento ni imponen una solución técnica.
 
 ## Ejemplos de ERS y prueba del pipeline NLP
 
@@ -204,6 +225,13 @@ curl -X POST "http://127.0.0.1:8000/documentos" \
 ```bash
 curl "http://127.0.0.1:8000/documentos/<documento_id>/estado"
 ```
+
+### Resultados, alertas y recomendaciones
+```bash
+curl "http://127.0.0.1:8000/documentos/<documento_id>/resultados"
+```
+
+La respuesta incluye resultados consolidados por dimensión, hallazgos, alertas, recomendaciones y los indicadores `total_alertas`, `total_recomendaciones` y `recomendaciones_alta_prioridad`.
 
 La carga devuelve el mismo UUID en `id` y `documento_id`, junto con el campo `estado`. Una respuesta exitosa queda en estado `NORMALIZADO`, con el documento, el texto normalizado y la trazabilidad persistidos en `datos/almacenamiento/`.
 
@@ -288,6 +316,7 @@ codigo_fuente/
 └── etica_ia_ers/
     ├── configuracion/
     ├── dominio/
+    │   ├── alertas_y_recomendaciones.py
     │   ├── anotacion_nlp.py
     │   ├── clasificacion_fragmento.py
     │   ├── documento.py
@@ -316,6 +345,8 @@ codigo_fuente/
     │   └── motor.py
     ├── rubrica_y_agregacion/
     ├── recomendaciones/
+    │   ├── errores.py
+    │   └── generador.py
     ├── resultados_y_presentacion/
     └── persistencia_y_trazabilidad/
         ├── errores.py
