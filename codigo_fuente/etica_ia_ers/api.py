@@ -4,7 +4,16 @@ from functools import lru_cache
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import (
+    Depends,
+    FastAPI,
+    File,
+    Form,
+    HTTPException,
+    Query,
+    Response,
+    UploadFile,
+)
 from pydantic import BaseModel, Field
 from starlette import status
 
@@ -46,7 +55,14 @@ from etica_ia_ers.procesamiento_textual_y_nlp import (
     NormalizadorDeTexto,
     analizar_texto,
 )
-from etica_ia_ers.resultados_y_presentacion import obtener_resultado_documento
+from etica_ia_ers.resultados_y_presentacion import (
+    ErrorExportacion,
+    FormatoExportacion,
+    FormatoExportacionNoSoportadoError,
+    exportar_reporte,
+    formatos_disponibles,
+    obtener_resultado_documento,
+)
 
 
 class DocumentoCargaResponse(BaseModel):
@@ -293,26 +309,27 @@ def estado_documento(
     )
 
 
-@app.get(
-    "/documentos/{documento_id}/resultados",
-    response_model=ResultadoAnalisisResponse,
-)
-def resultados_documento(
+def _generar_reporte(
     documento_id: UUID,
-    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
-    guardrails: RepositorioGuardrails = Depends(obtener_repositorio_guardrails),
-) -> ResultadoAnalisisResponse:
+    repositorio: RepositorioDeDocumentos,
+    guardrails: RepositorioGuardrails,
+) -> Dict[str, Any]:
+    """Ejecuta NLP y motor sobre la ERS almacenada y arma el reporte de resultados.
+
+    Lo comparten la consulta de resultados y la exportacion, para que el archivo
+    exportado y la respuesta JSON describan siempre el mismo analisis.
+    """
     try:
         registro = repositorio.obtener(documento_id)
     except DocumentoNoEncontradoError as error:
         raise HTTPException(
-            status_code = status.HTTP_404_NOT_FOUND,
-            detail = "Documento no encontrado.",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Documento no encontrado.",
         ) from error
     except ErrorAlmacenamiento as error:
         raise HTTPException(
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = "Error al consultar el documento.",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error al consultar el documento.",
         ) from error
 
     try:
@@ -320,17 +337,17 @@ def resultados_documento(
     except (ErrorNormalizacion, ErrorProcesamientoNLP) as error:
         _marcar_error(repositorio, documento_id)
         raise HTTPException(
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = {
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
                 "mensaje": "No se pudo analizar el documento para evaluarlo.",
                 "documento_id": str(documento_id),
             },
         ) from error
 
     solicitud = SolicitudEvaluacionEtica(
-        documento_id = documento_id,
-        resultado_nlp = resultado_nlp,
-        metadatos = registro.documento.metadatos,
+        documento_id=documento_id,
+        resultado_nlp=resultado_nlp,
+        metadatos=registro.documento.metadatos,
     )
 
     try:
@@ -338,8 +355,8 @@ def resultados_documento(
     except ErrorEvaluacionEtica as error:
         _marcar_error(repositorio, documento_id)
         raise HTTPException(
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = {
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
                 "mensaje": "No se pudo evaluar el documento.",
                 "documento_id": str(documento_id),
             },
@@ -351,8 +368,85 @@ def resultados_documento(
         pass
 
     return obtener_resultado_documento(
-        evaluacion = resultado_evaluacion,
-        nombre_documento = registro.documento.nombre_original,
+        evaluacion=resultado_evaluacion,
+        nombre_documento=registro.documento.nombre_original,
+    )
+
+
+@app.get(
+    "/documentos/{documento_id}/resultados",
+    response_model=ResultadoAnalisisResponse,
+)
+def resultados_documento(
+    documento_id: UUID,
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+    guardrails: RepositorioGuardrails = Depends(obtener_repositorio_guardrails),
+) -> Dict[str, Any]:
+    return _generar_reporte(documento_id, repositorio, guardrails)
+
+
+@app.get(
+    "/documentos/{documento_id}/reporte",
+    response_class=Response,
+    responses={
+        200: {
+            "description": (
+                "Reporte de cobertura etica documental como archivo descargable."
+            ),
+            "content": {
+                "application/json": {},
+                "text/markdown": {},
+                "text/html": {},
+            },
+        }
+    },
+)
+def exportar_reporte_documento(
+    documento_id: UUID,
+    formato: str = Query(
+        "json",
+        description=(
+            "Formato de exportacion. Valores aceptados: "
+            + ", ".join(formatos_disponibles())
+            + "."
+        ),
+    ),
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+    guardrails: RepositorioGuardrails = Depends(obtener_repositorio_guardrails),
+) -> Response:
+    # El formato se resuelve antes de evaluar: un pedido invalido no deberia
+    # costar una corrida completa de NLP y motor.
+    try:
+        formato_exportacion = FormatoExportacion.desde_texto(formato)
+    except FormatoExportacionNoSoportadoError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        ) from error
+
+    reporte = _generar_reporte(documento_id, repositorio, guardrails)
+
+    try:
+        reporte_exportado = exportar_reporte(reporte, formato_exportacion)
+    except ErrorExportacion as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "mensaje": "No se pudo exportar el reporte del documento.",
+                "documento_id": str(documento_id),
+            },
+        ) from error
+
+    # El nombre lo construye el exportador a partir de un slug ASCII, de modo
+    # que el encabezado no puede contener saltos de linea ni comillas.
+    return Response(
+        content=reporte_exportado.bytes_contenido,
+        media_type=reporte_exportado.tipo_contenido,
+        headers={
+            "Content-Disposition": (
+                f'attachment; filename="{reporte_exportado.nombre_archivo}"'
+            )
+        },
     )
 
 

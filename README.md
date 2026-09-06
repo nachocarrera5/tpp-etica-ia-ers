@@ -16,9 +16,9 @@ El proyecto sigue la arquitectura definida durante el Sprint 5:
 
 ## Alcance de esta versión
 
-El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones, condiciones, términos vagos y expresiones ambiguas. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad, e incorpora la infraestructura extensible del motor de evaluación ética.
+El prototipo permite cargar documentos ERS, extraer y normalizar su contenido textual, segmentarlo, clasificar sus fragmentos e identificar actores, acciones, condiciones, términos vagos y expresiones ambiguas. También almacena los documentos y su normalización junto con el estado del análisis y una bitácora de trazabilidad, evalúa la cobertura ética con el catálogo de guardrails D01-D10 y entrega el reporte resultante en JSON, Markdown o HTML.
 
-La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, guardrails reales D01-D10, agregación por dimensión ni exposición del motor mediante endpoints.
+La carga soporta archivos TXT con codificación UTF-8, PDF con capa de texto y DOCX. El endpoint inicial ejecuta carga, normalización y almacenamiento antes de informar el estado. Todavía no implementa OCR, carga de guardrails desde archivos de configuración, persistencia de las evaluaciones ni recomendaciones.
 
 ## Instalación para desarrollo
 
@@ -168,11 +168,38 @@ Cuando una dimensión contiene hallazgos mixtos, se conserva el nivel más débi
 
 Los porcentajes se calculan únicamente sobre dimensiones efectivamente evaluadas. Si el catálogo todavía no produjo hallazgos para alguna dimensión, ésta se informa en `dimensiones_no_evaluadas` y no se interpreta como `AUSENTE`. El resultado también advierte sobre guardrails con error o evaluaciones sin dimensiones cubiertas.
 
-Estos indicadores resumen cobertura documental; no constituyen un puntaje ético, una aprobación ni una certificación. El cálculo opera en memoria y no incluye persistencia, endpoints, visualización, exportación o recomendaciones.
+Estos indicadores resumen cobertura documental; no constituyen un puntaje ético, una aprobación ni una certificación. El cálculo opera en memoria: no persiste la evaluación ni produce recomendaciones. Su consulta y su exportación se describen más abajo.
 
 El catálogo actual incorpora guardrails léxicos y auditables para D01-D10: propósito y contexto, stakeholders e impacto, datos y privacidad, equidad y sesgos, transparencia, explicabilidad, supervisión humana, robustez y seguridad, accountability y auditoría, e impacto social y ambiental. Cada regla conserva las señales y fragmentos que justifican el nivel, mientras que la prioridad responde a la criticidad configurada para el guardrail y no se deriva automáticamente de `AUSENTE`, `PARCIAL` o `EXPLICITO`.
 
 La salida representa cobertura ética documental preliminar: no acredita cumplimiento, no certifica el sistema y no evalúa su comportamiento real. En esta etapa tampoco hay carga JSON/YAML, persistencia de evaluaciones ni recomendaciones finales.
+
+## Exportación del reporte
+
+`resultados_y_presentacion` arma el reporte revisable de una evaluación y lo entrega en tres formatos: `JSON` para intercambio con otras herramientas, `MARKDOWN` para revisión humana y versionado junto al informe, y `HTML` como documento autocontenido, sin recursos externos y listo para imprimir o guardar en PDF desde el navegador.
+
+```python
+from etica_ia_ers.resultados_y_presentacion import (
+    escribir_reporte,
+    exportar_reporte_documento,
+)
+
+reporte = exportar_reporte_documento(
+    resultado_etico,
+    nombre_documento=documento.nombre_original,
+    formato="html",
+)
+
+print(reporte.nombre_archivo)     # reporte-etico-<ers>-<analisis>.html
+print(reporte.tipo_contenido)     # text/html; charset=utf-8
+print(escribir_reporte(reporte))  # datos/salida/reporte-etico-...
+```
+
+El formato se indica con `FormatoExportacion` o con su nombre o extensión (`json`, `md`, `markdown`, `html`, `htm`), sin distinguir mayúsculas. Un formato desconocido produce `FormatoExportacionNoSoportadoError` y un reporte que no respeta el formato de resultados, `ReporteInvalidoError`.
+
+La exportación no vuelve a evaluar la ERS ni recalcula indicadores: sólo cambia la presentación del reporte ya serializado, de modo que el archivo y la respuesta del endpoint describan el mismo análisis. El nombre del archivo se deriva del nombre de la ERS y del identificador del análisis, normalizado a ASCII para que sea seguro como nombre de archivo y como encabezado HTTP. `escribir_reporte` guarda en `datos/salida/` de forma atómica y reemplaza la versión anterior del mismo análisis.
+
+Todo reporte exportado incluye el aviso de alcance: es un diagnóstico documental preliminar y un asistente de detección temprana, no una certificación ética.
 
 ## Ejemplos de ERS y prueba del pipeline NLP
 
@@ -184,6 +211,14 @@ python3 ejemplos/analizar_ers.py ruta/a/otra_ers.txt
 ```
 
 `ejemplos/HALLAZGOS-nlp.md` resume el alcance y los resultados observados. La validación automatizada equivalente está en `pruebas/prueba_nlp_ers_ejemplo.py`.
+
+`ejemplos/exportar_reporte.py` ejecuta la cadena completa (entrada, NLP, motor, rúbrica y reporte) y escribe los reportes en `datos/salida/`:
+
+```bash
+python3 ejemplos/exportar_reporte.py
+python3 ejemplos/exportar_reporte.py ruta/a/otra_ers.txt --formato md
+python3 ejemplos/exportar_reporte.py --salida /tmp/reportes
+```
 
 ## Endpoints
 
@@ -204,6 +239,18 @@ curl -X POST "http://127.0.0.1:8000/documentos" \
 ```bash
 curl "http://127.0.0.1:8000/documentos/<documento_id>/estado"
 ```
+
+### Resultados del análisis
+```bash
+curl "http://127.0.0.1:8000/documentos/<documento_id>/resultados"
+```
+
+### Exportación del reporte
+```bash
+curl -OJ "http://127.0.0.1:8000/documentos/<documento_id>/reporte?formato=html"
+```
+
+`/resultados` devuelve el reporte como JSON. `/reporte` entrega ese mismo reporte como archivo descargable: `formato` acepta `json` (por defecto), `md` y `html`, un formato desconocido responde `400` y el nombre sugerido viaja en `Content-Disposition` (`-OJ` hace que curl lo respete). Ambos evalúan la ERS almacenada y dejan el documento en estado `EVALUADO`.
 
 La carga devuelve el mismo UUID en `id` y `documento_id`, junto con el campo `estado`. Una respuesta exitosa queda en estado `NORMALIZADO`, con el documento, el texto normalizado y la trazabilidad persistidos en `datos/almacenamiento/`.
 
@@ -315,8 +362,12 @@ codigo_fuente/
     │   ├── errores.py
     │   └── motor.py
     ├── rubrica_y_agregacion/
+    │   ├── calculador.py
+    │   └── errores.py
     ├── recomendaciones/
     ├── resultados_y_presentacion/
+    │   ├── errores.py
+    │   └── exportacion.py
     └── persistencia_y_trazabilidad/
         ├── errores.py
         ├── repositorio.py
@@ -326,6 +377,7 @@ codigo_fuente/
 ejemplos/
 ├── HALLAZGOS-nlp.md
 ├── analizar_ers.py
+├── exportar_reporte.py
 └── ers/
     ├── diagnostico_medico.txt
     ├── scoring_crediticio.txt
@@ -336,9 +388,11 @@ pruebas/
 ├── prueba_cargador_documentos.py
 ├── prueba_clasificador.py
 ├── prueba_detector_ambiguedades.py
+├── prueba_exportacion_reporte.py
 ├── prueba_extractor_elementos.py
 ├── prueba_motor_evaluacion_etica.py
 ├── prueba_nlp_ers_ejemplo.py
 ├── prueba_normalizador.py
+├── prueba_resultados.py
 └── prueba_segmentador.py
 ```
