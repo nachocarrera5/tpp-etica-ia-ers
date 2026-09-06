@@ -1,12 +1,15 @@
 import json
 from datetime import datetime
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID
 
-from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import Depends, FastAPI, File, Form, HTTPException, Response, UploadFile
 from pydantic import BaseModel, Field
 from starlette import status
+from starlette.responses import FileResponse
+from starlette.staticfiles import StaticFiles
 
 from etica_ia_ers.dominio import (
     DimensionEtica,
@@ -65,6 +68,16 @@ class EstadoDocumentoResponse(BaseModel):
     id: UUID
     estado: EstadoAnalisis
     fecha_actualizacion: datetime
+
+
+class ResumenDocumentoResponse(BaseModel):
+    documento_id: UUID
+    nombre_original: str
+    formato_origen: FormatoDocumento
+    estado: EstadoAnalisis
+    fecha_carga: datetime
+    fecha_actualizacion: datetime
+    metadatos: Dict[str, Any] = Field(default_factory=dict)
 
 
 class EvidenciaHallazgoResponse(BaseModel):
@@ -199,12 +212,19 @@ class ResultadoAnalisisResponse(BaseModel):
 
 
 app = FastAPI(
-    title="API de carga de ERS",
+    title="Revisión ética temprana de ERS de IA",
     version="0.1.0",
     description=(
-        "Punto de entrada para cargar, normalizar y almacenar documentos ERS, "
-        "y consultar el estado de su analisis."
+        "Aplicación para cargar ERS, analizar su texto y revisar cobertura "
+        "ética documental preliminar."
     ),
+)
+
+_DIRECTORIO_INTERFAZ = Path(__file__).parent / "interfaz_web"
+app.mount(
+    "/recursos",
+    StaticFiles(directory=_DIRECTORIO_INTERFAZ),
+    name="recursos",
 )
 
 
@@ -216,6 +236,16 @@ def obtener_repositorio() -> RepositorioDeDocumentos:
 @lru_cache(maxsize=1)
 def obtener_repositorio_guardrails() -> RepositorioGuardrails:
     return RepositorioGuardrailsEnMemoria(GUARDRAILS_ACTIVOS)
+
+
+@app.get("/", include_in_schema=False, response_class=FileResponse)
+def interfaz_web() -> FileResponse:
+    return FileResponse(_DIRECTORIO_INTERFAZ / "index.html")
+
+
+@app.get("/salud", tags=["operación"])
+def salud() -> Dict[str, str]:
+    return {"estado": "disponible", "version": app.version}
 
 
 def _parsear_metadatos(metadatos: Optional[str]) -> Dict[str, Any]:
@@ -303,6 +333,35 @@ async def cargar_documento_endpoint(
 
 
 @app.get(
+    "/documentos",
+    response_model=List[ResumenDocumentoResponse],
+)
+def listar_documentos(
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+) -> List[ResumenDocumentoResponse]:
+    try:
+        resumenes = repositorio.listar()
+    except ErrorAlmacenamiento as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="No se pudieron listar los documentos.",
+        ) from error
+
+    return [
+        ResumenDocumentoResponse(
+            documento_id=resumen.id,
+            nombre_original=resumen.nombre_original,
+            formato_origen=resumen.formato_origen,
+            estado=resumen.estado,
+            fecha_carga=resumen.fecha_carga,
+            fecha_actualizacion=resumen.fecha_actualizacion,
+            metadatos=resumen.metadatos,
+        )
+        for resumen in reversed(resumenes)
+    ]
+
+
+@app.get(
     "/documentos/{documento_id}/estado",
     response_model=EstadoDocumentoResponse,
 )
@@ -343,13 +402,13 @@ def resultados_documento(
         registro = repositorio.obtener(documento_id)
     except DocumentoNoEncontradoError as error:
         raise HTTPException(
-            status_code = status.HTTP_404_NOT_FOUND,
-            detail = "Documento no encontrado.",
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Documento no encontrado.",
         ) from error
     except ErrorAlmacenamiento as error:
         raise HTTPException(
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = "Error al consultar el documento.",
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error al consultar el documento.",
         ) from error
 
     try:
@@ -357,17 +416,17 @@ def resultados_documento(
     except (ErrorNormalizacion, ErrorProcesamientoNLP) as error:
         _marcar_error(repositorio, documento_id)
         raise HTTPException(
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = {
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
                 "mensaje": "No se pudo analizar el documento para evaluarlo.",
                 "documento_id": str(documento_id),
             },
         ) from error
 
     solicitud = SolicitudEvaluacionEtica(
-        documento_id = documento_id,
-        resultado_nlp = resultado_nlp,
-        metadatos = registro.documento.metadatos,
+        documento_id=documento_id,
+        resultado_nlp=resultado_nlp,
+        metadatos=registro.documento.metadatos,
     )
 
     try:
@@ -375,8 +434,8 @@ def resultados_documento(
     except ErrorEvaluacionEtica as error:
         _marcar_error(repositorio, documento_id)
         raise HTTPException(
-            status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail = {
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
                 "mensaje": "No se pudo evaluar el documento.",
                 "documento_id": str(documento_id),
             },
@@ -388,9 +447,32 @@ def resultados_documento(
         pass
 
     return obtener_resultado_documento(
-        evaluacion = resultado_evaluacion,
-        nombre_documento = registro.documento.nombre_original,
+        evaluacion=resultado_evaluacion,
+        nombre_documento=registro.documento.nombre_original,
     )
+
+
+@app.delete(
+    "/documentos/{documento_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def eliminar_documento(
+    documento_id: UUID,
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+) -> Response:
+    try:
+        repositorio.eliminar(documento_id)
+    except DocumentoNoEncontradoError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Documento no encontrado.",
+        ) from error
+    except ErrorAlmacenamiento as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="No se pudo eliminar el documento.",
+        ) from error
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 def _marcar_error(
