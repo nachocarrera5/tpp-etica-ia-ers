@@ -63,6 +63,9 @@ svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width:
 .estado-servicio span { width: 7px; height: 7px; background: #60b893; border-radius: 50%; box-shadow: 0 0 0 3px rgba(96, 184, 147, .12); }
 
 .aplicacion { min-height: calc(100vh - 72px); display: grid; grid-template-columns: 278px minmax(0, 1fr); }
+body.modo-publico .aplicacion { grid-template-columns: minmax(0, 1fr); }
+body.modo-publico .panel-documentos { display: none; }
+body.modo-publico .vista-carga { margin-inline: auto; width: min(1040px, 100%); }
 .panel-documentos { min-height: calc(100vh - 72px); padding: 28px 20px 20px; display: flex; flex-direction: column; background: #e9ece8; border-right: 1px solid var(--linea); }
 .panel-cabecera { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 18px; }
 .panel-cabecera h2 { margin: 2px 0 0; font-family: var(--fuente-titulo); font-size: 24px; font-weight: 500; }
@@ -106,6 +109,7 @@ h1, h2, h3, p { letter-spacing: 0; }
 .campos-contexto label small { color: var(--tinta-suave); font-weight: 400; }
 .campos-contexto input, .campos-contexto select { width: 100%; height: 44px; padding: 0 12px; color: var(--tinta); border: 1px solid var(--linea-fuerte); border-radius: var(--radio); background: var(--superficie); }
 .acciones-carga { margin-top: 24px; display: flex; align-items: center; gap: 10px; }
+.aviso-privacidad { max-width: 690px; margin: 18px 0 0; padding-left: 12px; color: var(--tinta-suave); border-left: 2px solid var(--linea-fuerte); font-size: 11px; }
 .boton { min-height: 42px; padding: 0 17px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: var(--radio); font-size: 13px; font-weight: 700; cursor: pointer; }
 .boton:disabled { opacity: .5; cursor: wait; }
 .boton-primario { background: var(--acento); color: #fff; }

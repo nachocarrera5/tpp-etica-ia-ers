@@ -27,7 +27,7 @@
         <small>Sistemas de inteligencia artificial</small>
       </span>
     </a>
-    <div class="estado-servicio"><span></span> Procesamiento local</div>
+    <div class="estado-servicio"><span></span> <span id="texto-estado-servicio">Procesamiento local</span></div>
   </header>
 
   <div class="aplicacion">
@@ -44,7 +44,7 @@
       <div id="lista-documentos" class="lista-documentos" aria-live="polite"></div>
       <div class="panel-nota">
         <svg><use href="#i-info"></use></svg>
-        <p>Los resultados orientan la revisión documental. No constituyen certificación ni evaluación del sistema real.</p>
+        <p id="nota-modo">Los resultados orientan la revisión documental. No constituyen certificación ni evaluación del sistema real.</p>
       </div>
     </aside>
 
@@ -91,6 +91,7 @@
             </button>
             <button class="boton boton-secundario" id="usar-ejemplo" type="button">Usar ERS de demostración</button>
           </div>
+          <p id="aviso-privacidad" class="aviso-privacidad" hidden>La demo procesa el documento para responder esta consulta y no lo incorpora a un historial público. Evitá cargar información personal o confidencial.</p>
         </form>
       </section>
 

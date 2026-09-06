@@ -28,6 +28,11 @@ const estado = {
   resultado: null,
   dimensionActiva: "D01",
   documentoAEliminar: null,
+  configuracion: {
+    modo_publico: false,
+    persistencia_habilitada: true,
+    tamano_maximo_mb: 10,
+  },
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -89,6 +94,7 @@ async function solicitar(ruta, opciones = {}) {
 }
 
 async function cargarHistorial() {
+  if (estado.configuracion.modo_publico) return;
   try {
     estado.documentos = await solicitar("/documentos");
     renderizarHistorial();
@@ -119,6 +125,13 @@ function seleccionarArchivo(archivo) {
   if (!archivo) {
     $("#nombre-archivo").textContent = "Arrastrá o seleccioná una ERS";
     $("#detalle-archivo").textContent = "TXT, PDF con texto o DOCX";
+    return;
+  }
+  const limite = estado.configuracion.tamano_maximo_mb * 1024 * 1024;
+  if (archivo.size > limite) {
+    estado.archivo = null;
+    $("#archivo").value = "";
+    notificar(`El archivo supera el máximo de ${estado.configuracion.tamano_maximo_mb} MB.`);
     return;
   }
   $("#nombre-archivo").textContent = archivo.name;
@@ -158,16 +171,22 @@ async function analizarDocumento(evento) {
   formulario.append("metadatos", JSON.stringify(metadatos));
 
   try {
-    const carga = await solicitar("/documentos", { method: "POST", body: formulario });
-    estado.documentoActivo = carga.documento_id;
-    activarPaso("nlp", "Leyendo requisitos", "Segmentando el texto e identificando actores, acciones y condiciones.");
-    await pausaVisual();
-    activarPaso("evaluacion", "Aplicando el catálogo ético", "Contrastando evidencia documental con 72 guardrails D01-D10.");
-    estado.resultado = await solicitar(`/documentos/${carga.documento_id}/resultados`);
+    if (estado.configuracion.modo_publico) {
+      activarPaso("evaluacion", "Analizando la ERS", "Procesando el texto y aplicando 72 guardrails D01-D10 sin almacenar el documento.");
+      estado.resultado = await solicitar("/analisis", { method: "POST", body: formulario });
+      estado.documentoActivo = estado.resultado.metadatos.documento_id;
+    } else {
+      const carga = await solicitar("/documentos", { method: "POST", body: formulario });
+      estado.documentoActivo = carga.documento_id;
+      activarPaso("nlp", "Leyendo requisitos", "Segmentando el texto e identificando actores, acciones y condiciones.");
+      await pausaVisual();
+      activarPaso("evaluacion", "Aplicando el catálogo ético", "Contrastando evidencia documental con 72 guardrails D01-D10.");
+      estado.resultado = await solicitar(`/documentos/${carga.documento_id}/resultados`);
+    }
     activarPaso("salida", "Organizando resultados", "Preparando alertas, evidencias y recomendaciones trazables.");
     await pausaVisual(220);
     renderizarResultado();
-    await cargarHistorial();
+    if (!estado.configuracion.modo_publico) await cargarHistorial();
     mostrarVista("resultados");
   } catch (error) {
     mostrarError(error.message);
@@ -342,6 +361,23 @@ function notificar(mensaje) {
   notificar.temporizador = window.setTimeout(() => { elemento.hidden = true; }, 3200);
 }
 
+async function configurarAplicacion() {
+  try {
+    estado.configuracion = await solicitar("/configuracion-publica");
+  } catch (_) {
+    notificar("No se pudo consultar la configuración del servicio.");
+  }
+
+  if (estado.configuracion.modo_publico) {
+    document.body.classList.add("modo-publico");
+    $("#texto-estado-servicio").textContent = "Sin almacenamiento";
+    $("#aviso-privacidad").hidden = false;
+    $("#detalle-archivo").textContent = `TXT, PDF con texto o DOCX · máximo ${estado.configuracion.tamano_maximo_mb} MB`;
+  } else {
+    await cargarHistorial();
+  }
+}
+
 function prepararEliminacion(documentoId) {
   const documento = estado.documentos.find((item) => item.documento_id === documentoId);
   estado.documentoAEliminar = documentoId;
@@ -395,4 +431,4 @@ $("#vista-resultados").addEventListener("click", (evento) => {
 });
 $("#confirmar-eliminar").addEventListener("click", confirmarEliminacion);
 
-cargarHistorial();
+configurarAplicacion();
