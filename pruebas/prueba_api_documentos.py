@@ -103,6 +103,52 @@ def prueba_api_informa_documento_no_encontrado(entorno_api) -> None:
     assert respuesta.json()["detail"] == "Documento no encontrado."
 
 
+def prueba_api_sirve_interfaz_y_estado_de_salud(entorno_api) -> None:
+    cliente, _ = entorno_api
+
+    interfaz = cliente.get("/")
+    estilos = cliente.get("/recursos/estilos.css")
+    aplicacion = cliente.get("/recursos/aplicacion.js")
+    salud = cliente.get("/salud")
+
+    assert interfaz.status_code == 200
+    assert "Revisión ética de ERS" in interfaz.text
+    assert estilos.status_code == 200
+    assert "--acento" in estilos.text
+    assert aplicacion.status_code == 200
+    assert "renderizarResultado" in aplicacion.text
+    assert salud.json() == {"estado": "disponible", "version": "0.1.0"}
+
+
+def prueba_api_lista_y_elimina_documentos(entorno_api) -> None:
+    cliente, repositorio = entorno_api
+    primera = cliente.post(
+        "/documentos",
+        files={"archivo": ("primera.txt", b"Primer requisito", "text/plain")},
+    )
+    segunda = cliente.post(
+        "/documentos",
+        files={"archivo": ("segunda.txt", b"Segundo requisito", "text/plain")},
+    )
+
+    respuesta_lista = cliente.get("/documentos")
+
+    assert primera.status_code == 201
+    assert segunda.status_code == 201
+    assert respuesta_lista.status_code == 200
+    assert [item["nombre_original"] for item in respuesta_lista.json()] == [
+        "segunda.txt",
+        "primera.txt",
+    ]
+
+    documento_id = primera.json()["documento_id"]
+    respuesta_eliminacion = cliente.delete(f"/documentos/{documento_id}")
+
+    assert respuesta_eliminacion.status_code == 204
+    assert len(repositorio.listar()) == 1
+    assert cliente.delete(f"/documentos/{documento_id}").status_code == 404
+
+
 def prueba_api_conserva_documento_y_normalizacion_tras_reabrir_repositorio(
     tmp_path,
 ) -> None:

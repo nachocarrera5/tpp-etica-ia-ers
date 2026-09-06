@@ -63,6 +63,9 @@ def _reporte(**cambios: Any) -> Dict[str, Any]:
             "porcentaje_cobertura_explicita": 10.0,
             "porcentaje_cobertura_no_ausente": 20.0,
             "total_hallazgos": 2,
+            "total_alertas": 1,
+            "total_recomendaciones": 1,
+            "recomendaciones_alta_prioridad": 1,
             "hallazgos_con_revision_humana": 1,
             "porcentaje_revision_humana": 50.0,
             "hallazgos_prioridad_alta": 1,
@@ -145,6 +148,38 @@ def _reporte(**cambios: Any) -> Dict[str, Any]:
                 "fecha_generacion": "2026-09-01T10:00:02+00:00",
             }
         ],
+        "alertas": [
+            {
+                "alerta_id": str(uuid4()),
+                "analisis_id": ANALISIS_ID,
+                "documento_id": DOCUMENTO_ID,
+                "resultado_dimension_id": str(uuid4()),
+                "dimension_codigo": "D02",
+                "nivel_cobertura": "AUSENTE",
+                "prioridad_documental": "ALTA",
+                "titulo": "Cobertura documental ausente en D02",
+                "descripcion": "No se identificaron stakeholders afectados.",
+                "brechas": ["Sin analisis de impacto"],
+                "hallazgos_relacionados": [str(uuid4())],
+                "recomendaciones_asociadas": [str(uuid4())],
+                "requiere_revision_humana": True,
+                "motivo_revision_humana": "Confirmar la ausencia con el equipo.",
+            }
+        ],
+        "recomendaciones": [
+            {
+                "recomendacion_id": str(uuid4()),
+                "analisis_id": ANALISIS_ID,
+                "resultado_dimension_id": str(uuid4()),
+                "dimension_codigo": "D02",
+                "hallazgos_relacionados": [str(uuid4())],
+                "accion_sugerida": "Documentar los stakeholders y su impacto.",
+                "fundamento": "La dimension no registra evidencia documental.",
+                "prioridad_documental": "ALTA",
+                "tipo_mejora": "INCORPORAR",
+                "plantilla_version": "1.0",
+            }
+        ],
         "advertencias": ["Una dimension quedo sin guardrails aplicables."],
     }
     reporte.update(cambios)
@@ -223,6 +258,47 @@ def prueba_exportacion_html_es_un_documento_autocontenido_e_imprimible() -> None
     assert "Reporte de cobertura ética documental" in contenido
     assert AVISO_ALCANCE in contenido
     assert exportado.tipo_contenido.startswith("text/html")
+
+
+def prueba_exportacion_incluye_alertas_y_recomendaciones() -> None:
+    """El reporte de SCRUM-111 no puede perderse al pasar a Markdown ni a HTML."""
+    markdown = exportar_reporte(_reporte(), FormatoExportacion.MARKDOWN).contenido
+    html = exportar_reporte(_reporte(), FormatoExportacion.HTML).contenido
+
+    for contenido in (markdown, html):
+        assert "Alertas" in contenido
+        assert "Recomendaciones" in contenido
+        assert "Cobertura documental ausente en D02" in contenido
+        assert "No se identificaron stakeholders afectados." in contenido
+        assert "Documentar los stakeholders y su impacto." in contenido
+        assert "La dimension no registra evidencia documental." in contenido
+        assert "INCORPORAR" in contenido
+        # Indicadores incorporados junto con las alertas.
+        assert "Alertas generadas" in contenido
+        assert "Recomendaciones de prioridad alta" in contenido
+
+
+def prueba_exportacion_informa_reporte_sin_alertas_ni_recomendaciones() -> None:
+    reporte = _reporte(alertas=[], recomendaciones=[])
+
+    markdown = exportar_reporte(reporte, FormatoExportacion.MARKDOWN).contenido
+    html = exportar_reporte(reporte, FormatoExportacion.HTML).contenido
+
+    for contenido in (markdown, html):
+        assert "No se generaron alertas documentales" in contenido
+        assert "No se generaron recomendaciones documentales" in contenido
+
+
+def prueba_exportacion_tolera_un_reporte_sin_alertas_ni_recomendaciones() -> None:
+    """Un reporte previo a SCRUM-111 sigue exportando, sin esas secciones."""
+    reporte = _reporte()
+    del reporte["alertas"]
+    del reporte["recomendaciones"]
+
+    markdown = exportar_reporte(reporte, FormatoExportacion.MARKDOWN).contenido
+
+    assert "No se generaron alertas documentales" in markdown
+    assert markdown.startswith("# Reporte de cobertura ética documental")
 
 
 def prueba_exportacion_informa_reporte_sin_hallazgos() -> None:

@@ -11,9 +11,6 @@ venv/
 dist/
 build/
 *.egg-info/
-datos/entrada/*
-datos/salida/*
 datos/almacenamiento/*
-!datos/entrada/.gitkeep
-!datos/salida/.gitkeep
 !datos/almacenamiento/.gitkeep
+datos/salida/

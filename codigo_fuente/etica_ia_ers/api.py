@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from functools import lru_cache
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import UUID
 
@@ -16,6 +17,8 @@ from fastapi import (
 )
 from pydantic import BaseModel, Field
 from starlette import status
+from starlette.responses import FileResponse
+from starlette.staticfiles import StaticFiles
 
 from etica_ia_ers.dominio import (
     DimensionEtica,
@@ -25,6 +28,7 @@ from etica_ia_ers.dominio import (
     NivelCobertura,
     PrioridadDocumental,
     SolicitudEvaluacionEtica,
+    TipoMejora,
     TipoVinculoEvidencia,
 )
 from etica_ia_ers.entrada_documental import (
@@ -82,6 +86,16 @@ class EstadoDocumentoResponse(BaseModel):
     fecha_actualizacion: datetime
 
 
+class ResumenDocumentoResponse(BaseModel):
+    documento_id: UUID
+    nombre_original: str
+    formato_origen: FormatoDocumento
+    estado: EstadoAnalisis
+    fecha_carga: datetime
+    fecha_actualizacion: datetime
+    metadatos: Dict[str, Any] = Field(default_factory=dict)
+
+
 class EvidenciaHallazgoResponse(BaseModel):
     fragmento_id: UUID
     identificador_ers: Optional[str] = None
@@ -114,12 +128,13 @@ class HallazgoResponse(BaseModel):
 
 
 class ResultadoDimensionResponse(BaseModel):
+    resultado_dimension_id: Optional[UUID] = None
     dimension_codigo: DimensionEtica
     dimension_nombre: str
     grupo_tematico: str
-    nivel_consolidado: NivelCobertura
-    valor_auxiliar: int
-    prioridad_documental: PrioridadDocumental
+    nivel_consolidado: Optional[NivelCobertura] = None
+    valor_auxiliar: Optional[int] = None
+    prioridad_documental: Optional[PrioridadDocumental] = None
     justificacion: str
     requiere_revision_humana: bool
     motivo_revision_humana: Optional[str] = None
@@ -145,6 +160,9 @@ class IndicadoresGlobalesResponse(BaseModel):
     porcentaje_cobertura_explicita: float
     porcentaje_cobertura_no_ausente: float
     total_hallazgos: int
+    total_alertas: int
+    total_recomendaciones: int
+    recomendaciones_alta_prioridad: int
     hallazgos_con_revision_humana: int
     porcentaje_revision_humana: float
     hallazgos_prioridad_alta: int
@@ -167,6 +185,36 @@ class MetadatosAnalisisResponse(BaseModel):
     estado: EstadoAnalisis
 
 
+class AlertaDocumentalResponse(BaseModel):
+    alerta_id: UUID
+    analisis_id: UUID
+    documento_id: UUID
+    resultado_dimension_id: UUID
+    dimension_codigo: DimensionEtica
+    nivel_cobertura: NivelCobertura
+    prioridad_documental: PrioridadDocumental
+    titulo: str
+    descripcion: str
+    brechas: Tuple[str, ...]
+    hallazgos_relacionados: Tuple[UUID, ...]
+    recomendaciones_asociadas: Tuple[UUID, ...]
+    requiere_revision_humana: bool
+    motivo_revision_humana: Optional[str] = None
+
+
+class RecomendacionDocumentalResponse(BaseModel):
+    recomendacion_id: UUID
+    analisis_id: UUID
+    resultado_dimension_id: UUID
+    dimension_codigo: DimensionEtica
+    hallazgos_relacionados: Tuple[UUID, ...]
+    accion_sugerida: str
+    fundamento: str
+    prioridad_documental: PrioridadDocumental
+    tipo_mejora: TipoMejora
+    plantilla_version: str
+
+
 class ResultadoAnalisisResponse(BaseModel):
     metadatos: MetadatosAnalisisResponse
     resumen_ejecutivo: str
@@ -174,16 +222,25 @@ class ResultadoAnalisisResponse(BaseModel):
     indicadores: IndicadoresGlobalesResponse
     resultados_dimension: Tuple[ResultadoDimensionResponse, ...]
     hallazgos: Tuple[HallazgoResponse, ...]
+    alertas: Tuple[AlertaDocumentalResponse, ...]
+    recomendaciones: Tuple[RecomendacionDocumentalResponse, ...]
     advertencias: Tuple[str, ...]
 
 
 app = FastAPI(
-    title="API de carga de ERS",
+    title="Revisión ética temprana de ERS de IA",
     version="0.1.0",
     description=(
-        "Punto de entrada para cargar, normalizar y almacenar documentos ERS, "
-        "y consultar el estado de su analisis."
+        "Aplicación para cargar ERS, analizar su texto y revisar cobertura "
+        "ética documental preliminar."
     ),
+)
+
+_DIRECTORIO_INTERFAZ = Path(__file__).parent / "interfaz_web"
+app.mount(
+    "/recursos",
+    StaticFiles(directory=_DIRECTORIO_INTERFAZ),
+    name="recursos",
 )
 
 
@@ -195,6 +252,16 @@ def obtener_repositorio() -> RepositorioDeDocumentos:
 @lru_cache(maxsize=1)
 def obtener_repositorio_guardrails() -> RepositorioGuardrails:
     return RepositorioGuardrailsEnMemoria(GUARDRAILS_ACTIVOS)
+
+
+@app.get("/", include_in_schema=False, response_class=FileResponse)
+def interfaz_web() -> FileResponse:
+    return FileResponse(_DIRECTORIO_INTERFAZ / "index.html")
+
+
+@app.get("/salud", tags=["operación"])
+def salud() -> Dict[str, str]:
+    return {"estado": "disponible", "version": app.version}
 
 
 def _parsear_metadatos(metadatos: Optional[str]) -> Dict[str, Any]:
@@ -279,6 +346,35 @@ async def cargar_documento_endpoint(
         hash_contenido=documento.hash_contenido,
         metadatos=documento.metadatos,
     )
+
+
+@app.get(
+    "/documentos",
+    response_model=List[ResumenDocumentoResponse],
+)
+def listar_documentos(
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+) -> List[ResumenDocumentoResponse]:
+    try:
+        resumenes = repositorio.listar()
+    except ErrorAlmacenamiento as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="No se pudieron listar los documentos.",
+        ) from error
+
+    return [
+        ResumenDocumentoResponse(
+            documento_id=resumen.id,
+            nombre_original=resumen.nombre_original,
+            formato_origen=resumen.formato_origen,
+            estado=resumen.estado,
+            fecha_carga=resumen.fecha_carga,
+            fecha_actualizacion=resumen.fecha_actualizacion,
+            metadatos=resumen.metadatos,
+        )
+        for resumen in reversed(resumenes)
+    ]
 
 
 @app.get(
@@ -448,6 +544,29 @@ def exportar_reporte_documento(
             )
         },
     )
+
+
+@app.delete(
+    "/documentos/{documento_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def eliminar_documento(
+    documento_id: UUID,
+    repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
+) -> Response:
+    try:
+        repositorio.eliminar(documento_id)
+    except DocumentoNoEncontradoError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Documento no encontrado.",
+        ) from error
+    except ErrorAlmacenamiento as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="No se pudo eliminar el documento.",
+        ) from error
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 def _marcar_error(

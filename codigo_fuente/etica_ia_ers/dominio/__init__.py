@@ -1,5 +1,11 @@
 """Contratos y entidades de dominio."""
 from .anotacion_nlp import AnotacionNLP, TipoSenalNLP
+from .alertas_y_recomendaciones import (
+    AlertaDocumental,
+    RecomendacionDocumental,
+    ResultadoAlertasYRecomendaciones,
+    TipoMejora,
+)
 from .cobertura_etica import (
     GrupoTematico,
     IndicadoresGlobales,
@@ -44,6 +50,7 @@ from .fragmento import FragmentoDocumental, TipoFragmento
 
 __all__ = [
     "AccionTrazabilidad",
+    "AlertaDocumental",
     "AnotacionNLP",
     "ContextoEvaluacionEtica",
     "DecisionAplicabilidad",
@@ -69,9 +76,11 @@ __all__ = [
     "NivelCobertura",
     "PrioridadDocumental",
     "ReferenciaEvidencia",
+    "RecomendacionDocumental",
     "RegistroDocumento",
     "ResultadoAnalisisNLP",
     "ResultadoAplicacionGuardrail",
+    "ResultadoAlertasYRecomendaciones",
     "ResultadoCoberturaEtica",
     "ResultadoDimensionEtica",
     "ResultadoEvaluacionEtica",
@@ -81,6 +90,7 @@ __all__ = [
     "TipoClasificacionFragmento",
     "FragmentoDocumental",
     "TipoFragmento",
+    "TipoMejora",
     "TipoSenalNLP",
     "TipoVinculoEvidencia",
 ]

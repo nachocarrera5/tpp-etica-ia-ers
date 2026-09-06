@@ -82,6 +82,9 @@ _ETIQUETAS_INDICADOR = (
     ("porcentaje_cobertura_explicita", "Cobertura explícita (%)"),
     ("porcentaje_cobertura_no_ausente", "Cobertura no ausente (%)"),
     ("total_hallazgos", "Hallazgos registrados"),
+    ("total_alertas", "Alertas generadas"),
+    ("total_recomendaciones", "Recomendaciones generadas"),
+    ("recomendaciones_alta_prioridad", "Recomendaciones de prioridad alta"),
     ("hallazgos_con_revision_humana", "Hallazgos que requieren revisión humana"),
     ("porcentaje_revision_humana", "Hallazgos con revisión humana (%)"),
     ("hallazgos_prioridad_alta", "Hallazgos de prioridad alta"),
@@ -399,6 +402,33 @@ def _filas_dimensiones(resultados: Sequence[Mapping[str, Any]]) -> List[List[str
     ]
 
 
+def _filas_alertas(alertas: Sequence[Mapping[str, Any]]) -> List[List[str]]:
+    return [
+        [
+            _texto(alerta.get("dimension_codigo")),
+            _texto(alerta.get("titulo")),
+            _etiqueta_nivel(alerta.get("nivel_cobertura")),
+            _etiqueta_prioridad(alerta.get("prioridad_documental")),
+            _texto(bool(alerta.get("requiere_revision_humana"))),
+        ]
+        for alerta in alertas
+    ]
+
+
+def _filas_recomendaciones(
+    recomendaciones: Sequence[Mapping[str, Any]],
+) -> List[List[str]]:
+    return [
+        [
+            _texto(recomendacion.get("dimension_codigo")),
+            _texto(recomendacion.get("tipo_mejora")),
+            _etiqueta_prioridad(recomendacion.get("prioridad_documental")),
+            _texto(recomendacion.get("accion_sugerida")),
+        ]
+        for recomendacion in recomendaciones
+    ]
+
+
 def _descripcion_evidencia(evidencia: Mapping[str, Any]) -> str:
     """Ubica la evidencia dentro de la ERS para que el hallazgo sea rastreable."""
     partes: List[str] = []
@@ -442,6 +472,8 @@ def _exportar_markdown(
     indicadores = reporte.get("indicadores", {})
     resultados = reporte.get("resultados_dimension", [])
     hallazgos = reporte.get("hallazgos", [])
+    alertas = reporte.get("alertas", [])
+    recomendaciones = reporte.get("recomendaciones", [])
     advertencias = reporte.get("advertencias", [])
 
     lineas: List[str] = [
@@ -571,6 +603,68 @@ def _exportar_markdown(
             lineas.append(
                 f"  - `{_texto(evidencia.get('tipo_vinculo'))}` "
                 f"«{_texto(evidencia.get('texto'))}»{detalle}"
+            )
+
+    lineas.append("")
+    lineas.append("## Alertas")
+    if not alertas:
+        lineas.extend(
+            ["", "No se generaron alertas documentales en esta ejecución."]
+        )
+    else:
+        lineas.append("")
+        lineas.extend(
+            _tabla_markdown(
+                ("Dimensión", "Alerta", "Nivel", "Prioridad", "Revisión humana"),
+                _filas_alertas(alertas),
+            )
+        )
+        for alerta in alertas:
+            lineas.extend(
+                [
+                    "",
+                    f"### {_texto(alerta.get('dimension_codigo'))} — "
+                    f"{_texto(alerta.get('titulo'))}",
+                    "",
+                    f"- **Descripción:** {_texto(alerta.get('descripcion'))}",
+                    f"- **Brechas:** {_lista(alerta.get('brechas'))}",
+                    f"- **Revisión humana:** {_revision_humana(alerta)}",
+                    f"- **Hallazgos relacionados:** "
+                    f"{len(alerta.get('hallazgos_relacionados', []))}",
+                    f"- **Recomendaciones asociadas:** "
+                    f"{len(alerta.get('recomendaciones_asociadas', []))}",
+                ]
+            )
+
+    lineas.append("")
+    lineas.append("## Recomendaciones")
+    if not recomendaciones:
+        lineas.extend(
+            ["", "No se generaron recomendaciones documentales en esta ejecución."]
+        )
+    else:
+        lineas.append("")
+        lineas.extend(
+            _tabla_markdown(
+                ("Dimensión", "Tipo de mejora", "Prioridad", "Acción sugerida"),
+                _filas_recomendaciones(recomendaciones),
+            )
+        )
+        for recomendacion in recomendaciones:
+            lineas.extend(
+                [
+                    "",
+                    f"### {_texto(recomendacion.get('dimension_codigo'))} — "
+                    f"{_texto(recomendacion.get('tipo_mejora'))}",
+                    "",
+                    f"- **Acción sugerida:** "
+                    f"{_texto(recomendacion.get('accion_sugerida'))}",
+                    f"- **Fundamento:** {_texto(recomendacion.get('fundamento'))}",
+                    f"- **Prioridad documental:** "
+                    f"{_etiqueta_prioridad(recomendacion.get('prioridad_documental'))}",
+                    f"- **Plantilla:** "
+                    f"{_texto(recomendacion.get('plantilla_version'))}",
+                ]
             )
 
     lineas.extend(["", "## Advertencias", ""])
@@ -725,6 +819,8 @@ def _exportar_html(
     indicadores = reporte.get("indicadores", {})
     resultados = reporte.get("resultados_dimension", [])
     hallazgos = reporte.get("hallazgos", [])
+    alertas = reporte.get("alertas", [])
+    recomendaciones = reporte.get("recomendaciones", [])
     advertencias = reporte.get("advertencias", [])
     titulo = f"Reporte de cobertura ética documental — {_texto(metadatos.get('nombre_documento'))}"
 
@@ -889,6 +985,83 @@ def _exportar_html(
         else:
             partes.append('<p class="vacio">Sin evidencias asociadas.</p>')
         partes.append("</div>")
+
+    partes.append("<h2>Alertas</h2>")
+    if not alertas:
+        partes.append(
+            '<p class="vacio">No se generaron alertas documentales en esta '
+            "ejecución.</p>"
+        )
+    else:
+        filas_alertas = _filas_alertas(alertas)
+        for fila in filas_alertas:
+            fila[2] = _nivel_html(fila[2])
+            fila[3] = _prioridad_html(fila[3])
+        partes.extend(
+            [
+                '<div class="tarjeta">',
+                _tabla_html(
+                    ("Dimensión", "Alerta", "Nivel", "Prioridad", "Revisión humana"),
+                    filas_alertas,
+                    columnas_crudas=(2, 3),
+                ),
+                "</div>",
+            ]
+        )
+        for alerta in alertas:
+            partes.extend(
+                [
+                    f"<h3>{_e(alerta.get('dimension_codigo'))} — "
+                    f"{_e(alerta.get('titulo'))} "
+                    f"{_prioridad_html(alerta.get('prioridad_documental'))}</h3>",
+                    '<div class="tarjeta">',
+                    _dato_html("Descripción", _texto(alerta.get("descripcion"))),
+                    _dato_html("Brechas", _lista(alerta.get("brechas"))),
+                    _dato_html("Revisión humana", _revision_humana(alerta)),
+                    "</div>",
+                ]
+            )
+
+    partes.append("<h2>Recomendaciones</h2>")
+    if not recomendaciones:
+        partes.append(
+            '<p class="vacio">No se generaron recomendaciones documentales en '
+            "esta ejecución.</p>"
+        )
+    else:
+        filas_recomendaciones = _filas_recomendaciones(recomendaciones)
+        for fila in filas_recomendaciones:
+            fila[2] = _prioridad_html(fila[2])
+        partes.extend(
+            [
+                '<div class="tarjeta">',
+                _tabla_html(
+                    ("Dimensión", "Tipo de mejora", "Prioridad", "Acción sugerida"),
+                    filas_recomendaciones,
+                    columnas_crudas=(2,),
+                ),
+                "</div>",
+            ]
+        )
+        for recomendacion in recomendaciones:
+            partes.extend(
+                [
+                    f"<h3>{_e(recomendacion.get('dimension_codigo'))} — "
+                    f"{_e(recomendacion.get('tipo_mejora'))} "
+                    f"{_prioridad_html(recomendacion.get('prioridad_documental'))}"
+                    "</h3>",
+                    '<div class="tarjeta">',
+                    _dato_html(
+                        "Acción sugerida",
+                        _texto(recomendacion.get("accion_sugerida")),
+                    ),
+                    _dato_html("Fundamento", _texto(recomendacion.get("fundamento"))),
+                    _dato_html(
+                        "Plantilla", _texto(recomendacion.get("plantilla_version"))
+                    ),
+                    "</div>",
+                ]
+            )
 
     partes.append("<h2>Advertencias</h2>")
     if advertencias:

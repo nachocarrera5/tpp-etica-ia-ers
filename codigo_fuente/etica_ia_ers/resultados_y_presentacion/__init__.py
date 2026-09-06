@@ -5,14 +5,18 @@ from __future__ import annotations
 from typing import Any, Dict
 
 from etica_ia_ers.dominio import (
+    AlertaDocumental,
     DimensionEtica,
     GrupoTematico,
     NivelCobertura,
     PrioridadDocumental,
+    RecomendacionDocumental,
+    ResultadoAlertasYRecomendaciones,
     ResultadoCoberturaEtica,
     ResultadoDimensionEtica,
     ResultadoEvaluacionEtica,
 )
+from etica_ia_ers.recomendaciones import generar_alertas_y_recomendaciones
 from etica_ia_ers.rubrica_y_agregacion import (
     GRUPO_POR_DIMENSION,
     NOMBRES_DIMENSION,
@@ -59,12 +63,13 @@ def _resultado_dimension_no_evaluada(
 ) -> Dict[str, Any]:
 
     return {
+        "resultado_dimension_id": None,
         "dimension_codigo": dimension.value,
         "dimension_nombre": NOMBRES_DIMENSION[dimension],
         "grupo_tematico": _NOMBRES_GRUPO_TEMATICO[GRUPO_POR_DIMENSION[dimension]],
-        "nivel_consolidado": NivelCobertura.AUSENTE.value,
-        "valor_auxiliar": 0,
-        "prioridad_documental": PrioridadDocumental.MEDIA.value,
+        "nivel_consolidado": None,
+        "valor_auxiliar": None,
+        "prioridad_documental": None,
         "justificacion": (
             "El catalogo de guardrails no produjo hallazgos para esta "
             "dimension en la ejecucion actual."
@@ -119,6 +124,10 @@ def serializar_reporte_resultados(
     nombre_documento: str,
 ) -> Dict[str, Any]:
     cobertura = calcular_cobertura_etica(evaluacion)
+    resultado_recomendaciones = generar_alertas_y_recomendaciones(
+        evaluacion,
+        cobertura,
+    )
     total_hallazgos = cobertura.indicadores_globales.total_hallazgos
 
     resultados_serializados = {
@@ -146,28 +155,47 @@ def serializar_reporte_resultados(
         "lectura_global": _lectura_global(
             cobertura, len(cobertura.dimensiones_no_evaluadas), total_hallazgos
         ),
-        "indicadores": _serializar_indicadores(cobertura),
+        "indicadores": _serializar_indicadores(
+            cobertura,
+            resultado_recomendaciones,
+        ),
         "resultados_dimension": resultados_dimension,
         "hallazgos": [
             _serializar_hallazgo(hallazgo) for hallazgo in evaluacion.hallazgos
         ],
-        "advertencias": list(cobertura.advertencias),
+        "alertas": [
+            _serializar_alerta(alerta)
+            for alerta in resultado_recomendaciones.alertas
+        ],
+        "recomendaciones": [
+            _serializar_recomendacion(recomendacion)
+            for recomendacion in resultado_recomendaciones.recomendaciones
+        ],
+        "advertencias": list(resultado_recomendaciones.advertencias),
     }
 
 
-def _serializar_indicadores(cobertura: ResultadoCoberturaEtica) -> Dict[str, Any]:
+def _serializar_indicadores(
+    cobertura: ResultadoCoberturaEtica,
+    resultado_recomendaciones: ResultadoAlertasYRecomendaciones,
+) -> Dict[str, Any]:
     globales = cobertura.indicadores_globales
     guardrails = cobertura.indicadores_guardrails
     prioridad = cobertura.indicadores_prioridad
     return {
         "total_dimensiones": len(DimensionEtica),
-        "dimensiones_ausentes": globales.dimensiones_ausentes
-        + len(cobertura.dimensiones_no_evaluadas),
+        "dimensiones_ausentes": globales.dimensiones_ausentes,
         "dimensiones_parciales": globales.dimensiones_parciales,
         "dimensiones_explicitas": globales.dimensiones_explicitas,
         "porcentaje_cobertura_explicita": globales.porcentaje_cobertura_explicita,
         "porcentaje_cobertura_no_ausente": globales.porcentaje_cobertura_no_ausente,
         "total_hallazgos": globales.total_hallazgos,
+        "total_alertas": len(resultado_recomendaciones.alertas),
+        "total_recomendaciones": len(resultado_recomendaciones.recomendaciones),
+        "recomendaciones_alta_prioridad": sum(
+            recomendacion.prioridad_documental == PrioridadDocumental.ALTA
+            for recomendacion in resultado_recomendaciones.recomendaciones
+        ),
         "hallazgos_con_revision_humana": globales.hallazgos_con_revision_humana,
         "porcentaje_revision_humana": globales.porcentaje_revision_humana,
         "hallazgos_prioridad_alta": prioridad.hallazgos_prioridad_alta,
@@ -207,6 +235,7 @@ def _serializar_resultado_dimension(
     resultado: ResultadoDimensionEtica,
 ) -> Dict[str, Any]:
     return {
+        "resultado_dimension_id": str(resultado.id),
         "dimension_codigo": resultado.dimension.value,
         "dimension_nombre": resultado.nombre_dimension,
         "grupo_tematico": _NOMBRES_GRUPO_TEMATICO[resultado.grupo_tematico],
@@ -220,6 +249,50 @@ def _serializar_resultado_dimension(
         "hallazgos_relacionados": [
             str(hallazgo_id) for hallazgo_id in resultado.hallazgos_relacionados
         ],
+    }
+
+
+def _serializar_alerta(alerta: AlertaDocumental) -> Dict[str, Any]:
+    return {
+        "alerta_id": str(alerta.id),
+        "analisis_id": str(alerta.analisis_id),
+        "documento_id": str(alerta.documento_id),
+        "resultado_dimension_id": str(alerta.resultado_dimension_id),
+        "dimension_codigo": alerta.dimension.value,
+        "nivel_cobertura": alerta.nivel_cobertura.value,
+        "prioridad_documental": alerta.prioridad_documental.value,
+        "titulo": alerta.titulo,
+        "descripcion": alerta.descripcion,
+        "brechas": list(alerta.brechas),
+        "hallazgos_relacionados": [
+            str(hallazgo_id) for hallazgo_id in alerta.hallazgos_relacionados
+        ],
+        "recomendaciones_asociadas": [
+            str(recomendacion_id)
+            for recomendacion_id in alerta.recomendaciones_asociadas
+        ],
+        "requiere_revision_humana": alerta.requiere_revision_humana,
+        "motivo_revision_humana": alerta.motivo_revision_humana,
+    }
+
+
+def _serializar_recomendacion(
+    recomendacion: RecomendacionDocumental,
+) -> Dict[str, Any]:
+    return {
+        "recomendacion_id": str(recomendacion.id),
+        "analisis_id": str(recomendacion.analisis_id),
+        "resultado_dimension_id": str(recomendacion.resultado_dimension_id),
+        "dimension_codigo": recomendacion.dimension.value,
+        "hallazgos_relacionados": [
+            str(hallazgo_id)
+            for hallazgo_id in recomendacion.hallazgos_relacionados
+        ],
+        "accion_sugerida": recomendacion.accion_sugerida,
+        "fundamento": recomendacion.fundamento,
+        "prioridad_documental": recomendacion.prioridad_documental.value,
+        "tipo_mejora": recomendacion.tipo_mejora.value,
+        "plantilla_version": recomendacion.plantilla_version,
     }
 
 
