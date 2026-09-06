@@ -16,6 +16,7 @@ from etica_ia_ers.dominio import (
     NivelCobertura,
     PrioridadDocumental,
     SolicitudEvaluacionEtica,
+    TipoMejora,
     TipoVinculoEvidencia,
 )
 from etica_ia_ers.entrada_documental import (
@@ -98,12 +99,13 @@ class HallazgoResponse(BaseModel):
 
 
 class ResultadoDimensionResponse(BaseModel):
+    resultado_dimension_id: Optional[UUID] = None
     dimension_codigo: DimensionEtica
     dimension_nombre: str
     grupo_tematico: str
-    nivel_consolidado: NivelCobertura
-    valor_auxiliar: int
-    prioridad_documental: PrioridadDocumental
+    nivel_consolidado: Optional[NivelCobertura] = None
+    valor_auxiliar: Optional[int] = None
+    prioridad_documental: Optional[PrioridadDocumental] = None
     justificacion: str
     requiere_revision_humana: bool
     motivo_revision_humana: Optional[str] = None
@@ -129,6 +131,9 @@ class IndicadoresGlobalesResponse(BaseModel):
     porcentaje_cobertura_explicita: float
     porcentaje_cobertura_no_ausente: float
     total_hallazgos: int
+    total_alertas: int
+    total_recomendaciones: int
+    recomendaciones_alta_prioridad: int
     hallazgos_con_revision_humana: int
     porcentaje_revision_humana: float
     hallazgos_prioridad_alta: int
@@ -151,6 +156,36 @@ class MetadatosAnalisisResponse(BaseModel):
     estado: EstadoAnalisis
 
 
+class AlertaDocumentalResponse(BaseModel):
+    alerta_id: UUID
+    analisis_id: UUID
+    documento_id: UUID
+    resultado_dimension_id: UUID
+    dimension_codigo: DimensionEtica
+    nivel_cobertura: NivelCobertura
+    prioridad_documental: PrioridadDocumental
+    titulo: str
+    descripcion: str
+    brechas: Tuple[str, ...]
+    hallazgos_relacionados: Tuple[UUID, ...]
+    recomendaciones_asociadas: Tuple[UUID, ...]
+    requiere_revision_humana: bool
+    motivo_revision_humana: Optional[str] = None
+
+
+class RecomendacionDocumentalResponse(BaseModel):
+    recomendacion_id: UUID
+    analisis_id: UUID
+    resultado_dimension_id: UUID
+    dimension_codigo: DimensionEtica
+    hallazgos_relacionados: Tuple[UUID, ...]
+    accion_sugerida: str
+    fundamento: str
+    prioridad_documental: PrioridadDocumental
+    tipo_mejora: TipoMejora
+    plantilla_version: str
+
+
 class ResultadoAnalisisResponse(BaseModel):
     metadatos: MetadatosAnalisisResponse
     resumen_ejecutivo: str
@@ -158,6 +193,8 @@ class ResultadoAnalisisResponse(BaseModel):
     indicadores: IndicadoresGlobalesResponse
     resultados_dimension: Tuple[ResultadoDimensionResponse, ...]
     hallazgos: Tuple[HallazgoResponse, ...]
+    alertas: Tuple[AlertaDocumentalResponse, ...]
+    recomendaciones: Tuple[RecomendacionDocumentalResponse, ...]
     advertencias: Tuple[str, ...]
 
 
