@@ -28,6 +28,27 @@ Abrir [http://127.0.0.1:8000](http://127.0.0.1:8000). La pantalla permite:
 
 La documentación interactiva de la API queda disponible en [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
 
+## Demo pública
+
+El repositorio incluye un `Dockerfile` y un Blueprint `render.yaml` para desplegar la aplicación como un Web Service gratuito en Render.
+
+La configuración de Render activa `MODO_PUBLICO=true`. En ese modo:
+
+- la carga y el análisis se resuelven en una única solicitud a `POST /analisis`;
+- el documento se procesa en memoria y no se incorpora al historial;
+- se deshabilitan los endpoints persistentes de listado, estado y eliminación;
+- la interfaz informa el límite de 4 MB y oculta el panel de documentos;
+- el contenido de la ERS no debe escribirse en logs.
+
+Para comprobarlo localmente:
+
+```bash
+MODO_PUBLICO=true MAX_TAMANO_ARCHIVO_MB=4 \
+  python3 -m uvicorn etica_ia_ers.api:app --app-dir codigo_fuente
+```
+
+La demo pública continúa siendo una herramienta académica preliminar. Aunque no retenga archivos, se recomienda no cargar información personal, confidencial ni sujeta a restricciones organizacionales.
+
 ## Flujo implementado
 
 ```text
@@ -95,11 +116,15 @@ Los documentos y su texto normalizado se guardan en `datos/almacenamiento/`. Eva
 | Método | Ruta | Operación |
 | --- | --- | --- |
 | `GET` | `/salud` | Estado del servicio |
+| `GET` | `/configuracion-publica` | Modo y límites visibles de ejecución |
+| `POST` | `/analisis` | Análisis completo en memoria, sin persistencia |
 | `POST` | `/documentos` | Carga y normalización de una ERS |
 | `GET` | `/documentos` | Historial local |
 | `GET` | `/documentos/{id}/estado` | Estado del documento |
 | `GET` | `/documentos/{id}/resultados` | Evaluación, cobertura y recomendaciones |
 | `DELETE` | `/documentos/{id}` | Eliminación del registro local |
+
+Los endpoints bajo `/documentos` se encuentran disponibles solamente en modo local. La demo pública utiliza `/analisis`.
 
 Ejemplo de carga:
 

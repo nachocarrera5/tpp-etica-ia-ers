@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: revision-etica-ers
+    runtime: docker
+    plan: free
+    autoDeployTrigger: checksPass
+    healthCheckPath: /salud
+    envVars:
+      - key: MODO_PUBLICO
+        value: "true"
+      - key: MAX_TAMANO_ARCHIVO_MB
+        value: "4"

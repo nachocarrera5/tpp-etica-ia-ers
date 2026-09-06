@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
@@ -13,6 +14,7 @@ from starlette.staticfiles import StaticFiles
 
 from etica_ia_ers.dominio import (
     DimensionEtica,
+    DocumentoERS,
     EstadoAnalisis,
     FamiliaGuardrail,
     FormatoDocumento,
@@ -68,6 +70,13 @@ class EstadoDocumentoResponse(BaseModel):
     id: UUID
     estado: EstadoAnalisis
     fecha_actualizacion: datetime
+
+
+class ConfiguracionPublicaResponse(BaseModel):
+    modo_publico: bool
+    persistencia_habilitada: bool
+    tamano_maximo_mb: float
+    formatos_soportados: Tuple[FormatoDocumento, ...]
 
 
 class ResumenDocumentoResponse(BaseModel):
@@ -230,12 +239,52 @@ app.mount(
 
 @lru_cache(maxsize=1)
 def obtener_repositorio() -> RepositorioDeDocumentos:
+    _exigir_modo_local()
     return RepositorioEnArchivos()
 
 
 @lru_cache(maxsize=1)
 def obtener_repositorio_guardrails() -> RepositorioGuardrails:
     return RepositorioGuardrailsEnMemoria(GUARDRAILS_ACTIVOS)
+
+
+def es_modo_publico() -> bool:
+    return os.getenv("MODO_PUBLICO", "false").strip().lower() in {
+        "1",
+        "si",
+        "true",
+        "yes",
+    }
+
+
+def tamano_maximo_archivo_mb() -> float:
+    valor = os.getenv("MAX_TAMANO_ARCHIVO_MB", "10")
+    try:
+        return max(float(valor), 0.01)
+    except ValueError:
+        return 10.0
+
+
+def _exigir_modo_local() -> None:
+    if es_modo_publico():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="La operación no está disponible en la demo pública.",
+        )
+
+
+async def _leer_archivo(archivo: UploadFile) -> bytes:
+    limite = int(tamano_maximo_archivo_mb() * 1024 * 1024)
+    contenido = await archivo.read(limite + 1)
+    if len(contenido) > limite:
+        raise HTTPException(
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+            detail=(
+                "El archivo supera el tamaño máximo permitido de "
+                f"{tamano_maximo_archivo_mb():g} MB."
+            ),
+        )
+    return contenido
 
 
 @app.get("/", include_in_schema=False, response_class=FileResponse)
@@ -246,6 +295,21 @@ def interfaz_web() -> FileResponse:
 @app.get("/salud", tags=["operación"])
 def salud() -> Dict[str, str]:
     return {"estado": "disponible", "version": app.version}
+
+
+@app.get(
+    "/configuracion-publica",
+    response_model=ConfiguracionPublicaResponse,
+    tags=["operación"],
+)
+def configuracion_publica() -> ConfiguracionPublicaResponse:
+    modo_publico = es_modo_publico()
+    return ConfiguracionPublicaResponse(
+        modo_publico=modo_publico,
+        persistencia_habilitada=not modo_publico,
+        tamano_maximo_mb=tamano_maximo_archivo_mb(),
+        formatos_soportados=tuple(FormatoDocumento),
+    )
 
 
 def _parsear_metadatos(metadatos: Optional[str]) -> Dict[str, Any]:
@@ -276,10 +340,11 @@ async def cargar_documento_endpoint(
     metadatos: Optional[str] = Form(None),
     repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
 ) -> DocumentoCargaResponse:
+    _exigir_modo_local()
     metadatos_dict = _parsear_metadatos(metadatos)
 
     try:
-        contenido = await archivo.read()
+        contenido = await _leer_archivo(archivo)
         documento = cargar_documento(
             archivo.filename or "",
             contenido,
@@ -332,6 +397,33 @@ async def cargar_documento_endpoint(
     )
 
 
+@app.post(
+    "/analisis",
+    response_model=ResultadoAnalisisResponse,
+    tags=["análisis público"],
+)
+async def analizar_documento_endpoint(
+    archivo: UploadFile = File(...),
+    metadatos: Optional[str] = Form(None),
+    guardrails: RepositorioGuardrails = Depends(obtener_repositorio_guardrails),
+) -> ResultadoAnalisisResponse:
+    metadatos_dict = _parsear_metadatos(metadatos)
+    try:
+        contenido = await _leer_archivo(archivo)
+        documento = cargar_documento(
+            archivo.filename or "",
+            contenido,
+            metadatos_dict,
+        )
+    except (FormatoNoSoportadoError, DocumentoIlegibleError, DocumentoVacioError) as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
+        ) from error
+
+    return _analizar_y_evaluar(documento, guardrails)
+
+
 @app.get(
     "/documentos",
     response_model=List[ResumenDocumentoResponse],
@@ -339,6 +431,7 @@ async def cargar_documento_endpoint(
 def listar_documentos(
     repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
 ) -> List[ResumenDocumentoResponse]:
+    _exigir_modo_local()
     try:
         resumenes = repositorio.listar()
     except ErrorAlmacenamiento as error:
@@ -369,6 +462,7 @@ def estado_documento(
     documento_id: UUID,
     repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
 ) -> EstadoDocumentoResponse:
+    _exigir_modo_local()
     try:
         resumen = repositorio.obtener(documento_id).resumen
     except DocumentoNoEncontradoError as error:
@@ -398,6 +492,7 @@ def resultados_documento(
     repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
     guardrails: RepositorioGuardrails = Depends(obtener_repositorio_guardrails),
 ) -> ResultadoAnalisisResponse:
+    _exigir_modo_local()
     try:
         registro = repositorio.obtener(documento_id)
     except DocumentoNoEncontradoError as error:
@@ -412,44 +507,17 @@ def resultados_documento(
         ) from error
 
     try:
-        resultado_nlp = analizar_texto(registro.documento.contenido_extraido)
-    except (ErrorNormalizacion, ErrorProcesamientoNLP) as error:
+        resultado = _analizar_y_evaluar(registro.documento, guardrails)
+    except HTTPException:
         _marcar_error(repositorio, documento_id)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "mensaje": "No se pudo analizar el documento para evaluarlo.",
-                "documento_id": str(documento_id),
-            },
-        ) from error
-
-    solicitud = SolicitudEvaluacionEtica(
-        documento_id=documento_id,
-        resultado_nlp=resultado_nlp,
-        metadatos=registro.documento.metadatos,
-    )
-
-    try:
-        resultado_evaluacion = MotorEvaluacionEtica(guardrails).evaluar(solicitud)
-    except ErrorEvaluacionEtica as error:
-        _marcar_error(repositorio, documento_id)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail={
-                "mensaje": "No se pudo evaluar el documento.",
-                "documento_id": str(documento_id),
-            },
-        ) from error
+        raise
 
     try:
         repositorio.actualizar_estado(documento_id, EstadoAnalisis.EVALUADO)
     except ErrorAlmacenamiento:
         pass
 
-    return obtener_resultado_documento(
-        evaluacion=resultado_evaluacion,
-        nombre_documento=registro.documento.nombre_original,
-    )
+    return resultado
 
 
 @app.delete(
@@ -460,6 +528,7 @@ def eliminar_documento(
     documento_id: UUID,
     repositorio: RepositorioDeDocumentos = Depends(obtener_repositorio),
 ) -> Response:
+    _exigir_modo_local()
     try:
         repositorio.eliminar(documento_id)
     except DocumentoNoEncontradoError as error:
@@ -473,6 +542,43 @@ def eliminar_documento(
             detail="No se pudo eliminar el documento.",
         ) from error
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+def _analizar_y_evaluar(
+    documento: DocumentoERS,
+    guardrails: RepositorioGuardrails,
+) -> ResultadoAnalisisResponse:
+    try:
+        resultado_nlp = analizar_texto(documento.contenido_extraido)
+    except (ErrorNormalizacion, ErrorProcesamientoNLP) as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "mensaje": "No se pudo analizar el documento para evaluarlo.",
+                "documento_id": str(documento.id),
+            },
+        ) from error
+
+    solicitud = SolicitudEvaluacionEtica(
+        documento_id=documento.id,
+        resultado_nlp=resultado_nlp,
+        metadatos=documento.metadatos,
+    )
+    try:
+        resultado_evaluacion = MotorEvaluacionEtica(guardrails).evaluar(solicitud)
+    except ErrorEvaluacionEtica as error:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "mensaje": "No se pudo evaluar el documento.",
+                "documento_id": str(documento.id),
+            },
+        ) from error
+
+    return obtener_resultado_documento(
+        evaluacion=resultado_evaluacion,
+        nombre_documento=documento.nombre_original,
+    )
 
 
 def _marcar_error(
