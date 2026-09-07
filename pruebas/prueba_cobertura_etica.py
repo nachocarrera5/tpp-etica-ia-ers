@@ -118,7 +118,7 @@ def _resultado(*aplicaciones, analisis_id=None, advertencias=()):
     )
 
 
-def prueba_consolida_por_nivel_mas_debil_y_prioridad_maxima() -> None:
+def prueba_consolida_cobertura_incompleta_y_prioridad_maxima() -> None:
     analisis_id = uuid4()
     explicito = _hallazgo(
         "GR-EXP",
@@ -152,7 +152,51 @@ def prueba_consolida_por_nivel_mas_debil_y_prioridad_maxima() -> None:
     assert dimension.motivo_revision_humana == "Requiere interpretacion experta."
     assert dimension.hallazgos_relacionados == (explicito.id, parcial.id)
     assert dimension.brechas_principales == ("Falta delimitar el alcance.",)
-    assert "nivel mas debil" in dimension.justificacion
+    assert "combina evidencia con brechas" in dimension.justificacion
+
+
+def prueba_dimension_con_evidencia_y_ausencias_es_parcial() -> None:
+    analisis_id = uuid4()
+    explicito = _hallazgo(
+        "GR-EXP",
+        (DimensionEtica.D01,),
+        NivelCobertura.EXPLICITO,
+        analisis_id=analisis_id,
+    )
+    ausente = _hallazgo(
+        "GR-AUS",
+        (DimensionEtica.D01,),
+        NivelCobertura.AUSENTE,
+        analisis_id=analisis_id,
+    )
+
+    cobertura = calcular_cobertura_etica(
+        _resultado(
+            _aplicacion(explicito),
+            _aplicacion(ausente),
+            analisis_id=analisis_id,
+        )
+    )
+
+    assert (
+        cobertura.resultados_por_dimension[0].nivel_consolidado
+        == NivelCobertura.PARCIAL
+    )
+
+
+def prueba_dimension_sin_evidencia_es_ausente() -> None:
+    ausente = _hallazgo(
+        "GR-AUS",
+        (DimensionEtica.D01,),
+        NivelCobertura.AUSENTE,
+    )
+
+    cobertura = calcular_cobertura_etica(_resultado(_aplicacion(ausente)))
+
+    assert (
+        cobertura.resultados_por_dimension[0].nivel_consolidado
+        == NivelCobertura.AUSENTE
+    )
 
 
 def prueba_hallazgo_multidimensional_conserva_orden_y_porcentajes() -> None:

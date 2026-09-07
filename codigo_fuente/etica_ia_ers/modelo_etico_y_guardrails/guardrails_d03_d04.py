@@ -46,6 +46,11 @@ GR_D03_PRES_DATOS = GuardrailLexico(
             r"historias\s+clinicas)(?:\s+(?:autorizad[oa]s|oficiales|"
             r"internas|institucionales))?",
         ),
+        senal(
+            "datos_clinicos_del_paciente",
+            r"(?:datos\s+(?:del|de\s+los)\s+pacientes?|"
+            r"imagenes?\s+clinicas?|historias?\s+clinicas?)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_datos_usuario", r"datos\s+(?:del|de\s+los)\s+usuarios?"),
@@ -93,6 +98,11 @@ GR_D03_DELIM_FINALIDAD = GuardrailLexico(
             r"(?:para|con\s+el\s+fin\s+de|con\s+la\s+finalidad\s+de)\s+"
             r"(?:entrenar|validar|calcular|generar|predecir|clasificar|"
             r"recomendar|detectar|evaluar|priorizar)",
+        ),
+        senal(
+            "imagen_clinica_vinculada_a_diagnostico",
+            r"imagenes?\s+clinicas?.{0,100}diagnostico|"
+            r"diagnostico.{0,100}imagenes?\s+clinicas?",
         ),
     ),
     senales_parciales=(
@@ -196,6 +206,12 @@ GR_D03_RESP_ACCESO = GuardrailLexico(
         senal("mencion_acceso", r"acceso\s+a\s+(?:los\s+)?datos"),
         senal("mencion_seguridad_generica", r"datos\s+(?:estaran\s+)?seguros?"),
         senal("mencion_proteccion_generica", r"datos\s+(?:estaran\s+)?protegidos?"),
+        senal(
+            "proteccion_de_datos_mediante_cifrado",
+            r"(?:proteger|proteccion|confidencialidad).{0,70}"
+            r"datos.{0,70}cifrad\w*|datos.{0,70}"
+            r"(?:confidencialidad|cifrad\w*)",
+        ),
     ),
 )
 
@@ -236,6 +252,11 @@ GR_D03_CTRL_RETENCION = GuardrailLexico(
         senal("mencion_retencion", r"retenci[oó]n\s+de\s+datos"),
         senal("mencion_eliminacion", r"eliminaci[oó]n\s+de\s+datos"),
         senal("mencion_anonimizacion", r"anonimizaci[oó]n"),
+        senal(
+            "conservacion_sujeta_a_normativa",
+            r"(?:datos|resultados?|informacion).{0,45}"
+            r"(?:conservaran|retendran|almacenaran).{0,80}normativa",
+        ),
     ),
 )
 
@@ -275,6 +296,10 @@ GR_D03_QUAL_PRIVACIDAD = GuardrailLexico(
     senales_parciales=(
         senal("mencion_consentimiento", r"consentimiento"),
         senal("mencion_privacidad_generica", r"privacidad\s+de\s+los?\s+datos"),
+        senal(
+            "mencion_confidencialidad_datos",
+            r"confidencialidad.{0,50}datos|datos.{0,50}confidencialidad",
+        ),
     ),
 )
 

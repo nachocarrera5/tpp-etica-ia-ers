@@ -333,7 +333,9 @@ GR_D06_PRES_EXPLICACION = _crear_guardrail(
             r"\w*.{0,50}(?:explicaci[oó]n|justificaci[oó]n)|"
             r"(?:informar|proporcionar|mostrar)\w*.{0,80}"
             r"(?:explicaci[oó]n|factores?\s+principales|razones?\s+"
-            r"principales)",
+            r"principales)|(?:generar|emitir)\w*.{0,60}(?:informe|reporte)"
+            r".{0,100}explicaci[oó]n.{0,45}(?:diagnostico|resultado|"
+            r"decision|recomendacion)",
         ),
     ),
     (
@@ -368,7 +370,9 @@ GR_D06_DELIM_SALIDAS = _crear_guardrail(
             r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
             r"resultados?).{0,180}(?:informar|proporcionar|mostrar)\w*"
             r".{0,80}(?:explicaci[oó]n|factores?\s+principales|"
-            r"razones?\s+principales)",
+            r"razones?\s+principales)|(?:informe|reporte).{0,100}"
+            r"explicaci[oó]n.{0,45}(?:diagnostico|resultado|decision|"
+            r"recomendacion)",
         ),
     ),
     (
@@ -441,7 +445,8 @@ GR_D06_VERIF_FORMATO = _crear_guardrail(
             r"(?:explicaci[oó]n|justificaci[oó]n).{0,60}"
             r"(?:factores?|razones?|criterios?|formato|detalle)|"
             r"(?:factores?|razones?|criterios?|formato|detalle).{0,60}"
-            r"(?:explicaci[oó]n|justificaci[oó]n)",
+            r"(?:explicaci[oó]n|justificaci[oó]n)|(?:informe|reporte)"
+            r".{0,80}explicaci[oó]n",
         ),
     ),
 )
@@ -585,7 +590,9 @@ GR_D07_PRES_HUMANO = _crear_guardrail(
         (
             "supervision_humana",
             r"supervisi[oó]n\s+humana|intervenci[oó]n\s+humana|"
-            r"supervisor\w*\s+autorizad[oa]",
+            r"supervisor\w*\s+autorizad[oa]|(?:profesional|medico|"
+            r"especialista).{0,60}(?:revise|revisar|valide|validar)"
+            r".{0,35}(?:confirme|confirmar|resultado|diagnostico)",
         ),
     ),
     (
@@ -615,7 +622,9 @@ GR_D07_DELIM_DECISIONES = _crear_guardrail(
             r"(?:deber[aá]n?|ser[aá]n?|requieren?)\s+(?:ser\s+)?"
             r"(?:revisad|supervisad)\w*|(?:revisar|supervisar)\w*.{0,80}"
             r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
-            r"resultados?)",
+            r"resultados?|diagnosticos?)|(?:profesional|medico|"
+            r"especialista).{0,60}(?:revise|revisar|valide|validar)"
+            r".{0,45}(?:resultado|diagnostico)",
         ),
     ),
     (
@@ -643,6 +652,8 @@ GR_D07_DELIM_ROLES = _crear_guardrail(
             "rol_supervisor",
             r"supervisor\w*\s+(?:autorizad[oa]|responsable)|"
             r"personal\s+autorizado.{0,50}(?:revisar|intervenir|supervisar)|"
+            r"(?:profesional|medico|especialista).{0,60}"
+            r"(?:revise|revisar|valide|validar|confirme|confirmar)|"
             r"(?:responsable|rol|equipo).{0,50}(?:revisi[oó]n\s+humana|"
             r"supervisi[oó]n|intervenci[oó]n)",
         ),
@@ -671,10 +682,12 @@ GR_D07_CTRL_INTERVENCION = _crear_guardrail(
     (
         (
             "autoridad_intervencion",
-            r"(?:supervisor|revisor|persona|personal|humano|responsable)"
+            r"(?:supervisor|revisor|persona|personal|humano|responsable|"
+            r"profesional|medico|especialista)"
             r".{0,100}(?:aprobar|rechazar|corregir|pausar|detener|escalar)"
             r"\w*.{0,35}(?:aprobar|rechazar|corregir|pausar|detener|"
-            r"escalar)\w*",
+            r"escalar)\w*|(?:profesional|medico|especialista).{0,60}"
+            r"(?:revisar|revise).{0,25}(?:confirmar|confirme|validar|valide)",
         ),
     ),
     (
@@ -708,7 +721,9 @@ GR_D07_VERIF_ACTIVACION = _crear_guardrail(
             r"resultados?).{0,70}"
             r"(?:alto\s+riesgo|incertidumbre|conflicto|excepci[oó]n)"
             r".{0,80}(?:deber[aá]|requiere|ser[aá]).{0,25}"
-            r"(?:revisad|supervisad|escalad)\w*",
+            r"(?:revisad|supervisad|escalad)\w*|no\s+deber[aá].{0,80}"
+            r"sin\s+(?:la\s+)?validaci[oó]n\s+de\s+(?:un\s+)?"
+            r"(?:profesional|medico|especialista)",
         ),
     ),
     (
@@ -791,7 +806,9 @@ GR_D07_QUAL_DECLARATIVO = _crear_guardrail(
             r"documentada)|(?:decisi[oó]n(?:es)?|"
             r"recomendaci[oó]n(?:es)?|salidas?)"
             r".{0,80}(?:deber[aá]n?|requieren?)\s+ser\s+revisad\w*"
-            r".{0,80}supervisor\w*\s+autorizad[oa]",
+            r".{0,80}supervisor\w*\s+autorizad[oa]|no\s+deber[aá]"
+            r".{0,80}sin\s+(?:la\s+)?validaci[oó]n\s+de\s+(?:un\s+)?"
+            r"(?:profesional|medico|especialista)",
         ),
     ),
     (

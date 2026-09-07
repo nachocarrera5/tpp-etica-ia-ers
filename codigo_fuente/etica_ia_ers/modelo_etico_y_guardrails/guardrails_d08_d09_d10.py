@@ -88,7 +88,8 @@ GR_D08_PRES_ROBUSTEZ = _crear_guardrail(
             "robustez_declarativa",
             r"(?:sistema|modelo).{0,50}(?:robust[oa]|segur[oa]|fiable|"
             r"confiable)|(?:robustez|fiabilidad|seguridad)\s+del\s+"
-            r"(?:sistema|modelo)",
+            r"(?:sistema|modelo)|(?:proteger|proteccion|confidencialidad)"
+            r".{0,70}datos.{0,70}cifrad\w*",
         ),
     ),
     PrioridadDocumental.ALTA,

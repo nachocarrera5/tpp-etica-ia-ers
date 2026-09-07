@@ -245,3 +245,59 @@ def prueba_resultados_integra_pipeline_real_sobre_ers_de_ejemplo(
         "Cobertura documental inicial",
         "Cobertura documental desarrollada",
     }
+
+
+def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
+    repositorio = RepositorioEnMemoria()
+    app.dependency_overrides[obtener_repositorio] = lambda: repositorio
+    try:
+        with TestClient(app) as cliente:
+            contenido = (DIRECTORIO_ERS / "diagnostico_medico.txt").read_bytes()
+            documento_id = _cargar_documento(cliente, contenido)
+            respuesta = cliente.get(f"/documentos/{documento_id}/resultados")
+    finally:
+        app.dependency_overrides.clear()
+
+    assert respuesta.status_code == 200
+    datos = respuesta.json()
+    niveles = {
+        resultado["dimension_codigo"]: resultado["nivel_consolidado"]
+        for resultado in datos["resultados_dimension"]
+    }
+    assert niveles == {
+        "D01": "PARCIAL",
+        "D02": "PARCIAL",
+        "D03": "PARCIAL",
+        "D04": "AUSENTE",
+        "D05": "AUSENTE",
+        "D06": "PARCIAL",
+        "D07": "PARCIAL",
+        "D08": "PARCIAL",
+        "D09": "AUSENTE",
+        "D10": "AUSENTE",
+    }
+
+    hallazgos_con_evidencia = {
+        hallazgo["guardrail_codigo"]: hallazgo
+        for hallazgo in datos["hallazgos"]
+        if hallazgo["nivel_preliminar"] != "AUSENTE"
+    }
+    for codigo in (
+        "GR-D01-DELIM-USOS",
+        "GR-D01-VERIF-LIMITACIONES",
+        "GR-D02-PRES-ACTORES",
+        "GR-D03-PRES-DATOS",
+        "GR-D03-RESP-ACCESO",
+        "GR-D03-CTRL-RETENCION",
+        "GR-D06-PRES-EXPLICACION",
+        "GR-D07-PRES-HUMANO",
+        "GR-D07-DELIM-ROLES",
+        "GR-D07-CTRL-INTERVENCION",
+        "GR-D08-VERIF-METRICAS",
+    ):
+        assert codigo in hallazgos_con_evidencia
+        assert hallazgos_con_evidencia[codigo]["evidencias"]
+
+    assert datos["indicadores"]["dimensiones_parciales"] == 6
+    assert datos["indicadores"]["dimensiones_ausentes"] == 4
+    assert datos["indicadores"]["porcentaje_cobertura_no_ausente"] == 60.0
