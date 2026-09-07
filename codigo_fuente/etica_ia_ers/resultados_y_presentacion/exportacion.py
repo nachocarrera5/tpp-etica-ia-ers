@@ -774,14 +774,28 @@ def _etiqueta_html(texto: str, clase: str) -> str:
     return f'<span class="etiqueta {clase}">{html.escape(texto, quote=False)}</span>'
 
 
+def _clave_de_etiqueta(valor: Any, etiquetas: Mapping[str, str]) -> str:
+    texto = str(_valor_plano(valor)).casefold()
+    for clave, etiqueta in etiquetas.items():
+        if texto in {clave.casefold(), etiqueta.casefold()}:
+            return clave
+    return str(_valor_plano(valor))
+
+
 def _nivel_html(valor: Any) -> str:
-    clase = _CLASES_NIVEL.get(str(_valor_plano(valor)), "")
-    return _etiqueta_html(_etiqueta_nivel(valor), clase)
+    clave = _clave_de_etiqueta(valor, _ETIQUETAS_NIVEL)
+    return _etiqueta_html(
+        _ETIQUETAS_NIVEL.get(clave, _texto(valor)),
+        _CLASES_NIVEL.get(clave, ""),
+    )
 
 
 def _prioridad_html(valor: Any) -> str:
-    clase = _CLASES_PRIORIDAD.get(str(_valor_plano(valor)), "")
-    return _etiqueta_html(_etiqueta_prioridad(valor), clase)
+    clave = _clave_de_etiqueta(valor, _ETIQUETAS_PRIORIDAD)
+    return _etiqueta_html(
+        _ETIQUETAS_PRIORIDAD.get(clave, _texto(valor)),
+        _CLASES_PRIORIDAD.get(clave, ""),
+    )
 
 
 def _tabla_html(

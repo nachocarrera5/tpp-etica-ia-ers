@@ -113,11 +113,91 @@ def prueba_api_sirve_interfaz_y_estado_de_salud(entorno_api) -> None:
 
     assert interfaz.status_code == 200
     assert "Revisión ética de ERS" in interfaz.text
+    assert 'id="descargar-reporte"' in interfaz.text
+    assert 'id="formato-exportacion"' in interfaz.text
     assert estilos.status_code == 200
     assert "--acento" in estilos.text
     assert aplicacion.status_code == 200
     assert "renderizarResultado" in aplicacion.text
+    assert "descargarReporte" in aplicacion.text
     assert salud.json() == {"estado": "disponible", "version": "0.1.0"}
+
+
+def prueba_api_analiza_sin_persistir_documento(entorno_api) -> None:
+    cliente, repositorio = entorno_api
+
+    respuesta = cliente.post(
+        "/analisis",
+        files={
+            "archivo": (
+                "ers-publica.txt",
+                b"El sistema permitira al operador revisar cada decision.",
+                "text/plain",
+            )
+        },
+        data={"metadatos": json.dumps({"dominio": "otro"})},
+    )
+
+    assert respuesta.status_code == 200
+    resultado = respuesta.json()
+    assert resultado["metadatos"]["nombre_documento"] == "ers-publica.txt"
+    assert len(resultado["resultados_dimension"]) == 10
+    assert resultado["indicadores"]["guardrails_aplicados"] == 72
+    assert repositorio.listar() == []
+
+
+def prueba_api_modo_publico_oculta_operaciones_persistentes(
+    entorno_api,
+    monkeypatch,
+) -> None:
+    cliente, _ = entorno_api
+    monkeypatch.setenv("MODO_PUBLICO", "true")
+    configuracion = cliente.get("/configuracion-publica")
+
+    assert configuracion.status_code == 200
+    assert configuracion.json()["modo_publico"] is True
+    assert configuracion.json()["persistencia_habilitada"] is False
+    assert cliente.get("/documentos").status_code == 404
+    assert cliente.post(
+        "/documentos",
+        files={"archivo": ("ers.txt", b"Un requisito", "text/plain")},
+    ).status_code == 404
+
+
+def prueba_api_modo_publico_no_inicializa_almacenamiento(monkeypatch) -> None:
+    monkeypatch.setenv("MODO_PUBLICO", "true")
+    obtener_repositorio.cache_clear()
+
+    def fallar_si_se_inicializa():
+        raise AssertionError("No debe inicializarse almacenamiento en modo público")
+
+    monkeypatch.setattr(
+        "etica_ia_ers.api.RepositorioEnArchivos",
+        fallar_si_se_inicializa,
+    )
+    try:
+        with TestClient(app) as cliente:
+            respuesta = cliente.get("/documentos")
+    finally:
+        obtener_repositorio.cache_clear()
+
+    assert respuesta.status_code == 404
+
+
+def prueba_api_rechaza_archivo_que_supera_el_limite(
+    entorno_api,
+    monkeypatch,
+) -> None:
+    cliente, _ = entorno_api
+    monkeypatch.setenv("MAX_TAMANO_ARCHIVO_MB", "0.01")
+
+    respuesta = cliente.post(
+        "/analisis",
+        files={"archivo": ("ers.txt", b"a" * 11_000, "text/plain")},
+    )
+
+    assert respuesta.status_code == 413
+    assert "0.01 MB" in respuesta.json()["detail"]
 
 
 def prueba_api_lista_y_elimina_documentos(entorno_api) -> None:

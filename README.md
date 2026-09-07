@@ -23,10 +23,33 @@ Abrir [http://127.0.0.1:8000](http://127.0.0.1:8000). La pantalla permite:
 - ejecutar el análisis completo desde el navegador;
 - consultar cobertura e indicadores de D01 a D10;
 - recorrer brechas, evidencia, hallazgos y recomendaciones;
+- descargar el resultado en JSON, Markdown o HTML;
 - reabrir o eliminar documentos del historial local;
 - preparar una ERS sintética de demostración sin buscar un archivo externo.
 
 La documentación interactiva de la API queda disponible en [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs).
+
+## Demo pública
+
+El repositorio incluye un `Dockerfile` y un Blueprint `render.yaml` para desplegar la aplicación como un Web Service gratuito en Render.
+
+La configuración de Render activa `MODO_PUBLICO=true`. En ese modo:
+
+- la carga y el análisis se resuelven en una única solicitud a `POST /analisis`;
+- la exportación usa `POST /reporte` sobre el resultado ya calculado;
+- el documento se procesa en memoria y no se incorpora al historial;
+- se deshabilitan los endpoints persistentes de listado, estado y eliminación;
+- la interfaz informa el límite de 4 MB y oculta el panel de documentos;
+- el contenido de la ERS no debe escribirse en logs.
+
+Para comprobarlo localmente:
+
+```bash
+MODO_PUBLICO=true MAX_TAMANO_ARCHIVO_MB=4 \
+  python3 -m uvicorn etica_ia_ers.api:app --app-dir codigo_fuente
+```
+
+La demo pública continúa siendo una herramienta académica preliminar. Aunque no retenga archivos, se recomienda no cargar información personal, confidencial ni sujeta a restricciones organizacionales.
 
 ## Flujo implementado
 
@@ -53,6 +76,9 @@ Alertas y recomendaciones documentales
        │
        ▼
 API + interfaz web de revisión
+       │
+       ▼
+Exportación JSON / Markdown / HTML
 ```
 
 | Dimensión | Tema |
@@ -84,7 +110,7 @@ El reporte puede descargarse en tres formatos: `JSON` para intercambio con otras
 curl -OJ "http://127.0.0.1:8000/documentos/<id>/reporte?formato=html"
 ```
 
-El parámetro `formato` acepta `json` (por defecto), `md` y `html`; un valor desconocido responde `400` con la lista de formatos válidos. La exportación no reevalúa la ERS ni recalcula indicadores: presenta el mismo reporte que devuelve `/resultados`, y los tres formatos incluyen el aviso de alcance.
+El parámetro `formato` acepta `json` (por defecto), `md` y `html`; un valor desconocido responde `400` con la lista de formatos válidos. La interfaz envía el resultado ya calculado a `POST /reporte`, disponible también en modo público. La exportación no reevalúa la ERS ni recalcula indicadores, y los tres formatos incluyen el aviso de alcance.
 
 ## Alcance y límites
 
@@ -104,12 +130,17 @@ Los documentos y su texto normalizado se guardan en `datos/almacenamiento/`. Eva
 | Método | Ruta | Operación |
 | --- | --- | --- |
 | `GET` | `/salud` | Estado del servicio |
+| `GET` | `/configuracion-publica` | Modo y límites visibles de ejecución |
+| `POST` | `/analisis` | Análisis completo en memoria, sin persistencia |
+| `POST` | `/reporte` | Exportación de un resultado ya calculado, sin persistencia |
 | `POST` | `/documentos` | Carga y normalización de una ERS |
 | `GET` | `/documentos` | Historial local |
 | `GET` | `/documentos/{id}/estado` | Estado del documento |
 | `GET` | `/documentos/{id}/resultados` | Evaluación, cobertura y recomendaciones |
 | `GET` | `/documentos/{id}/reporte` | Exportación del reporte en JSON, Markdown o HTML |
 | `DELETE` | `/documentos/{id}` | Eliminación del registro local |
+
+Los endpoints bajo `/documentos` se encuentran disponibles solamente en modo local. La demo pública utiliza `/analisis`.
 
 Ejemplo de carga:
 

@@ -277,6 +277,9 @@ def prueba_exportacion_incluye_alertas_y_recomendaciones() -> None:
         assert "Alertas generadas" in contenido
         assert "Recomendaciones de prioridad alta" in contenido
 
+    assert '<span class="etiqueta nivel-ausente">Ausente</span>' in html
+    assert '<span class="etiqueta prioridad-alta">Alta</span>' in html
+
 
 def prueba_exportacion_informa_reporte_sin_alertas_ni_recomendaciones() -> None:
     reporte = _reporte(alertas=[], recomendaciones=[])
@@ -590,3 +593,57 @@ def prueba_api_exporta_el_mismo_reporte_que_devuelve_resultados(entorno_api) -> 
         r["dimension_codigo"] for r in resultados["resultados_dimension"]
     ]
     assert set(resultados) <= set(exportado)
+
+
+@pytest.mark.parametrize(
+    "formato, tipo_contenido, extension",
+    [
+        ("json", "application/json", ".json"),
+        ("md", "text/markdown", ".md"),
+        ("html", "text/html", ".html"),
+    ],
+)
+def prueba_api_publica_exporta_resultado_sin_persistencia(
+    entorno_api,
+    monkeypatch,
+    formato: str,
+    tipo_contenido: str,
+    extension: str,
+) -> None:
+    cliente, repositorio = entorno_api
+    monkeypatch.setenv("MODO_PUBLICO", "true")
+    analisis = cliente.post(
+        "/analisis",
+        files={
+            "archivo": (
+                "ers_publica.txt",
+                b"El sistema debera registrar cada decision automatizada.",
+                "text/plain",
+            )
+        },
+    )
+
+    respuesta = cliente.post(
+        "/reporte",
+        params={"formato": formato},
+        json=analisis.json(),
+    )
+
+    assert analisis.status_code == 200
+    assert respuesta.status_code == 200
+    assert respuesta.headers["content-type"].startswith(tipo_contenido)
+    assert respuesta.headers["content-disposition"].endswith(f'{extension}"')
+    assert respuesta.text.strip()
+    assert repositorio.listar() == []
+
+
+def prueba_api_publica_rechaza_reporte_incompleto(entorno_api) -> None:
+    cliente, _ = entorno_api
+
+    respuesta = cliente.post(
+        "/reporte",
+        params={"formato": "html"},
+        json={"metadatos": {"documento_id": str(uuid4())}},
+    )
+
+    assert respuesta.status_code == 422
