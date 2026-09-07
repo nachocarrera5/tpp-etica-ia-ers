@@ -301,3 +301,85 @@ def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
     assert datos["indicadores"]["dimensiones_parciales"] == 6
     assert datos["indicadores"]["dimensiones_ausentes"] == 4
     assert datos["indicadores"]["porcentaje_cobertura_no_ausente"] == 60.0
+
+
+@pytest.mark.parametrize(
+    ("nombre_archivo", "niveles_esperados", "guardrails_esperados"),
+    (
+        (
+            "scoring_crediticio.txt",
+            {
+                "D01": "PARCIAL",
+                "D02": "PARCIAL",
+                "D03": "PARCIAL",
+                "D04": "PARCIAL",
+                "D05": "AUSENTE",
+                "D06": "PARCIAL",
+                "D07": "AUSENTE",
+                "D08": "PARCIAL",
+                "D09": "PARCIAL",
+                "D10": "AUSENTE",
+            },
+            {
+                "GR-D01-PRES-PROPOSITO",
+                "GR-D03-DELIM-FINALIDAD",
+                "GR-D04-PRES-SESGOS",
+                "GR-D04-DELIM-PROXIES",
+                "GR-D06-PRES-EXPLICACION",
+                "GR-D08-VERIF-METRICAS",
+                "GR-D09-VERIF-REGISTROS",
+            },
+        ),
+        (
+            "sistema_recomendador.txt",
+            {
+                "D01": "PARCIAL",
+                "D02": "PARCIAL",
+                "D03": "PARCIAL",
+                "D04": "AUSENTE",
+                "D05": "AUSENTE",
+                "D06": "AUSENTE",
+                "D07": "AUSENTE",
+                "D08": "PARCIAL",
+                "D09": "AUSENTE",
+                "D10": "PARCIAL",
+            },
+            {
+                "GR-D01-DELIM-ALCANCE",
+                "GR-D02-PRES-ACTORES",
+                "GR-D02-DELIM-VULNERABLES",
+                "GR-D03-QUAL-PRIVACIDAD",
+                "GR-D08-VERIF-METRICAS",
+                "GR-D10-VERIF-ACCESIBILIDAD",
+                "GR-D10-CTRL-AUTONOMIA",
+            },
+        ),
+    ),
+)
+def prueba_ers_reales_reconocen_evidencia_sin_ocultar_brechas(
+    nombre_archivo: str,
+    niveles_esperados: dict,
+    guardrails_esperados: set,
+) -> None:
+    repositorio = RepositorioEnMemoria()
+    app.dependency_overrides[obtener_repositorio] = lambda: repositorio
+    try:
+        with TestClient(app) as cliente:
+            contenido = (DIRECTORIO_ERS / nombre_archivo).read_bytes()
+            documento_id = _cargar_documento(cliente, contenido)
+            respuesta = cliente.get(f"/documentos/{documento_id}/resultados")
+    finally:
+        app.dependency_overrides.clear()
+
+    assert respuesta.status_code == 200
+    datos = respuesta.json()
+    assert {
+        resultado["dimension_codigo"]: resultado["nivel_consolidado"]
+        for resultado in datos["resultados_dimension"]
+    } == niveles_esperados
+    codigos_con_evidencia = {
+        hallazgo["guardrail_codigo"]
+        for hallazgo in datos["hallazgos"]
+        if hallazgo["nivel_preliminar"] != "AUSENTE"
+    }
+    assert guardrails_esperados <= codigos_con_evidencia

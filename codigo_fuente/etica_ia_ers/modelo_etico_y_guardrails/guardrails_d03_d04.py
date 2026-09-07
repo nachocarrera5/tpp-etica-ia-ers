@@ -47,6 +47,11 @@ GR_D03_PRES_DATOS = GuardrailLexico(
             r"internas|institucionales))?",
         ),
         senal(
+            "datos_provistos_por_fuente_autorizada",
+            r"datos.{0,45}provistos?\s+por\s+(?:entidades|fuentes|"
+            r"instituciones)\s+autorizadas?",
+        ),
+        senal(
             "datos_clinicos_del_paciente",
             r"(?:datos\s+(?:del|de\s+los)\s+pacientes?|"
             r"imagenes?\s+clinicas?|historias?\s+clinicas?)",
@@ -103,6 +108,13 @@ GR_D03_DELIM_FINALIDAD = GuardrailLexico(
             "imagen_clinica_vinculada_a_diagnostico",
             r"imagenes?\s+clinicas?.{0,100}diagnostico|"
             r"diagnostico.{0,100}imagenes?\s+clinicas?",
+        ),
+        senal(
+            "finalidad_antes_de_los_datos",
+            r"(?:calculo|calcular|evaluacion|evaluar|clasificacion|"
+            r"clasificar|prediccion|predecir).{0,80}"
+            r"(?:a\s+partir\s+de|mediante)\s+datos\s+"
+            r"(?:financieros|crediticios|clinicos|personales)",
         ),
     ),
     senales_parciales=(
@@ -206,6 +218,11 @@ GR_D03_RESP_ACCESO = GuardrailLexico(
         senal("mencion_acceso", r"acceso\s+a\s+(?:los\s+)?datos"),
         senal("mencion_seguridad_generica", r"datos\s+(?:estaran\s+)?seguros?"),
         senal("mencion_proteccion_generica", r"datos\s+(?:estaran\s+)?protegidos?"),
+        senal(
+            "proteccion_o_confidencialidad_de_datos",
+            r"(?:proteccion|proteger|confidencialidad).{0,70}datos|"
+            r"datos.{0,70}(?:proteccion|proteger|confidencialidad)",
+        ),
         senal(
             "proteccion_de_datos_mediante_cifrado",
             r"(?:proteger|proteccion|confidencialidad).{0,70}"
@@ -352,6 +369,11 @@ GR_D04_PRES_SESGOS = GuardrailLexico(
         senal("mencion_equidad", r"equidad|equitativ[oa]s?"),
         senal("mencion_discriminacion", r"discriminaci[oó]n|discriminatori[oa]s?"),
         senal("mencion_trato_justo", r"result?ados?\s+justos?|trato\s+desigual"),
+        senal(
+            "exclusion_de_atributos_protegidos",
+            r"no\s+deber[aá].{0,45}(?:genero|etnia|raza|sexo|"
+            r"discapacidad).{0,70}(?:variable|decision)",
+        ),
     ),
 )
 
@@ -423,6 +445,12 @@ GR_D04_DELIM_PROXIES = GuardrailLexico(
             r"(?:como|tales\s+como|incluyen)",
         ),
         senal("variable_proxy_identificada", r"variables?\s+proxy"),
+        senal(
+            "atributos_protegidos_excluidos_de_decision",
+            r"no\s+deber[aá].{0,45}(?:genero|etnia|raza|sexo|"
+            r"discapacidad).{0,70}(?:variables?\s+de\s+decision|"
+            r"para\s+(?:decidir|calcular|clasificar))",
+        ),
         senal(
             "proxy_con_atributo_sensible",
             r"(?:codigo\s+postal|zona\s+geografica|apellido|idioma|"

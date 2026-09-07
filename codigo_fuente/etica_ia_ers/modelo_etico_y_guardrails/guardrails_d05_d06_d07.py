@@ -335,7 +335,10 @@ GR_D06_PRES_EXPLICACION = _crear_guardrail(
             r"(?:explicaci[oó]n|factores?\s+principales|razones?\s+"
             r"principales)|(?:generar|emitir)\w*.{0,60}(?:informe|reporte)"
             r".{0,100}explicaci[oó]n.{0,45}(?:diagnostico|resultado|"
-            r"decision|recomendacion)",
+            r"decision|recomendacion)|mostrar\w*.{0,55}(?:factores?|"
+            r"razones?|criterios?).{0,60}(?:influyeron|determinaron|"
+            r"incidieron).{0,35}(?:puntaje|resultado|decision|"
+            r"recomendacion)",
         ),
     ),
     (
@@ -372,7 +375,9 @@ GR_D06_DELIM_SALIDAS = _crear_guardrail(
             r".{0,80}(?:explicaci[oó]n|factores?\s+principales|"
             r"razones?\s+principales)|(?:informe|reporte).{0,100}"
             r"explicaci[oó]n.{0,45}(?:diagnostico|resultado|decision|"
-            r"recomendacion)",
+            r"recomendacion)|mostrar\w*.{0,55}(?:factores?|razones?|"
+            r"criterios?).{0,60}(?:influyeron|determinaron|incidieron)"
+            r".{0,35}(?:puntaje|resultado|decision|recomendacion)",
         ),
     ),
     (
@@ -446,7 +451,9 @@ GR_D06_VERIF_FORMATO = _crear_guardrail(
             r"(?:factores?|razones?|criterios?|formato|detalle)|"
             r"(?:factores?|razones?|criterios?|formato|detalle).{0,60}"
             r"(?:explicaci[oó]n|justificaci[oó]n)|(?:informe|reporte)"
-            r".{0,80}explicaci[oó]n",
+            r".{0,80}explicaci[oó]n|(?:factores?|razones?|criterios?)"
+            r".{0,60}(?:influyeron|determinaron|incidieron).{0,35}"
+            r"(?:puntaje|resultado|decision|recomendacion)",
         ),
     ),
 )

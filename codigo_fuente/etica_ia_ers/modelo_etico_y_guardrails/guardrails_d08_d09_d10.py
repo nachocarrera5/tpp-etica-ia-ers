@@ -107,10 +107,14 @@ GR_D08_VERIF_METRICAS = _crear_guardrail(
             "metrica_con_umbral",
             _coocurrencia(
                 r"(?:precisi[oó]n|recall|f1|disponibilidad|latencia|"
-                r"confianza|tasa\s+de\s+error|desempe[nñ]o)",
+                r"confianza|tasa\s+de\s+error|desempe[nñ]o|"
+                r"tiempo\s+de\s+respuesta|responder)",
                 r"(?:\d+(?:[.,]\d+)?\s*%?|umbral\s+(?:definido|m[ií]nimo|"
                 r"m[aá]ximo)|inferior\s+al\s+umbral|superior\s+al\s+umbral|"
-                r"criterio\s+de\s+aceptaci[oó]n)",
+                r"criterio\s+de\s+aceptaci[oó]n|(?:(?:menor|inferior)\s+a|"
+                r"menos\s+de)\s+"
+                r"(?:un|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|"
+                r"diez)\s+(?:segundos?|minutos?|horas?))",
             ),
         ),
     ),
@@ -390,12 +394,15 @@ GR_D09_VERIF_REGISTROS = _crear_guardrail(
             _coocurrencia(
                 r"(?:(?:registrar|registrarse|registro|trazabilidad|"
                 r"log\s+de\s+auditor[ií]a).{0,80}(?:decisi[oó]n(?:es)?|"
-                r"cambios?|incidentes?|salidas?|eventos?)|"
+                r"cambios?|incidentes?|salidas?|eventos?|"
+                r"evaluaci[oó]n(?:es)?)|"
                 r"(?:decisi[oó]n(?:es)?|cambios?|incidentes?|salidas?|"
-                r"eventos?).{0,80}(?:registrar|registrarse|registro|"
+                r"eventos?|evaluaci[oó]n(?:es)?).{0,80}"
+                r"(?:registrar|registrarse|registro|"
                 r"trazabilidad|log\s+de\s+auditor[ií]a))",
                 r"(?:fecha|responsable|versi[oó]n|motivo|datos?\s+de\s+"
-                r"entrada|acci[oó]n\s+tomada|identificador)",
+                r"entrada|variables?\s+de\s+entrada|acci[oó]n\s+tomada|"
+                r"identificador)",
             ),
         ),
         (
@@ -657,7 +664,10 @@ GR_D10_CTRL_AUTONOMIA = _crear_guardrail(
                 r"optar\s+por\s+no).{0,70}(?:recomendaci[oó]n(?:es)?|"
                 r"personalizaci[oó]n|decisi[oó]n\s+automatizada)|"
                 r"(?:prevenir|evitar|limitar)\w*.{0,55}(?:manipulaci[oó]n|"
-                r"dependencia|presi[oó]n\s+indebida)",
+                r"dependencia|presi[oó]n\s+indebida)|"
+                r"(?:indicar\w*|indiqu\w*|marcar\w*).{0,35}"
+                r"(?:no\s+le\s+interesa|"
+                r"no\s+desea).{0,45}recomendaci[oó]n",
             ),
         ),
     ),
