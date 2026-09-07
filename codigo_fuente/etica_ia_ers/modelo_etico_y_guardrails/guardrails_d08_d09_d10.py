@@ -19,9 +19,8 @@ def _coocurrencia(
     distancia: int = 500,
 ) -> str:
     return (
-        rf"(?=^.{{0,{distancia}}}(?:{primer_concepto}))"
-        rf"(?=^.{{0,{distancia}}}(?:{segundo_concepto}))"
-        rf"^.{{0,{distancia}}}"
+        rf"(?:{primer_concepto}).{{0,{distancia}}}(?:{segundo_concepto})|"
+        rf"(?:{segundo_concepto}).{{0,{distancia}}}(?:{primer_concepto})"
     )
 
 
@@ -81,6 +80,12 @@ GR_D08_PRES_ROBUSTEZ = _crear_guardrail(
                 r"(?:no\s+emitir|rechazar|pausar|interrumpir|bloquear|"
                 r"revisi[oó]n\s+manual|modo\s+degradado)",
             ),
+        ),
+        (
+            "seguridad_y_solidez_en_ciclo_de_vida",
+            r"(?:nivel\s+adecuado\s+de\s+)?(?:precision|solidez|seguridad|"
+            r"ciberseguridad).{0,100}(?:ciclo\s+de\s+vida|"
+            r"seguridad\s+desde\s+el\s+diseno)",
         ),
     ),
     (
@@ -150,6 +155,13 @@ GR_D08_CTRL_FALLAS = _crear_guardrail(
                 r"rechazar|pausar|interrumpir|derivar|alertar|"
                 r"revisi[oó]n\s+manual)",
             ),
+        ),
+        (
+            "deteccion_y_respuesta_a_anomalias",
+            r"(?:detectar|controlar)\w*.{0,100}"
+            r"(?:anomalias?|problemas?\s+de\s+funcionamiento|"
+            r"comportamientos?\s+inesperados?).{0,120}"
+            r"(?:ponerles\s+solucion|resolver|corregir|interrumpir)",
         ),
     ),
     (
@@ -224,6 +236,12 @@ GR_D08_VERIF_MONITOREO = _crear_guardrail(
             r"cambio\s+de\s+distribuci[oó]n|degradaci[oó]n)|"
             r"monitoreo\s+(?:del\s+)?(?:modelo|desempe[nñ]o)",
         ),
+        (
+            "evaluacion_continua_del_desempeno",
+            r"(?:medicion|seguimiento|evaluacion)\s+continua.{0,100}"
+            r"(?:resultados?|desempeno|modelo)|monitori[sz]acion.{0,100}"
+            r"(?:resultados?|desempeno|modelo|interacciones?)",
+        ),
     ),
 )
 
@@ -257,6 +275,11 @@ GR_D08_RESP_INCIDENTES = _crear_guardrail(
             r"(?:incidentes?|alertas?)|(?:responsable|equipo).{0,45}"
             r"(?:incidentes?|alertas?)",
         ),
+        (
+            "gestion_de_incidencias",
+            r"(?:gesti[oó]n|tratamiento|resoluci[oó]n).{0,50}incidencias?|"
+            r"incidencias?.{0,50}(?:gestionar|resolver|registrar)",
+        ),
     ),
     PrioridadDocumental.ALTA,
 )
@@ -279,6 +302,14 @@ GR_D08_QUAL_DECLARATIVO = _crear_guardrail(
                 r"sistema\s+seguro|sistema\s+confiable)",
                 r"(?:pruebas?|m[eé]tricas?|umbrales?|criterios?\s+de\s+"
                 r"aceptaci[oó]n|contingencias?|simulaci[oó]n\s+de\s+fallas?)",
+            ),
+        ),
+        (
+            "seguridad_desde_diseno_con_riesgos",
+            _coocurrencia(
+                r"seguridad\s+desde\s+el\s+diseno",
+                r"(?:gestion|analisis)\s+de\s+riesgos|"
+                r"(?:precision|solidez|ciberseguridad)",
             ),
         ),
     ),
@@ -411,6 +442,15 @@ GR_D09_VERIF_REGISTROS = _crear_guardrail(
             r"mantener)\w*.{0,40}(?:\d+\s+(?:d[ií]as|meses|a[nñ]os)|"
             r"plazo\s+definido)",
         ),
+        (
+            "registro_automatico_con_retencion_contractual",
+            _coocurrencia(
+                r"registrar\w*\s+automaticamente\s+(?:sucesos|eventos)|"
+                r"archivos?\s+de\s+registro",
+                r"(?:ciclo\s+de\s+vida|conservacion|periodo\s+de\s+"
+                r"vigencia|acceso\s+a\s+los\s+archivos)",
+            ),
+        ),
     ),
     (
         (
@@ -450,6 +490,11 @@ GR_D09_VERIF_VERSIONADO = _crear_guardrail(
             r"versionado\s+(?:del|de\s+los?|de\s+las?)\s+(?:modelo|"
             r"dataset|datos|reglas?|criterios?|configuraci[oó]n)|"
             r"versi[oó]n\s+del\s+(?:modelo|dataset)",
+        ),
+        (
+            "actualizaciones_documentadas",
+            r"actualizaciones?.{0,70}(?:documentadas?|comunicadas?)|"
+            r"documentar\w*.{0,70}(?:actualizaciones?|cambios?)",
         ),
     ),
 )
@@ -577,6 +622,20 @@ GR_D10_PRES_IMPACTO = _crear_guardrail(
                 r"terceros?|grupos?|consumo\s+energ[eé]tico|emisiones?)",
             ),
         ),
+        (
+            "sostenibilidad_con_objetivos_ambientales",
+            _coocurrencia(
+                r"sostenibilidad|sostenibles?",
+                r"(?:fuentes?\s+de\s+energia\s+renovable|"
+                r"huella\s+de\s+carbono|recursos?\s+consumidos?)",
+            ),
+        ),
+        (
+            "objetivos_ambientales_concretos",
+            r"objetivos?\s+concretos?.{0,80}"
+            r"(?:fuentes?\s+de\s+energia\s+renovable|"
+            r"huella\s+de\s+carbono)",
+        ),
     ),
     (
         (
@@ -607,6 +666,14 @@ GR_D10_DELIM_AFECTADOS = _crear_guardrail(
                 r"trabajo|p[eé]rdida\s+de\s+autonom[ií]a)",
             ),
         ),
+        (
+            "personas_con_discapacidad_afectadas",
+            _coocurrencia(
+                r"personas\s+con\s+discapacidad",
+                r"(?:subvenciones?|empleo|inclusion\s+laboral|"
+                r"decisiones?|evaluacion\s+de\s+documentos)",
+            ),
+        ),
     ),
     (
         (
@@ -634,6 +701,15 @@ GR_D10_VERIF_ACCESIBILIDAD = _crear_guardrail(
             r"operadores?|personas?|wcag)|wcag\s*\d(?:[.,]\d)?|"
             r"(?:lector\s+de\s+pantalla|navegaci[oó]n\s+por\s+teclado|"
             r"subt[ií]tulos?|contraste\s+m[ií]nimo|texto\s+alternativo)",
+        ),
+        (
+            "accesibilidad_con_pruebas_de_usuarios",
+            _coocurrencia(
+                r"requisitos?\s+de\s+accesibilidad|"
+                r"estandares?\s+de\s+accesibilidad",
+                r"pruebas?\s+de\s+usabilidad.{0,80}"
+                r"personas?\s+usuarias?\s+representativas?",
+            ),
         ),
     ),
     (
@@ -670,6 +746,15 @@ GR_D10_CTRL_AUTONOMIA = _crear_guardrail(
                 r"no\s+desea).{0,45}recomendaci[oó]n",
             ),
         ),
+        (
+            "persona_puede_revertir_salida",
+            _coocurrencia(
+                r"personas?",
+                r"(?:no\s+utilizar|desestimar|invalidar|revertir)"
+                r".{0,80}(?:sistema\s+de\s+ia|informacion\s+de\s+salida|"
+                r"salidas?|resultados?)",
+            ),
+        ),
     ),
     (
         (
@@ -700,6 +785,14 @@ GR_D10_VERIF_SOSTENIBILIDAD = _crear_guardrail(
                 r"(?:medir|monitorear|revisar|reducir|optimizar)\w*.{0,70}"
                 r"(?:mensual|trimestral|semestral|anual|cada\s+\d+|kwh|"
                 r"umbral|inferencias?\s+masivas?)",
+            ),
+        ),
+        (
+            "objetivos_de_sostenibilidad",
+            _coocurrencia(
+                r"(?:recursos?\s+consumidos?|fuentes?\s+de\s+energia\s+"
+                r"renovable|huella\s+de\s+carbono)",
+                r"(?:minimizar|reduccion|objetivos?\s+concretos?)",
             ),
         ),
     ),
@@ -733,6 +826,14 @@ GR_D10_CTRL_MITIGACION = _crear_guardrail(
                 r"(?:mitigar|reducir|compensar|corregir|revisar)\w*.{0,70}"
                 r"(?:responsable|mensual|trimestral|semestral|anual|"
                 r"medida|acci[oó]n|seguimiento)",
+            ),
+        ),
+        (
+            "reduccion_de_impacto_ambiental",
+            _coocurrencia(
+                r"(?:recursos?\s+consumidos?|huella\s+de\s+carbono|"
+                r"energia\s+renovable)",
+                r"(?:minimizar|reduccion|objetivos?\s+concretos?)",
             ),
         ),
     ),

@@ -340,3 +340,40 @@ def prueba_documento_solo_con_encabezado_no_aplica() -> None:
         EstadoAplicacionGuardrail.NO_APLICABLE
     )
     assert resultado.aplicaciones[0].hallazgo is None
+
+
+def prueba_reconoce_proposito_y_alcance_formulados_como_contrato() -> None:
+    texto = (
+        "El objeto del contrato es desarrollar una solucion de IA que permita "
+        "agilizar la evaluacion de solicitudes. El alcance del contrato "
+        "comprende el sistema aplicado a expedientes de empleo."
+    )
+    resultado = _evaluar_texto(
+        texto,
+        GR_D01_PRES_PROPOSITO,
+        GR_D01_DELIM_ALCANCE,
+    )
+
+    assert _hallazgo_de(
+        resultado, "GR-D01-PRES-PROPOSITO"
+    ).nivel_preliminar == NivelCobertura.EXPLICITO
+    assert _hallazgo_de(
+        resultado, "GR-D01-DELIM-ALCANCE"
+    ).nivel_preliminar == NivelCobertura.EXPLICITO
+
+
+def prueba_reconoce_grupo_vulnerable_y_beneficio_publico() -> None:
+    texto = (
+        "La solucion tramita subvenciones de empleo para personas con "
+        "discapacidad y busca mejorar el servicio ofrecido a la ciudadania."
+    )
+    resultado = _evaluar_texto(
+        texto,
+        GR_D02_DELIM_VULNERABLES,
+        GR_D02_VERIF_BENEFICIOS,
+    )
+
+    assert all(
+        aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+        for aplicacion in resultado.aplicaciones
+    )

@@ -287,3 +287,37 @@ def prueba_guardrails_sin_evidencia_son_ausentes(guardrail) -> None:
         guardrail,
     )
     assert _nivel(resultado, guardrail.definicion.codigo) == NivelCobertura.AUSENTE
+
+
+def prueba_reconoce_explicacion_por_factores_clave_y_sus_destinatarios() -> None:
+    texto = (
+        "El proveedor debera explicar al organismo y a los usuarios como se "
+        "obtuvo cada resultado. La explicacion incluira una indicacion clara "
+        "de los factores clave que llevaron a la decision."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D06)
+
+    for codigo in (
+        "GR-D06-PRES-EXPLICACION",
+        "GR-D06-DELIM-SALIDAS",
+        "GR-D06-DELIM-DESTINATARIOS",
+        "GR-D06-VERIF-FORMATO",
+        "GR-D06-RESP-EXPLICACION",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_reconoce_autoridad_humana_para_revertir_e_interrumpir() -> None:
+    texto = (
+        "Las personas encargadas de la vigilancia humana podran desestimar, "
+        "invalidar o revertir la informacion de salida. Tambien podran "
+        "interrumpir el funcionamiento mediante un boton destinado a tal fin."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D07)
+
+    for codigo in (
+        "GR-D07-DELIM-ROLES",
+        "GR-D07-CTRL-INTERVENCION",
+        "GR-D07-VERIF-PROCEDIMIENTO",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO

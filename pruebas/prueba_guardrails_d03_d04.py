@@ -408,3 +408,20 @@ def prueba_cada_guardrail_produce_ausente_sobre_texto_neutro(guardrail) -> None:
     aplicacion = resultado.aplicaciones[0]
     assert aplicacion.estado == EstadoAplicacionGuardrail.APLICADO
     assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+
+
+def prueba_reconoce_prevencion_y_mitigacion_explicita_de_sesgos() -> None:
+    texto = (
+        "El proveedor implementara mecanismos para asegurar que las decisiones "
+        "tomadas por la IA no perpetuen ni generen nuevos sesgos."
+    )
+    resultado = _evaluar_texto(
+        texto,
+        GR_D04_PRES_SESGOS,
+        GR_D04_CTRL_MITIGACION,
+    )
+
+    assert all(
+        aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+        for aplicacion in resultado.aplicaciones
+    )

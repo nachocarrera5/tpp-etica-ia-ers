@@ -363,6 +363,13 @@ GR_D04_PRES_SESGOS = GuardrailLexico(
             r"(?:riesgo|diferencia|brecha).{0,45}"
             r"(?:sesgo|discriminacion|trato\s+desigual|error\s+desigual)",
         ),
+        senal(
+            "prevencion_explicita_de_sesgos",
+            r"(?:decisiones?\s+tomadas?\s+por\s+(?:la\s+)?ia|"
+            r"sistemas?\s+de\s+ia).{0,120}"
+            r"(?:no\s+perpetu\w*|no\s+gener\w*|evit\w*|preven\w*)"
+            r".{0,80}sesgos?",
+        ),
     ),
     senales_parciales=(
         senal("mencion_sesgos", r"sesgos?"),
@@ -535,6 +542,12 @@ GR_D04_CTRL_MITIGACION = GuardrailLexico(
             r"(?:brecha|diferencia|sesgo|umbral).{0,130}"
             r"(?:suspendera|detendra|revisara|ajustara|reentrenara|"
             r"corregira|mitigara)",
+        ),
+        senal(
+            "mecanismo_preventivo_de_sesgos",
+            r"implementar\w*.{0,35}mecanismos?.{0,100}"
+            r"(?:no\s+perpetu\w*|no\s+gener\w*|evit\w*|preven\w*)"
+            r".{0,80}sesgos?",
         ),
     ),
     senales_parciales=(

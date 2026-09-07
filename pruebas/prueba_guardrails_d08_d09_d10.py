@@ -276,3 +276,62 @@ def prueba_guardrails_sin_evidencia_son_ausentes(guardrail) -> None:
         guardrail,
     )
     assert _nivel(resultado, guardrail.definicion.codigo) == NivelCobertura.AUSENTE
+
+
+def prueba_reconoce_respuesta_a_anomalias_y_seguridad_desde_diseno() -> None:
+    texto = (
+        "La solucion aplicara seguridad desde el diseno basada en un analisis "
+        "de riesgos. El operador debera detectar anomalias y problemas de "
+        "funcionamiento y ponerles solucion de inmediato."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D08)
+
+    assert _nivel(resultado, "GR-D08-CTRL-FALLAS") == NivelCobertura.EXPLICITO
+    assert _nivel(resultado, "GR-D08-QUAL-DECLARATIVO") == (
+        NivelCobertura.EXPLICITO
+    )
+
+
+def prueba_reconoce_registros_automaticos_y_actualizaciones_documentadas() -> None:
+    texto = (
+        "El servicio registrara automaticamente los eventos durante su ciclo "
+        "de vida y conservara los archivos de registro durante la vigencia "
+        "contractual. Todas las actualizaciones seran documentadas y comunicadas."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D09)
+
+    assert _nivel(resultado, "GR-D09-VERIF-REGISTROS") == NivelCobertura.EXPLICITO
+    assert _nivel(resultado, "GR-D09-VERIF-VERSIONADO") == NivelCobertura.PARCIAL
+
+
+def prueba_reconoce_accesibilidad_autonomia_y_sostenibilidad_concretas() -> None:
+    texto = (
+        "La interfaz cumplira requisitos de accesibilidad y se validara con "
+        "pruebas de usabilidad realizadas por personas usuarias representativas. "
+        "Las personas podran revertir la informacion de salida. Se fijaran "
+        "objetivos concretos para usar energia renovable y reducir la huella "
+        "de carbono."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D10)
+
+    for codigo in (
+        "GR-D10-PRES-IMPACTO",
+        "GR-D10-VERIF-ACCESIBILIDAD",
+        "GR-D10-CTRL-AUTONOMIA",
+        "GR-D10-VERIF-SOSTENIBILIDAD",
+        "GR-D10-CTRL-MITIGACION",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_coocurrencia_no_depende_de_la_posicion_en_fragmento() -> None:
+    texto = (
+        ("contexto operativo " * 60)
+        + "Se definiran objetivos concretos para reducir la huella de carbono "
+        "y utilizar fuentes de energia renovable."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D10)
+
+    assert _nivel(resultado, "GR-D10-VERIF-SOSTENIBILIDAD") == (
+        NivelCobertura.EXPLICITO
+    )
