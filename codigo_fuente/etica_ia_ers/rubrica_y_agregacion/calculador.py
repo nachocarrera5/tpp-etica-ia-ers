@@ -69,12 +69,6 @@ NOMBRES_DIMENSION = _NOMBRES_DIMENSION
 GRUPO_POR_DIMENSION = _GRUPO_POR_DIMENSION
 DIMENSIONES_POR_GRUPO = _DIMENSIONES_POR_GRUPO
 
-_ORDEN_NIVEL = {
-    NivelCobertura.AUSENTE: 0,
-    NivelCobertura.PARCIAL: 1,
-    NivelCobertura.EXPLICITO: 2,
-}
-
 _ORDEN_PRIORIDAD = {
     PrioridadDocumental.BAJA: 0,
     PrioridadDocumental.MEDIA: 1,
@@ -174,10 +168,7 @@ def _consolidar_dimensiones(
         conteo_niveles = Counter(
             hallazgo.nivel_preliminar for hallazgo in relacionados
         )
-        nivel = min(
-            (hallazgo.nivel_preliminar for hallazgo in relacionados),
-            key=_ORDEN_NIVEL.__getitem__,
-        )
+        nivel = _consolidar_nivel(conteo_niveles, len(relacionados))
         prioridad = max(
             (hallazgo.prioridad_documental for hallazgo in relacionados),
             key=_ORDEN_PRIORIDAD.__getitem__,
@@ -233,9 +224,19 @@ def _justificar_consolidacion(
         f"{conteo_niveles[NivelCobertura.AUSENTE]} ausentes, "
         f"{conteo_niveles[NivelCobertura.PARCIAL]} parciales y "
         f"{conteo_niveles[NivelCobertura.EXPLICITO]} explicitos. "
-        "Se aplica el nivel mas debil para conservar una lectura "
-        f"documental prudente; el resultado es {nivel.value}."
+        "La dimension es AUSENTE solo si no presenta evidencia, PARCIAL "
+        "si combina evidencia con brechas o evidencia incompleta, y "
+        "EXPLICITO solo si todos sus hallazgos son explicitos; el resultado "
+        f"es {nivel.value}."
     )
+
+
+def _consolidar_nivel(conteo_niveles: Counter, total: int) -> NivelCobertura:
+    if conteo_niveles[NivelCobertura.AUSENTE] == total:
+        return NivelCobertura.AUSENTE
+    if conteo_niveles[NivelCobertura.EXPLICITO] == total:
+        return NivelCobertura.EXPLICITO
+    return NivelCobertura.PARCIAL
 
 
 def _calcular_indicadores_globales(

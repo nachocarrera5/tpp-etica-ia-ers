@@ -96,7 +96,7 @@ Exportación JSON / Markdown / HTML
 
 ## Cómo leer el resultado
 
-Cada guardrail produce un hallazgo preliminar `AUSENTE`, `PARCIAL` o `EXPLICITO`, con prioridad documental y evidencia trazable a fragmentos de la ERS. La cobertura de una dimensión conserva el nivel más débil de sus guardrails, una decisión prudente y reproducible definida por la rúbrica del proyecto.
+Cada guardrail produce un hallazgo preliminar `AUSENTE`, `PARCIAL` o `EXPLICITO`, con prioridad documental y evidencia trazable a fragmentos de la ERS. Una dimensión es `AUSENTE` cuando ninguno de sus guardrails presenta evidencia, `PARCIAL` cuando combina evidencia con brechas o evidencia incompleta y `EXPLICITO` únicamente cuando todos sus hallazgos son explícitos. Esta consolidación mantiene una lectura exigente sin ocultar la evidencia encontrada.
 
 El porcentaje de cobertura no ausente se calcula sobre dimensiones efectivamente evaluadas. Los errores de reglas y las dimensiones no cubiertas por el catálogo se muestran como advertencias, no como ausencias inventadas.
 

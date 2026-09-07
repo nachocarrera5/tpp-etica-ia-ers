@@ -33,7 +33,8 @@ GR_D01_PRES_PROPOSITO = GuardrailLexico(
         senal(
             "proposito_con_resultado",
             r"(?:objetivo|proposito|finalidad)\s+(?:principal\s+)?"
-            r"(?:del\s+sistema\s+)?(?:es|consiste\s+en|sera).{0,90}"
+            r"(?:(?:del|de\s+este)\s+sistema\s+)?"
+            r"(?:es|consiste\s+en|sera).{0,90}"
             r"(?:resolver|asistir|priorizar|recomendar|detectar|clasificar|"
             r"predecir|evaluar|optimizar|reducir|mejorar)",
         ),
@@ -82,6 +83,16 @@ GR_D01_DELIM_ALCANCE = GuardrailLexico(
             r"(?:en|para)\s+(?:salud|credito|empleo|educacion|justicia|"
             r"soporte\s+tecnico|diagnostico\s+medico|gestion\s+publica))",
         ),
+        senal(
+            "alcance_operativo_delimitado",
+            r"alcance\s+(?:del\s+)?sistema.{0,45}(?:abarca|comprende|"
+            r"incluye).{0,90}\w+",
+        ),
+        senal(
+            "dominio_operativo_declarado",
+            r"(?:sistema|modelo).{0,35}(?:opera|se\s+utiliza|funciona)"
+            r".{0,35}(?:en|dentro\s+de)\s+(?:el\s+)?dominio.{0,70}\w+",
+        ),
     ),
     senales_parciales=(
         senal("mencion_alcance", r"alcance\s+(?:del\s+)?sistema"),
@@ -116,7 +127,7 @@ GR_D01_DELIM_USOS = GuardrailLexico(
         senal(
             "uso_previsto_delimitado",
             r"(?:uso[s]?\s+previsto[s]?|solo\s+se\s+(?:usara|utilizara)|"
-            r"se\s+utilizara\s+exclusivamente).{0,90}\w+",
+            r"se\s+utilizara\s+(?:exclusivamente|unicamente)).{0,90}\w+",
         ),
         senal("fuera_de_alcance", r"fuera\s+de\s+alcance.{0,80}\w+"),
     ),
@@ -152,7 +163,13 @@ GR_D01_DELIM_ACTORES = GuardrailLexico(
             "rol_que_opera_el_sistema",
             r"(?:sera\s+(?:utilizado|operado)\s+por|"
             r"(?:analistas?|profesionales?|operadores?|administradores?)"
-            r".{0,35}(?:utilizaran|operaran|interactuaran|revisaran))",
+            r".{0,55}(?:utilizaran|operaran|interactuaran|revisaran|"
+            r"revisen|confirmen))",
+        ),
+        senal(
+            "destinatarios_identificados",
+            r"(?:asistir\s+a\s+(?:los\s+)?(?:analistas|profesionales)|"
+            r"destinad[oa]\s+a\s+usuarios?\s+registrados?)",
         ),
     ),
     senales_parciales=(
@@ -211,7 +228,8 @@ GR_D01_VERIF_LIMITACIONES = GuardrailLexico(
         senal(
             "limitacion_concreta",
             r"(?:limitaciones?\s+conocidas?|limitado\s+a|solo\s+funciona|"
-            r"no\s+(?:podra|puede|garantiza|reemplaza|admite)).{0,90}\w+",
+            r"no\s+(?:podra|puede|debera|garantiza|reemplaza|admite))"
+            r".{0,90}\w+",
         ),
         senal(
             "limite_operativo",
@@ -297,12 +315,24 @@ GR_D02_PRES_ACTORES = GuardrailLexico(
             "rol_usuario_definido",
             r"(?:sera\s+(?:utilizado|operado)\s+por|"
             r"(?:analistas?|profesionales?|operadores?|administradores?)"
-            r".{0,35}(?:utilizaran|operaran|supervisaran))",
+            r".{0,55}(?:utilizaran|operaran|supervisaran|revisaran|"
+            r"revisen|confirmen))",
+        ),
+        senal(
+            "actor_destinatario_identificado",
+            r"(?:asistir\s+a\s+(?:los\s+)?(?:analistas|profesionales)|"
+            r"destinad[oa]\s+a\s+usuarios?\s+registrados?)",
         ),
     ),
     senales_parciales=(
         senal("mencion_usuario", r"usuarios?\s+(?:finales|del\s+sistema)"),
         senal("mencion_afectados", r"personas?\s+afectadas?|afectados?"),
+        senal(
+            "roles_del_dominio",
+            r"(?:profesionales?\s+medicos?|pacientes?|docentes?|"
+            r"estudiantes?|solicitantes?|trabajadores?)",
+        ),
+        senal("usuarios_registrados", r"usuarios?\s+registrados?"),
         senal("mencion_stakeholders", r"stakeholders?|partes?\s+interesadas"),
     ),
 )
@@ -374,6 +404,10 @@ GR_D02_DELIM_VULNERABLES = GuardrailLexico(
             "riesgo_en_grupo_especifico",
             r"(?:riesgo|exclusion|discriminacion|perjuicio).{0,50}"
             r"grupos?\s+con\s+\w+(?:\s+\w+){0,5}",
+        ),
+        senal(
+            "menores_expuestos",
+            r"(?:usuarios?|personas?)\s+menores\s+de\s+edad",
         ),
     ),
     senales_parciales=(
