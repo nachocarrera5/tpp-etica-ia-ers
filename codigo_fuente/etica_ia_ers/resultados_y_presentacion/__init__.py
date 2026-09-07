@@ -23,6 +23,22 @@ from etica_ia_ers.rubrica_y_agregacion import (
     calcular_cobertura_etica,
 )
 
+from .errores import (
+    ErrorEscrituraReporte,
+    ErrorExportacion,
+    FormatoExportacionNoSoportadoError,
+    ReporteInvalidoError,
+)
+from .exportacion import (
+    AVISO_ALCANCE,
+    DIRECTORIO_SALIDA,
+    FormatoExportacion,
+    ReporteExportado,
+    escribir_reporte,
+    exportar_reporte,
+    formatos_disponibles,
+)
+
 
 _NOMBRES_GRUPO_TEMATICO = {
     GrupoTematico.CONTEXTO_Y_AFECTADOS: "Contexto y afectados",
@@ -331,7 +347,31 @@ def obtener_resultado_documento(
     )
 
 
+def exportar_reporte_documento(
+    evaluacion: ResultadoEvaluacionEtica,
+    nombre_documento: str,
+    formato: Any = FormatoExportacion.JSON,
+) -> ReporteExportado:
+    """Serializa el reporte de una evaluacion y lo entrega listo para descargar."""
+    return exportar_reporte(
+        serializar_reporte_resultados(evaluacion, nombre_documento=nombre_documento),
+        formato=formato,
+    )
+
+
 __all__ = [
+    "AVISO_ALCANCE",
+    "DIRECTORIO_SALIDA",
+    "ErrorEscrituraReporte",
+    "ErrorExportacion",
+    "FormatoExportacion",
+    "FormatoExportacionNoSoportadoError",
+    "ReporteExportado",
+    "ReporteInvalidoError",
+    "escribir_reporte",
+    "exportar_reporte",
+    "exportar_reporte_documento",
+    "formatos_disponibles",
     "obtener_resultado_documento",
     "serializar_reporte_resultados",
 ]

@@ -23,6 +23,7 @@ Abrir [http://127.0.0.1:8000](http://127.0.0.1:8000). La pantalla permite:
 - ejecutar el análisis completo desde el navegador;
 - consultar cobertura e indicadores de D01 a D10;
 - recorrer brechas, evidencia, hallazgos y recomendaciones;
+- descargar el resultado en JSON, Markdown o HTML;
 - reabrir o eliminar documentos del historial local;
 - preparar una ERS sintética de demostración sin buscar un archivo externo.
 
@@ -35,6 +36,7 @@ El repositorio incluye un `Dockerfile` y un Blueprint `render.yaml` para despleg
 La configuración de Render activa `MODO_PUBLICO=true`. En ese modo:
 
 - la carga y el análisis se resuelven en una única solicitud a `POST /analisis`;
+- la exportación usa `POST /reporte` sobre el resultado ya calculado;
 - el documento se procesa en memoria y no se incorpora al historial;
 - se deshabilitan los endpoints persistentes de listado, estado y eliminación;
 - la interfaz informa el límite de 4 MB y oculta el panel de documentos;
@@ -74,6 +76,9 @@ Alertas y recomendaciones documentales
        │
        ▼
 API + interfaz web de revisión
+       │
+       ▼
+Exportación JSON / Markdown / HTML
 ```
 
 | Dimensión | Tema |
@@ -97,6 +102,16 @@ El porcentaje de cobertura no ausente se calcula sobre dimensiones efectivamente
 
 Las recomendaciones provienen de plantillas locales y versionadas. No se usa un LLM para generar el resultado y el documento no se envía a servicios externos.
 
+## Exportación del reporte
+
+El reporte puede descargarse en tres formatos: `JSON` para intercambio con otras herramientas, `Markdown` para revisión y versionado junto al informe, y `HTML` como documento autocontenido, sin recursos externos y con estilos de impresión para guardarlo en PDF desde el navegador.
+
+```bash
+curl -OJ "http://127.0.0.1:8000/documentos/<id>/reporte?formato=html"
+```
+
+El parámetro `formato` acepta `json` (por defecto), `md` y `html`; un valor desconocido responde `400` con la lista de formatos válidos. La interfaz envía el resultado ya calculado a `POST /reporte`, disponible también en modo público. La exportación no reevalúa la ERS ni recalcula indicadores, y los tres formatos incluyen el aviso de alcance.
+
 ## Alcance y límites
 
 El prototipo evalúa **evidencia escrita en una ERS**. No prueba el comportamiento del software implementado, no audita modelos ni datasets reales y no determina cumplimiento legal. La salida no es una aprobación ni una certificación.
@@ -106,8 +121,7 @@ Esta versión no incluye:
 - OCR para PDF escaneado;
 - autenticación, usuarios o permisos;
 - edición manual de la revisión humana;
-- despliegue productivo;
-- exportación del reporte, prevista en `SCRUM-112`.
+- despliegue productivo.
 
 Los documentos y su texto normalizado se guardan en `datos/almacenamiento/`. Evaluaciones y resultados se calculan con la versión activa del catálogo cada vez que se consultan; su persistencia completa queda fuera del prototipo actual.
 
@@ -118,10 +132,12 @@ Los documentos y su texto normalizado se guardan en `datos/almacenamiento/`. Eva
 | `GET` | `/salud` | Estado del servicio |
 | `GET` | `/configuracion-publica` | Modo y límites visibles de ejecución |
 | `POST` | `/analisis` | Análisis completo en memoria, sin persistencia |
+| `POST` | `/reporte` | Exportación de un resultado ya calculado, sin persistencia |
 | `POST` | `/documentos` | Carga y normalización de una ERS |
 | `GET` | `/documentos` | Historial local |
 | `GET` | `/documentos/{id}/estado` | Estado del documento |
 | `GET` | `/documentos/{id}/resultados` | Evaluación, cobertura y recomendaciones |
+| `GET` | `/documentos/{id}/reporte` | Exportación del reporte en JSON, Markdown o HTML |
 | `DELETE` | `/documentos/{id}` | Eliminación del registro local |
 
 Los endpoints bajo `/documentos` se encuentran disponibles solamente en modo local. La demo pública utiliza `/analisis`.
@@ -145,7 +161,7 @@ codigo_fuente/etica_ia_ers/
 ├── evaluacion_documental/           # coordinación de reglas
 ├── rubrica_y_agregacion/            # cobertura e indicadores
 ├── recomendaciones/                 # alertas y plantillas de mejora
-├── resultados_y_presentacion/       # serialización del reporte
+├── resultados_y_presentacion/       # serialización y exportación del reporte
 ├── persistencia_y_trazabilidad/     # almacenamiento local y bitácora
 ├── interfaz_web/                    # aplicación web sin build externo
 └── api.py                            # endpoints e integración del flujo
@@ -160,6 +176,13 @@ Cada carpeta corresponde a una responsabilidad de la arquitectura. La interfaz u
 ```bash
 python3 ejemplos/analizar_ers.py
 python3 ejemplos/analizar_ers.py ruta/a/otra_ers.txt
+```
+
+`ejemplos/exportar_reporte.py` ejecuta la cadena completa y escribe los reportes exportados en `datos/salida/`:
+
+```bash
+python3 ejemplos/exportar_reporte.py
+python3 ejemplos/exportar_reporte.py ruta/a/otra_ers.txt --formato md
 ```
 
 El almacenamiento local usa archivos JSON y TXT inspeccionables:

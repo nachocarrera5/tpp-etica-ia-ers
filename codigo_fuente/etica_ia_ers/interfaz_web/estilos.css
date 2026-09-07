@@ -133,7 +133,11 @@ h1, h2, h3, p { letter-spacing: 0; }
 .vista-resultados { padding: 40px clamp(24px, 4vw, 68px) 80px; }
 .cabecera-resultados { display: grid; grid-template-columns: minmax(0, 1fr) 260px; align-items: end; gap: 36px; padding-bottom: 30px; }
 .cabecera-resultados h1 { overflow-wrap: anywhere; font-size: 36px; }
-.enlace-accion { margin: 0 0 16px; padding: 0; border: 0; background: none; color: var(--acento); font-size: 12px; font-weight: 700; cursor: pointer; }
+.acciones-resultado { margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.enlace-accion { padding: 0; border: 0; background: none; color: var(--acento); font-size: 12px; font-weight: 700; cursor: pointer; }
+.exportacion-reporte { display: flex; align-items: center; gap: 8px; }
+.exportacion-reporte label { color: var(--tinta-suave); font-size: 11px; font-weight: 700; }
+.exportacion-reporte select { height: 42px; padding: 0 30px 0 10px; border: 1px solid var(--linea-fuerte); border-radius: var(--radio); background: var(--superficie); font-size: 12px; }
 .lectura-global { padding: 16px 0 4px 20px; border-left: 2px solid var(--acento); }
 .lectura-global span, .lectura-global small { display: block; color: var(--tinta-suave); font-size: 11px; }
 .lectura-global strong { display: block; margin: 3px 0 8px; font-family: var(--fuente-titulo); font-size: 19px; font-weight: 500; }
@@ -232,6 +236,7 @@ dialog form { padding: 28px; } dialog h2 { margin: 5px 0 10px; font-family: var(
   .campos-contexto { grid-template-columns: 1fr; }.acciones-carga { align-items: stretch; flex-direction: column; }.boton { width: 100%; }
   .pasos-proceso { grid-template-columns: 1fr; gap: 6px; }.pasos-proceso li { padding: 7px 0 7px 12px; border-top: 0; border-left: 1px solid var(--linea); }
   .cabecera-resultados { grid-template-columns: 1fr; gap: 20px; }.lectura-global { padding: 12px 0 0; border-left: 0; border-top: 2px solid var(--acento); }
+  .acciones-resultado { align-items: flex-start; flex-direction: column; }.exportacion-reporte { width: 100%; }.exportacion-reporte select { flex: 1; }.exportacion-reporte .boton { width: auto; }
   .pestanas { overflow-x: auto; }.pestana { min-width: 100px; padding-inline: 10px; }
   .indicadores { grid-template-columns: 1fr 1fr; }.indicador { min-height: 104px; padding: 15px; }.indicador strong { font-size: 25px; }
   .seccion-titulo { align-items: flex-start; flex-direction: column; }.leyenda { gap: 9px; }

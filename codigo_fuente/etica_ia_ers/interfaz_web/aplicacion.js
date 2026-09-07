@@ -342,6 +342,7 @@ function irADimension(codigo) {
 function nuevaCarga() {
   estado.archivo = null;
   estado.documentoActivo = null;
+  estado.resultado = null;
   $("#formulario-carga").reset();
   seleccionarArchivo(null);
   renderizarHistorial();
@@ -359,6 +360,41 @@ function notificar(mensaje) {
   elemento.hidden = false;
   window.clearTimeout(notificar.temporizador);
   notificar.temporizador = window.setTimeout(() => { elemento.hidden = true; }, 3200);
+}
+
+async function descargarReporte() {
+  if (!estado.resultado) return;
+  const boton = $("#descargar-reporte");
+  const formato = $("#formato-exportacion").value;
+  boton.disabled = true;
+  try {
+    const respuesta = await fetch(`/reporte?formato=${encodeURIComponent(formato)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(estado.resultado),
+    });
+    if (!respuesta.ok) {
+      let datos = null;
+      try { datos = await respuesta.json(); } catch (_) { /* respuesta sin JSON */ }
+      throw new Error(detalleError(datos, `No se pudo exportar el reporte (${respuesta.status}).`));
+    }
+
+    const disposicion = respuesta.headers.get("Content-Disposition") || "";
+    const nombre = disposicion.match(/filename="([^"]+)"/)?.[1] || `reporte-etico.${formato}`;
+    const url = URL.createObjectURL(await respuesta.blob());
+    const enlace = document.createElement("a");
+    enlace.href = url;
+    enlace.download = nombre;
+    document.body.appendChild(enlace);
+    enlace.click();
+    enlace.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    notificar(`Reporte ${formato.toUpperCase()} descargado.`);
+  } catch (error) {
+    notificar(error.message);
+  } finally {
+    boton.disabled = false;
+  }
 }
 
 async function configurarAplicacion() {
@@ -430,5 +466,6 @@ $("#vista-resultados").addEventListener("click", (evento) => {
   if (dimension) irADimension(dimension.dataset.dimension);
 });
 $("#confirmar-eliminar").addEventListener("click", confirmarEliminacion);
+$("#descargar-reporte").addEventListener("click", descargarReporte);
 
 configurarAplicacion();
