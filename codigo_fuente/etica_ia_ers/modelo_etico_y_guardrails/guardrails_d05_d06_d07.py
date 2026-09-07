@@ -338,15 +338,16 @@ GR_D06_PRES_EXPLICACION = _crear_guardrail(
             r"decision|recomendacion)|mostrar\w*.{0,55}(?:factores?|"
             r"razones?|criterios?).{0,60}(?:influyeron|determinaron|"
             r"incidieron).{0,35}(?:puntaje|resultado|decision|"
-            r"recomendacion)",
+            r"recomendacion)|explica\w*.{0,180}"
+            r"(?:decisi[oó]n|resultado).{0,180}factores?\s+clave",
         ),
     ),
     (
         (
             "mencion_explicabilidad",
-            r"(?:sistema|modelo|decisi[oó]n(?:es)?|"
+            r"(?:sistemas?|modelos?|decisi[oó]n(?:es)?|"
             r"recomendaci[oó]n(?:es)?|salidas?)"
-            r".{0,45}(?:explicab(?:le|ilidad)|interpretabilidad)|"
+            r".{0,45}(?:explicables?|explicabilidad|interpretabilidad)|"
             r"explicaciones?\s+adecuadas?",
         ),
     ),
@@ -377,7 +378,9 @@ GR_D06_DELIM_SALIDAS = _crear_guardrail(
             r"explicaci[oó]n.{0,45}(?:diagnostico|resultado|decision|"
             r"recomendacion)|mostrar\w*.{0,55}(?:factores?|razones?|"
             r"criterios?).{0,60}(?:influyeron|determinaron|incidieron)"
-            r".{0,35}(?:puntaje|resultado|decision|recomendacion)",
+            r".{0,35}(?:puntaje|resultado|decision|recomendacion)|"
+            r"explica\w*.{0,180}(?:decisi[oó]n|resultado)"
+            r".{0,180}factores?\s+clave",
         ),
     ),
     (
@@ -385,7 +388,8 @@ GR_D06_DELIM_SALIDAS = _crear_guardrail(
             "mencion_salida_explicable",
             r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
             r"resultados?).{0,80}"
-            r"(?:explicab|explicaci[oó]n|justificaci[oó]n|interpretaci[oó]n)",
+            r"(?:explicab|explicaci[oó]n|justificaci[oó]n|interpretaci[oó]n)|"
+            r"informaci[oó]n\s+de\s+salida.{0,120}interpretar",
         ),
     ),
 )
@@ -407,6 +411,15 @@ GR_D06_DELIM_DESTINATARIOS = _crear_guardrail(
             r"(?:al|a\s+los?|a\s+las?)\s+(?:usuario|operador|supervisor|"
             r"revisor|afectad[oa]|analista).{0,80}(?:explicaci[oó]n|"
             r"factores?|razones?|criterios?)",
+        ),
+        (
+            "destinatarios_que_comprenden_decisiones",
+            r"(?:gobierno|administraci[oó]n|organismo|usuarios?|operadores?|"
+            r"analistas?).{0,100}(?:comprender|interpretar|validar)"
+            r".{0,55}(?:decisiones?|resultados?|salidas?)|"
+            r"explica\w*.{0,45}(?:al|a\s+los?|a\s+las?)\s+"
+            r"(?:gobierno|administraci[oó]n|organismo|usuarios?|"
+            r"operadores?|analistas?)",
         ),
     ),
     (
@@ -442,6 +455,12 @@ GR_D06_VERIF_FORMATO = _crear_guardrail(
             r"(?:explicaci[oó]n|justificaci[oó]n)|formato\s+(?:de\s+)?"
             r"(?:texto|visual|gr[aá]fico).{0,60}(?:explicaci[oó]n|"
             r"justificaci[oó]n)",
+        ),
+        (
+            "factores_clave_del_resultado",
+            r"(?:indicaci[oó]n\s+clara.{0,45})?factores?\s+clave"
+            r".{0,100}(?:resultado|decisi[oó]n)|(?:resultado|decisi[oó]n)"
+            r".{0,100}factores?\s+clave",
         ),
     ),
     (
@@ -484,6 +503,11 @@ GR_D06_VERIF_UTILIDAD = _crear_guardrail(
             r"(?:utilidad|suficiencia|adecuaci[oó]n).{0,50}"
             r"(?:explicaci[oó]n|justificaci[oó]n)|(?:explicaci[oó]n|"
             r"justificaci[oó]n).{0,50}(?:[uú]til|suficiente|adecuada)",
+        ),
+        (
+            "comprension_y_validacion_por_usuarios",
+            r"usuarios?.{0,90}(?:comprender|interpretar|validar)"
+            r".{0,55}(?:decisiones?|resultados?|salidas?)",
         ),
     ),
 )
@@ -533,6 +557,11 @@ GR_D06_RESP_EXPLICACION = _crear_guardrail(
             r"(?:revisar|validar|evaluar)\w*.{0,50}(?:utilidad|"
             r"explicaci[oó]n|justificaci[oó]n)",
         ),
+        (
+            "proveedor_obligado_a_explicar",
+            r"proveedor.{0,120}(?:obligado|debera|garantizara).{0,120}"
+            r"explicar.{0,180}(?:decisi[oó]n|resultado)",
+        ),
     ),
     (
         (
@@ -560,13 +589,15 @@ GR_D06_QUAL_DECLARATIVO = _crear_guardrail(
             r"explicaci[oó]n\w*.{0,35}(?:definida|documentada|"
             r"verificable)|criterios?\s+de\s+explicabilidad|"
             r"(?:explicaci[oó]n|interpretabilidad).{0,55}"
-            r"(?:limitada|limitaciones?|incertidumbre)",
+            r"(?:limitada|limitaciones?|incertidumbre)|"
+            r"informe\s+de\s+transparencia\s+y\s+explicabilidad|"
+            r"factores?\s+clave.{0,100}(?:resultado|decisi[oó]n)",
         ),
     ),
     (
         (
             "explicabilidad_declarativa",
-            r"(?:sistema|modelo|decisi[oó]n(?:es)?|"
+            r"(?:sistemas?|modelos?|decisi[oó]n(?:es)?|"
             r"recomendaci[oó]n(?:es)?).{0,45}"
             r"explicable|explicaciones?\s+adecuadas?",
         ),
@@ -664,6 +695,12 @@ GR_D07_DELIM_ROLES = _crear_guardrail(
             r"(?:responsable|rol|equipo).{0,50}(?:revisi[oó]n\s+humana|"
             r"supervisi[oó]n|intervenci[oó]n)",
         ),
+        (
+            "personas_encargadas_de_vigilancia",
+            r"personas?.{0,55}(?:encomiende|asigne|encargadas?\s+de)"
+            r".{0,35}"
+            r"(?:vigilancia|supervisi[oó]n)\s+humana",
+        ),
     ),
     (
         (
@@ -695,6 +732,17 @@ GR_D07_CTRL_INTERVENCION = _crear_guardrail(
             r"\w*.{0,35}(?:aprobar|rechazar|corregir|pausar|detener|"
             r"escalar)\w*|(?:profesional|medico|especialista).{0,60}"
             r"(?:revisar|revise).{0,25}(?:confirmar|confirme|validar|valide)",
+        ),
+        (
+            "capacidad_de_revertir_salidas",
+            r"personas?.{0,500}(?:desestimar|invalidar|revertir)"
+            r".{0,80}(?:informaci[oó]n\s+de\s+salida|salidas?|"
+            r"resultados?|decisiones?)",
+        ),
+        (
+            "capacidad_de_interrumpir_sistema",
+            r"personas?.{0,500}(?:intervenir|interrumpir)"
+            r".{0,80}(?:funcionamiento|sistema\s+de\s+ia)",
         ),
     ),
     (
@@ -761,6 +809,12 @@ GR_D07_VERIF_PROCEDIMIENTO = _crear_guardrail(
             r"intervenci[oó]n|escalamiento)|pasos\s+(?:para|de)\s+"
             r"(?:revisar|intervenir|escalar)|(?:supervisor|revisor|personal)"
             r".{0,80}informaci[oó]n\s+disponible",
+        ),
+        (
+            "mecanismo_de_interrupcion",
+            r"(?:intervenir|interrumpir).{0,100}"
+            r"(?:bot[oó]n|procedimiento)\s+(?:especificamente\s+)?"
+            r"(?:destinado|definido)",
         ),
     ),
     (

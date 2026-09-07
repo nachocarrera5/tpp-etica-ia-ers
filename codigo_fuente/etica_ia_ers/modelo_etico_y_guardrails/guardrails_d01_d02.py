@@ -42,6 +42,15 @@ GR_D01_PRES_PROPOSITO = GuardrailLexico(
             "problema_y_resultado_esperado",
             r"(?:problema\s+a\s+resolver|resultado\s+esperado).{0,90}\w+",
         ),
+        senal(
+            "objeto_contractual_con_finalidad",
+            r"objeto\s+del\s+(?:presente\s+)?contrato\s+es.{0,240}"
+            r"(?:soluci[oó]n|sistema|servicio).{0,180}"
+            r"(?:permita|para|orientad[oa]\s+a).{0,90}"
+            r"(?:agilizar|automatizar|clasificar|revisar|evaluar|"
+            r"optimizar|reducir|mejorar|agilizaci[oó]n|automatizaci[oó]n|"
+            r"clasificaci[oó]n|revisi[oó]n|evaluaci[oó]n)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_proposito", r"(?:objetivo|proposito|finalidad)\s+del\s+sistema"),
@@ -93,6 +102,13 @@ GR_D01_DELIM_ALCANCE = GuardrailLexico(
             r"(?:sistema|modelo).{0,35}(?:opera|se\s+utiliza|funciona)"
             r".{0,35}(?:en|dentro\s+de)\s+(?:el\s+)?dominio.{0,70}\w+",
         ),
+        senal(
+            "alcance_contractual_delimitado",
+            r"alcance\s+(?:del\s+)?contrato\s+comprende.{0,260}"
+            r"(?:soluci[oó]n|sistema|servicio).{0,180}"
+            r"(?:tramitaci[oó]n|procedimiento|expedientes?|subvenciones?|"
+            r"salud|cr[eé]dito|educaci[oó]n|justicia|empleo)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_alcance", r"alcance\s+(?:del\s+)?sistema"),
@@ -134,6 +150,13 @@ GR_D01_DELIM_USOS = GuardrailLexico(
     senales_parciales=(
         senal("mencion_uso_previsto", r"uso[s]?\s+(?:previsto[s]?|permitido[s]?)"),
         senal("mencion_restriccion_uso", r"restriccion(?:es)?\s+de\s+uso"),
+        senal(
+            "funciones_de_ia_delimitadas",
+            r"(?:ia|inteligencia\s+artificial).{0,180}"
+            r"(?:clasificaci[oó]n|revisi[oó]n|evaluaci[oó]n|"
+            r"automatizaci[oó]n|predicci[oó]n|recomendaci[oó]n)\s+de\s+"
+            r"(?:documentos?|expedientes?|solicitudes?|casos?|datos)",
+        ),
     ),
 )
 
@@ -170,6 +193,11 @@ GR_D01_DELIM_ACTORES = GuardrailLexico(
             "destinatarios_identificados",
             r"(?:asistir\s+a\s+(?:los\s+)?(?:analistas|profesionales)|"
             r"destinad[oa]\s+a\s+usuarios?\s+registrados?)",
+        ),
+        senal(
+            "personal_que_interactua_con_ia",
+            r"personal\s+(?:de|del).{0,70}(?:interactuara|utilizara|"
+            r"operara).{0,45}(?:sistemas?\s+de\s+ia|sistema|asistente)",
         ),
     ),
     senales_parciales=(
@@ -409,6 +437,10 @@ GR_D02_DELIM_VULNERABLES = GuardrailLexico(
             "menores_expuestos",
             r"(?:usuarios?|personas?)\s+menores\s+de\s+edad",
         ),
+        senal(
+            "personas_con_discapacidad",
+            r"personas\s+con\s+discapacidad",
+        ),
     ),
     senales_parciales=(
         senal("mencion_vulnerabilidad", r"(?:grupo[s]?\s+)?vulnerables?"),
@@ -485,6 +517,13 @@ GR_D02_VERIF_BENEFICIOS = GuardrailLexico(
             r"(?:usuarios?|solicitantes?|personas?|grupos?|comunidades?|"
             r"trabajadores?|pacientes?).{0,70}\d+(?:[.,]\d+)?\s*%"
             r".{0,40}(?:mejora|reduccion|aumento|beneficio)",
+        ),
+        senal(
+            "mejora_de_servicio_a_ciudadania",
+            r"(?:mejorar|mejora).{0,45}(?:servicio|atenci[oó]n)"
+            r".{0,35}(?:ciudadan[ií]a|personas?|usuarios?)|"
+            r"(?:reducir|reducci[oó]n).{0,45}(?:tiempos?|plazos?)"
+            r".{0,70}(?:ciudadan[ií]a|solicitantes?|personas?|usuarios?)",
         ),
     ),
     senales_parciales=(
