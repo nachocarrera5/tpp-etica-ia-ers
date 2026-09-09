@@ -11,6 +11,7 @@ from etica_ia_ers.procesamiento_textual_y_nlp import (
 from etica_ia_ers.procesamiento_textual_y_nlp.normalizador import (
     colapsar_espacios,
     colapsar_lineas_en_blanco,
+    eliminar_boilerplate_repetido,
     eliminar_caracteres_de_control,
     eliminar_marcadores_de_pagina,
     normalizar_comillas,
@@ -101,6 +102,55 @@ def prueba_colapsar_lineas_en_blanco() -> None:
     assert colapsar_lineas_en_blanco("a\n\n\n\nb") == "a\n\nb"
     assert colapsar_lineas_en_blanco("a\n   \n   \nb") == "a\n\nb"
     assert colapsar_lineas_en_blanco("a\n\nb") == "a\n\nb"
+
+
+def prueba_eliminar_boilerplate_repetido_quita_pie_de_pagina_administrativo() -> None:
+    pie_de_pagina = (
+        "Esta es una copia autentica imprimible de un documento electronico "
+        "administrativo archivado por la Comunidad Autonoma de Murcia."
+    )
+    texto = (
+        "1. Objetivo\n"
+        f"{pie_de_pagina}\n"
+        "El sistema debera clasificar el riesgo del solicitante.\n"
+        f"{pie_de_pagina}\n"
+        "2. Alcance\n"
+        f"{pie_de_pagina}\n"
+        "El sistema opera unicamente sobre datos financieros.\n"
+    )
+    resultado = eliminar_boilerplate_repetido(texto)
+    assert pie_de_pagina not in resultado
+    assert "1. Objetivo" in resultado
+    assert "clasificar el riesgo" in resultado
+    assert "2. Alcance" in resultado
+    assert "datos financieros" in resultado
+
+
+def prueba_eliminar_boilerplate_repetido_preserva_lineas_no_repetidas() -> None:
+    texto = "Requisito unico bastante largo que no se repite en el documento."
+    assert eliminar_boilerplate_repetido(texto) == texto
+
+
+def prueba_eliminar_boilerplate_repetido_no_afecta_lineas_cortas_repetidas() -> None:
+    texto = "- Si\n- Si\n- Si\n- Si\n"
+    assert eliminar_boilerplate_repetido(texto) == texto
+
+
+def prueba_pipeline_completo_elimina_boilerplate_de_pdf_administrativo() -> None:
+    pie_de_pagina = (
+        "GAMBIN MARIN, MIGUEL ANGEL 18/02/2026 Esta es una copia autentica "
+        "imprimible de un documento electronico administrativo archivado."
+    )
+    texto = (
+        "3.1. El sistema debera responder cada consulta en menos de tres "
+        f"segundos.\n{pie_de_pagina}\n\n"
+        f"3.2. El sistema debera cifrar los datos.\n{pie_de_pagina}\n\n"
+        f"3.3. Otro requisito cualquiera.\n{pie_de_pagina}\n"
+    )
+    resultado = NormalizadorDeTexto().normalizar(texto)
+    assert pie_de_pagina not in resultado.normalizado
+    assert "responder cada consulta" in resultado.normalizado
+    assert "cifrar los datos" in resultado.normalizado
 
 
 def prueba_pipeline_devuelve_texto_normalizado_con_trazabilidad() -> None:

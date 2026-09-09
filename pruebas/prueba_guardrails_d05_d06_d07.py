@@ -122,6 +122,25 @@ def prueba_transparencia_con_ia_destinatario_canal_y_limites_es_explicita() -> N
     assert _nivel(resultado, "GR-D05-VERIF-LIMITES") == NivelCobertura.EXPLICITO
 
 
+def prueba_comunicacion_tecnica_entre_sistemas_no_es_explicita() -> None:
+    texto = (
+        "1.1. El sistema de IA debera informar mediante una notificacion "
+        "al cliente informatico a traves de la API cuando se genere una "
+        "decision automatizada."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D05[3])
+    assert _nivel(resultado, "GR-D05-VERIF-CANAL") == NivelCobertura.AUSENTE
+
+
+def prueba_comunicacion_a_usuario_final_es_explicita() -> None:
+    texto = (
+        "1.1. El sistema de IA debera informar al usuario mediante una "
+        "notificacion cuando se genere una decision automatizada."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D05[3])
+    assert _nivel(resultado, "GR-D05-VERIF-CANAL") == NivelCobertura.EXPLICITO
+
+
 def prueba_explicabilidad_declarativa_es_parcial() -> None:
     resultado = _evaluar_texto(
         "2.1. El sistema debera proporcionar explicaciones adecuadas para "
@@ -135,13 +154,24 @@ def prueba_explicabilidad_con_factores_para_analista_es_explicita() -> None:
     texto = (
         "2.1. Ante una decision de rechazo, el sistema debera proporcionar "
         "una explicacion para el operador en formato de texto con los tres "
-        "factores principales considerados y usar la explicacion para la "
-        "revision."
+        "factores principales considerados y usar la explicacion de la "
+        "decision para la revision."
     )
     resultado = _evaluar_texto(texto, *GUARDRAILS_D06)
     assert _nivel(resultado, "GR-D06-PRES-EXPLICACION") == NivelCobertura.EXPLICITO
     assert _nivel(resultado, "GR-D06-VERIF-FORMATO") == NivelCobertura.EXPLICITO
     assert _nivel(resultado, "GR-D06-CTRL-REVISION") == NivelCobertura.EXPLICITO
+
+
+def prueba_explicacion_de_penalizacion_contractual_no_es_explicita() -> None:
+    texto = (
+        "8.1. El incumplimiento de los niveles especificados llevara "
+        "asociado la aplicacion de penalizaciones, salvo justificacion "
+        "pormenorizada del proveedor en la revision, y aceptacion de esta "
+        "por parte del SMS."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D06[5])
+    assert _nivel(resultado, "GR-D06-CTRL-REVISION") == NivelCobertura.PARCIAL
 
 
 def prueba_supervision_humana_generica_es_parcial() -> None:
