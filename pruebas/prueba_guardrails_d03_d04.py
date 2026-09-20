@@ -127,6 +127,26 @@ def prueba_mencion_incidental_de_finalidad_no_es_evidencia_explicita() -> None:
     assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
 
 
+def prueba_requisitos_clinicos_identifican_datos_finalidad_acceso_y_borrado() -> None:
+    texto = """
+    El sistema generara la transcripcion del audio para su almacenamiento y
+    procesamiento. Mantendra registros clinicos y grabaciones de audio.
+    Implementara autenticacion de acceso para usuarios autorizados.
+    Permitira eliminar de forma definitiva los registros clinicos cuando el
+    paciente lo solicite.
+    """
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D03)
+
+    for codigo in (
+        "GR-D03-PRES-DATOS",
+        "GR-D03-DELIM-FINALIDAD",
+        "GR-D03-RESP-ACCESO",
+        "GR-D03-CTRL-RETENCION",
+    ):
+        aplicacion = _hallazgo_de(resultado, codigo)
+        assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+
+
 @pytest.mark.parametrize(
     ("guardrail", "texto"),
     [

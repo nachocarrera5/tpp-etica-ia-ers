@@ -43,7 +43,10 @@ _METRICAS_IA_INTRINSICAS = (
 )
 
 
-_METRICAS_INFRA = r"(?:disponibilidad|latencia|tiempo\s+de\s+respuesta|responder)"
+_METRICAS_INFRA = (
+    r"(?:disponibilidad|latencia|tiempo\s+de\s+(?:respuesta|conversion|"
+    r"procesamiento)|responder)"
+)
 
 _CONTEXTO_IA_MODELO = (
     r"(?:\bia\b|inteligencia\s+artificial|modelo\w*|algoritmo\w*|"
@@ -55,9 +58,9 @@ _UMBRAL_METRICA = (
     r"(?:\d+(?:[.,]\d+)?\s*%|umbral\s+(?:definido|m[ií]nimo|"
     r"m[aá]ximo)|inferior\s+al\s+umbral|superior\s+al\s+umbral|"
     r"criterio\s+de\s+aceptaci[oó]n|(?:(?:menor|inferior)\s+a|"
-    r"menos\s+de)\s+"
-    r"(?:un|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|"
-    r"diez)\s+(?:segundos?|minutos?|horas?))"
+    r"menos\s+de|m[aá]ximo\s+de(?:\s+entre)?|<)\s*"
+    r"(?:\d+(?:\s+y\s+\d+)?|un|una|dos|tres|cuatro|cinco|seis|siete|"
+    r"ocho|nueve|diez)\s+(?:segundos?|minutos?|horas?))"
 )
 
 
@@ -124,6 +127,16 @@ GR_D08_PRES_ROBUSTEZ = _crear_guardrail(
             r"ciberseguridad).{0,100}(?:ciclo\s+de\s+vida|"
             r"seguridad\s+desde\s+el\s+diseno)",
         ),
+        (
+            "recuperacion_ante_fallos",
+            r"(?:mecanismos?\s+automaticos?\s+de\s+)?respaldo\s+y\s+"
+            r"recuperacion.{0,80}fallos?\s+del\s+sistema",
+        ),
+        (
+            "robustez_ante_variaciones_y_ruido",
+            r"(?:reconocer\s+variaciones\s+de\s+acento|"
+            r"funcionar\s+correctamente.{0,70}ruido\s+ambiental)",
+        ),
     ),
     (
         (
@@ -160,6 +173,13 @@ GR_D08_VERIF_METRICAS = _crear_guardrail(
                 _UMBRAL_METRICA,
             ),
         ),
+        (
+            "tiempo_de_procesamiento_ia_con_umbral",
+            r"(?:tiempo\s+de\s+(?:conversion|transcripcion)\s+de\s+audio\s+"
+            r"a\s+texto|generacion\s+del\s+diagnostico).{0,70}"
+            r"(?:<\s*\d+|m[aá]ximo\s+de(?:\s+entre)?\s+\d+)"
+            r"(?:\s+y\s+\d+)?\s+minutos?",
+        ),
     ),
     (
         (
@@ -173,6 +193,11 @@ GR_D08_VERIF_METRICAS = _crear_guardrail(
             "metrica_infra_sin_contexto_ia",
             rf"(?:m[eé]tricas?|indicadores?).{{0,45}}{_METRICAS_INFRA}|"
             rf"{_METRICAS_INFRA}.{{0,45}}(?:m[eé]tricas?|indicadores?)",
+        ),
+        (
+            "precision_sin_umbral",
+            r"precision\s+(?:de|del)\s+(?:la\s+)?(?:transcripcion|"
+            r"diagnostico|modelo|deteccion)",
         ),
     ),
 )
@@ -206,6 +231,11 @@ GR_D08_CTRL_FALLAS = _crear_guardrail(
             r"comportamientos?\s+inesperados?).{0,120}"
             r"(?:ponerles\s+solucion|resolver|corregir|interrumpir)",
         ),
+        (
+            "respaldo_y_recuperacion_ante_falla",
+            r"respaldo\s+y\s+recuperacion.{0,90}"
+            r"(?:eviten?|prevenir|impedir).{0,65}perdida.{0,60}fallos?",
+        ),
     ),
     (
         (
@@ -238,6 +268,11 @@ GR_D08_CTRL_CONTINGENCIA = _crear_guardrail(
                 r"interrumpir|derivaci[oó]n\s+manual|revisi[oó]n\s+manual|"
                 r"plan\s+de\s+contingencia)",
             ),
+        ),
+        (
+            "recuperacion_automatica_ante_falla",
+            r"mecanismos?\s+automaticos?\s+de\s+respaldo\s+y\s+"
+            r"recuperacion.{0,100}fallos?\s+del\s+sistema",
         ),
     ),
     (
@@ -365,6 +400,11 @@ GR_D08_QUAL_DECLARATIVO = _crear_guardrail(
                 r"(?:precision|solidez|ciberseguridad)",
             ),
         ),
+        (
+            "condicion_de_robustez_verificable",
+            r"funcionar\s+correctamente\s+en\s+presencia\s+de\s+ruido"
+            r"\s+ambiental\s+moderado",
+        ),
     ),
     (
         (
@@ -472,7 +512,7 @@ GR_D09_RESP_ROLES = _crear_guardrail(
             "rol_poco_delimitado",
             _coocurrencia(
                 r"(?:responsable|equipo(?!\s+(?:f[ií]sico|inform[aá]tico))|"
-                r"comit[eé]|rol)",
+                r"comit[eé]|\brol(?:es)?\b)",
                 r"(?:datos?(?<!proceso de datos)|"
                 r"modelo|operaci[oó]n|revisi[oó]n|auditor[ií]a)",
                 distancia=200,

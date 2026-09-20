@@ -107,6 +107,35 @@ def prueba_transparencia_generica_es_parcial() -> None:
     assert _nivel(resultado, "GR-D05-PRES-IA") == NivelCobertura.PARCIAL
 
 
+def prueba_consentimiento_por_sesion_documenta_uso_destinatario_y_momento() -> None:
+    resultado = _evaluar_texto(
+        "Consentimiento del paciente a que la IA intervenga en cada sesion.",
+        *GUARDRAILS_D05,
+    )
+
+    for codigo in (
+        "GR-D05-PRES-IA",
+        "GR-D05-DELIM-DESTINATARIOS",
+        "GR-D05-DELIM-CONTENIDO",
+        "GR-D05-VERIF-CANAL",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_validacion_manual_de_transcripciones_es_control_humano() -> None:
+    resultado = _evaluar_texto(
+        "Posibilidad de correccion y validacion manual de las transcripciones.",
+        *GUARDRAILS_D07,
+    )
+
+    for codigo in (
+        "GR-D07-PRES-HUMANO",
+        "GR-D07-DELIM-DECISIONES",
+        "GR-D07-CTRL-INTERVENCION",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
 def prueba_transparencia_con_ia_destinatario_canal_y_limites_es_explicita() -> None:
     texto = (
         "1.1. El sistema debera informar al usuario que la recomendacion fue "

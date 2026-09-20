@@ -124,6 +124,12 @@ GR_D05_PRES_IA = _crear_guardrail(
             r"(?:generad[oa]|producid[oa])\s+(?:total\s+o\s+parcialmente\s+)?"
             r"por\s+(?:ia|inteligencia\s+artificial)",
         ),
+        (
+            "consentimiento_sobre_intervencion_ia",
+            r"consentimiento\s+(?:del|de\s+la)\s+(?:paciente|usuario)"
+            r".{0,60}(?:ia|inteligencia\s+artificial).{0,35}"
+            r"(?:intervenga|participe|procese)",
+        ),
     ),
     (
         (
@@ -161,6 +167,11 @@ GR_D05_DELIM_DESTINATARIOS = _crear_guardrail(
                 r"(?:informad[oa]s?|notificad[oa]s?|informaci[oó]n)"
             ),
         ),
+        (
+            "paciente_destinatario_del_consentimiento",
+            r"consentimiento\s+(?:del|de\s+la)\s+paciente.{0,70}"
+            r"(?:ia|inteligencia\s+artificial)",
+        ),
     ),
     (
         (
@@ -190,6 +201,12 @@ GR_D05_DELIM_CONTENIDO = _crear_guardrail(
                 r"l[ií]mites?|condiciones\s+de\s+uso|uso\s+de\s+"
                 r"(?:ia|inteligencia\s+artificial)|automatizaci[oó]n)"
             ),
+        ),
+        (
+            "intervencion_ia_comunicada",
+            r"consentimiento\s+(?:del|de\s+la)\s+(?:paciente|usuario)"
+            r".{0,70}(?:ia|inteligencia\s+artificial).{0,35}"
+            r"(?:intervenga|participe|procese)",
         ),
     ),
     (
@@ -234,6 +251,12 @@ GR_D05_VERIF_CANAL = _crear_guardrail(
                     r".{0,45}(?:informaci[oó]n|aviso|notificaci[oó]n)"
                 )
             ),
+        ),
+        (
+            "consentimiento_en_cada_interaccion",
+            r"consentimiento\s+(?:del|de\s+la)\s+(?:paciente|usuario)"
+            r".{0,90}(?:ia|inteligencia\s+artificial).{0,60}"
+            r"cada\s+(?:sesion|interaccion|consulta)",
         ),
     ),
     (
@@ -685,6 +708,12 @@ GR_D07_PRES_HUMANO = _crear_guardrail(
             r"especialista).{0,60}(?:revise|revisar|valide|validar)"
             r".{0,35}(?:confirme|confirmar|resultado|diagnostico)",
         ),
+        (
+            "validacion_manual_de_salida",
+            r"(?:correccion\s+y\s+validacion|validacion\s+y\s+correccion)"
+            r"\s+manual\s+de\s+(?:las\s+)?(?:transcripciones|salidas|"
+            r"resultados)",
+        ),
     ),
     (
         (
@@ -734,6 +763,11 @@ GR_D07_DELIM_DECISIONES = _crear_guardrail(
             r"personal\s+autorizado).{0,100}(?:revisar|validar|confirmar)"
             r"\w*.{0,80}(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|"
             r"salidas?|resultados?|informes?)",
+        ),
+        (
+            "transcripcion_sujeta_a_validacion_manual",
+            r"(?:correccion\s+y\s+validacion|validacion\s+y\s+correccion)"
+            r"\s+manual\s+de\s+(?:las\s+)?transcripciones",
         ),
     ),
     (
@@ -829,6 +863,12 @@ GR_D07_CTRL_INTERVENCION = _crear_guardrail(
             "capacidad_de_interrumpir_sistema",
             r"personas?.{0,500}(?:intervenir|interrumpir)"
             r".{0,80}(?:funcionamiento|sistema\s+de\s+ia)",
+        ),
+        (
+            "capacidad_de_corregir_salida_manualmente",
+            r"(?:posibilidad|capacidad)\s+de\s+(?:correccion|corregir)"
+            r".{0,40}(?:validacion\s+)?manual.{0,45}"
+            r"(?:transcripciones|salidas|resultados)",
         ),
     ),
     (

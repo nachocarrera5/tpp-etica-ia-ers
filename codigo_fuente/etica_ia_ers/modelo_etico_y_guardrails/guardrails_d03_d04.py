@@ -56,6 +56,12 @@ GR_D03_PRES_DATOS = GuardrailLexico(
             r"(?:datos\s+(?:del|de\s+los)\s+pacientes?|"
             r"imagenes?\s+clinicas?|historias?\s+clinicas?)",
         ),
+        senal(
+            "categorias_de_informacion_clinica",
+            r"(?:informacion|registros?)\s+clinicos?|"
+            r"(?:grabaciones?|archivos?)\s+de\s+audio|"
+            r"notas.{0,35}transcripciones.{0,35}diagnosticos",
+        ),
     ),
     senales_parciales=(
         senal("mencion_datos_usuario", r"datos\s+(?:del|de\s+los)\s+usuarios?"),
@@ -115,6 +121,13 @@ GR_D03_DELIM_FINALIDAD = GuardrailLexico(
             r"clasificar|prediccion|predecir).{0,80}"
             r"(?:a\s+partir\s+de|mediante)\s+datos\s+"
             r"(?:financieros|crediticios|clinicos|personales)",
+        ),
+        senal(
+            "informacion_clinica_vinculada_a_procesamiento",
+            r"(?:audio|grabaciones?|transcripciones?|notas\s+clinicas?|"
+            r"informacion\s+clinica).{0,100}(?:para\s+(?:su\s+)?|"
+            r"mediante\s+)(?:almacenamiento|procesamiento|analisis|"
+            r"transcripcion|diagnostico)",
         ),
     ),
     senales_parciales=(
@@ -221,6 +234,11 @@ GR_D03_RESP_ACCESO = GuardrailLexico(
             r"controles?\s+de\s+acceso.{0,45}(?:modelos?|datos|"
             r"informaci[oó]n)",
         ),
+        senal(
+            "autenticacion_de_usuarios_autorizados",
+            r"(?:control\s+de\s+)?autenticacion\s+de\s+acceso\s+para\s+"
+            r"usuarios\s+(?:autorizados|establecidos)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_acceso", r"acceso\s+a\s+(?:los\s+)?datos"),
@@ -271,6 +289,12 @@ GR_D03_CTRL_RETENCION = GuardrailLexico(
             "eliminacion_condicionada",
             r"(?:eliminaran|borraran|anonimizaran).{0,50}"
             r"(?:despues|tras|cuando|al\s+finalizar|en\s+un\s+plazo)",
+        ),
+        senal(
+            "eliminacion_definitiva_a_solicitud",
+            r"eliminar\w*.{0,35}forma\s+definitiva.{0,80}"
+            r"(?:cuando|a\s+solicitud|si).{0,45}"
+            r"(?:paciente|usuario|titular|sea\s+requerido)",
         ),
     ),
     senales_parciales=(

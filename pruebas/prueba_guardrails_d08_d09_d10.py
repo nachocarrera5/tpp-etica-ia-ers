@@ -130,6 +130,57 @@ def prueba_ejemplo_oficial_d09_sin_evidencia_es_ausente() -> None:
     )
 
 
+def prueba_requisitos_de_respaldo_ruido_y_tiempo_documentan_robustez() -> None:
+    texto = (
+        "El sistema tendra mecanismos automaticos de respaldo y recuperacion "
+        "que eviten la perdida de informacion ante fallos del sistema. "
+        "El modelo de IA tendra un tiempo de conversion de audio a texto "
+        "< 10 minutos. Debera funcionar correctamente en presencia "
+        "de ruido ambiental moderado."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D08)
+
+    for codigo in (
+        "GR-D08-PRES-ROBUSTEZ",
+        "GR-D08-VERIF-METRICAS",
+        "GR-D08-CTRL-FALLAS",
+        "GR-D08-CTRL-CONTINGENCIA",
+        "GR-D08-QUAL-DECLARATIVO",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+@pytest.mark.parametrize(
+    "requisito",
+    (
+        "Tiempo de conversion de audio a texto < 10 minutos.",
+        "Generacion del diagnostico en un tiempo maximo de entre 5 y 7 minutos.",
+    ),
+)
+def prueba_tiempos_de_transcripcion_y_diagnostico_son_metricas_ia(
+    requisito: str,
+) -> None:
+    resultado = _evaluar_texto(requisito, GUARDRAILS_D08[1])
+
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == (
+        NivelCobertura.EXPLICITO
+    )
+
+
+def prueba_control_de_versiones_tecnico_no_inventa_un_rol_responsable() -> None:
+    texto = (
+        "Se usaran modelos preentrenados, endpoints REST para el control de "
+        "grabacion y control de versiones por Git."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D09)
+
+    assert all(
+        aplicacion.hallazgo is not None
+        and aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+        for aplicacion in resultado.aplicaciones
+    )
+
+
 def prueba_ejemplo_oficial_d10_declarativo_es_parcial() -> None:
     resultado = _evaluar_texto(
         "El sistema debera ser inclusivo y sostenible.",
