@@ -141,6 +141,16 @@ def prueba_comunicacion_a_usuario_final_es_explicita() -> None:
     assert _nivel(resultado, "GR-D05-VERIF-CANAL") == NivelCobertura.EXPLICITO
 
 
+def prueba_usuario_mencionado_no_convierte_un_canal_tecnico_en_humano() -> None:
+    texto = (
+        "El usuario configurara la API. El sistema de inteligencia artificial "
+        "informara mediante una notificacion al cliente informatico cuando "
+        "finalice el procesamiento."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D05[3])
+    assert _nivel(resultado, "GR-D05-VERIF-CANAL") == NivelCobertura.AUSENTE
+
+
 def prueba_explicabilidad_declarativa_es_parcial() -> None:
     resultado = _evaluar_texto(
         "2.1. El sistema debera proporcionar explicaciones adecuadas para "
@@ -171,7 +181,7 @@ def prueba_explicacion_de_penalizacion_contractual_no_es_explicita() -> None:
         "por parte del SMS."
     )
     resultado = _evaluar_texto(texto, GUARDRAILS_D06[5])
-    assert _nivel(resultado, "GR-D06-CTRL-REVISION") == NivelCobertura.PARCIAL
+    assert _nivel(resultado, "GR-D06-CTRL-REVISION") == NivelCobertura.AUSENTE
 
 
 def prueba_supervision_humana_generica_es_parcial() -> None:

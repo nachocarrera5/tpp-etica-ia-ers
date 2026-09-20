@@ -208,6 +208,26 @@ def prueba_disponibilidad_de_ia_con_contexto_de_modelo_es_explicita() -> None:
     assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.EXPLICITO
 
 
+def prueba_metrica_y_porcentaje_de_otro_enunciado_no_se_asocian() -> None:
+    texto = (
+        "La precision se documentara solamente como atributo informativo "
+        "del modelo. La infraestructura general debera alcanzar una "
+        "disponibilidad del 99%."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") != NivelCobertura.EXPLICITO
+
+
+def prueba_metrica_de_ia_se_detecta_despues_de_una_introduccion_larga() -> None:
+    texto = (
+        "Antecedentes generales del proyecto y alcance contractual. " * 7
+        + "La disponibilidad del modelo de inteligencia artificial debera "
+        "superar el 99%."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.EXPLICITO
+
+
 def prueba_d08_cubre_contingencia_monitoreo_e_incidentes() -> None:
     texto = (
         "Ante una falla se aplicara el plan de contingencia y el modo degradado. "

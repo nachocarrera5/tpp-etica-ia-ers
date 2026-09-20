@@ -35,8 +35,8 @@ _SALIDA_SISTEMA_IA = (
 
 def _con_contexto_salida_ia(expresion: str, distancia: int = 150) -> str:
     return (
-        rf"(?:{expresion}).{{0,{distancia}}}{_SALIDA_SISTEMA_IA}|"
-        rf"{_SALIDA_SISTEMA_IA}.{{0,{distancia}}}(?:{expresion})"
+        rf"(?:{expresion})[^.;]{{0,{distancia}}}{_SALIDA_SISTEMA_IA}|"
+        rf"{_SALIDA_SISTEMA_IA}[^.;]{{0,{distancia}}}(?:{expresion})"
     )
 
 
@@ -54,11 +54,14 @@ _CANAL_TECNICO_ENTRE_SISTEMAS = (
 
 
 def _con_destinatario_humano(expresion: str, distancia: int = 100) -> str:
+    sin_canal_tecnico = (
+        rf"(?![^.;]{{0,{distancia * 3}}}{_CANAL_TECNICO_ENTRE_SISTEMAS})"
+    )
     return (
-        rf"(?!.{{0,80}}{_CANAL_TECNICO_ENTRE_SISTEMAS})"
-        rf"(?:{expresion}).{{0,{distancia}}}{_DESTINATARIO_HUMANO}|"
-        rf"{_DESTINATARIO_HUMANO}.{{0,{distancia}}}(?:{expresion})"
-        rf"(?!.{{0,80}}{_CANAL_TECNICO_ENTRE_SISTEMAS})"
+        rf"{sin_canal_tecnico}(?:{expresion})"
+        rf"[^.;]{{0,{distancia}}}{_DESTINATARIO_HUMANO}|"
+        rf"{sin_canal_tecnico}{_DESTINATARIO_HUMANO}"
+        rf"[^.;]{{0,{distancia}}}(?:{expresion})"
     )
 
 
@@ -578,10 +581,14 @@ GR_D06_CTRL_REVISION = _crear_guardrail(
     (
         (
             "mencion_revision_explicacion",
-            r"(?:revisi[oó]n|reclamo|apelaci[oó]n|an[aá]lisis\s+posterior)"
-            r".{0,80}(?:explicaci[oó]n|justificaci[oó]n)|"
-            r"(?:explicaci[oó]n|justificaci[oó]n).{0,80}"
-            r"(?:revisi[oó]n|reclamo|apelaci[oó]n|an[aá]lisis\s+posterior)",
+            _con_contexto_salida_ia(
+                r"(?:revisi[oó]n|reclamo|apelaci[oó]n|"
+                r"an[aá]lisis\s+posterior).{0,80}"
+                r"(?:explicaci[oó]n|justificaci[oó]n)|"
+                r"(?:explicaci[oó]n|justificaci[oó]n).{0,80}"
+                r"(?:revisi[oó]n|reclamo|apelaci[oó]n|"
+                r"an[aá]lisis\s+posterior)"
+            ),
         ),
     ),
 )

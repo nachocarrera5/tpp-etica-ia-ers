@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from itertools import permutations
 from typing import Tuple
 
 from etica_ia_ers.dominio import (
@@ -23,6 +24,18 @@ def _coocurrencia(
         rf"(?:{segundo_concepto}).{{0,{distancia}}}(?:{primer_concepto})"
     )
 
+
+def _coocurrencia_en_enunciado(
+    *conceptos: str,
+    distancia: int = 120,
+) -> str:
+    alternativas = []
+    separador = rf"[^.;]{{0,{distancia}}}"
+    for orden in permutations(conceptos):
+        alternativas.append(
+            separador.join(rf"(?:{concepto})" for concepto in orden)
+        )
+    return "|".join(alternativas)
 
 
 _METRICAS_IA_INTRINSICAS = (
@@ -134,14 +147,18 @@ GR_D08_VERIF_METRICAS = _crear_guardrail(
     (
         (
             "metrica_ia_con_umbral",
-            _coocurrencia(_METRICAS_IA_INTRINSICAS, _UMBRAL_METRICA),
+            _coocurrencia_en_enunciado(
+                _METRICAS_IA_INTRINSICAS,
+                _UMBRAL_METRICA,
+            ),
         ),
         (
             "metrica_infra_con_contexto_ia_y_umbral",
-            rf"(?=^.{{0,200}}{_CONTEXTO_IA_MODELO})"
-            rf"^.{{0,200}}{_METRICAS_INFRA}.{{0,80}}{_UMBRAL_METRICA}|"
-            rf"(?=^.{{0,200}}{_CONTEXTO_IA_MODELO})"
-            rf"^.{{0,200}}{_UMBRAL_METRICA}.{{0,80}}{_METRICAS_INFRA}",
+            _coocurrencia_en_enunciado(
+                _CONTEXTO_IA_MODELO,
+                _METRICAS_INFRA,
+                _UMBRAL_METRICA,
+            ),
         ),
     ),
     (

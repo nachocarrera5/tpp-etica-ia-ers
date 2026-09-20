@@ -136,6 +136,15 @@ def prueba_eliminar_boilerplate_repetido_no_afecta_lineas_cortas_repetidas() -> 
     assert eliminar_boilerplate_repetido(texto) == texto
 
 
+def prueba_eliminar_boilerplate_repetido_preserva_requisitos_repetidos() -> None:
+    requisito = (
+        "El sistema debera conservar un registro integro de cada decision "
+        "automatizada para permitir su auditoria."
+    )
+    texto = "\n".join((requisito, requisito, requisito))
+    assert eliminar_boilerplate_repetido(texto) == texto
+
+
 def prueba_pipeline_completo_elimina_boilerplate_de_pdf_administrativo() -> None:
     pie_de_pagina = (
         "GAMBIN MARIN, MIGUEL ANGEL 18/02/2026 Esta es una copia autentica "

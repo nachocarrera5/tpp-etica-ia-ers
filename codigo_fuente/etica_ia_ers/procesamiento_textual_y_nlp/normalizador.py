@@ -95,6 +95,20 @@ def normalizar_numeracion(texto: str) -> str:
     return texto
 
 
+_PATRONES_BOILERPLATE_ADMINISTRATIVO = (
+    re.compile(
+        r"copia\s+aut[eé]ntica\s+imprimible.*"
+        r"documento\s+electr[oó]nico\s+administrativo",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"documento\s+firmado\s+electr[oó]nicamente.*"
+        r"(?:c[oó]digo\s+seguro\s+de\s+verificaci[oó]n|csv)",
+        re.IGNORECASE,
+    ),
+)
+
+
 def eliminar_boilerplate_repetido(
     texto: str,
     minimo_repeticiones: int = 3,
@@ -108,7 +122,13 @@ def eliminar_boilerplate_repetido(
         if len(linea.strip()) >= longitud_minima
     )
     boilerplate = {
-        linea for linea, veces in conteo.items() if veces >= minimo_repeticiones
+        linea
+        for linea, veces in conteo.items()
+        if veces >= minimo_repeticiones
+        and any(
+            patron.search(linea)
+            for patron in _PATRONES_BOILERPLATE_ADMINISTRATIVO
+        )
     }
     if not boilerplate:
         return texto
