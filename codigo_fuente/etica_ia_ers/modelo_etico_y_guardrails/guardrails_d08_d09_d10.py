@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from itertools import permutations
 from typing import Tuple
 
 from etica_ia_ers.dominio import (
@@ -22,6 +23,42 @@ def _coocurrencia(
         rf"(?:{primer_concepto}).{{0,{distancia}}}(?:{segundo_concepto})|"
         rf"(?:{segundo_concepto}).{{0,{distancia}}}(?:{primer_concepto})"
     )
+
+
+def _coocurrencia_en_enunciado(
+    *conceptos: str,
+    distancia: int = 120,
+) -> str:
+    alternativas = []
+    separador = rf"[^.;]{{0,{distancia}}}"
+    for orden in permutations(conceptos):
+        alternativas.append(
+            separador.join(rf"(?:{concepto})" for concepto in orden)
+        )
+    return "|".join(alternativas)
+
+
+_METRICAS_IA_INTRINSICAS = (
+    r"(?:precisi[oó]n|recall|f1|tasa\s+de\s+error|confianza|desempe[nñ]o)"
+)
+
+
+_METRICAS_INFRA = r"(?:disponibilidad|latencia|tiempo\s+de\s+respuesta|responder)"
+
+_CONTEXTO_IA_MODELO = (
+    r"(?:\bia\b|inteligencia\s+artificial|modelo\w*|algoritmo\w*|"
+    r"predicci[oó]n\w*|inferencia\w*|aprendizaje\s+autom[aá]tico)"
+)
+
+
+_UMBRAL_METRICA = (
+    r"(?:\d+(?:[.,]\d+)?\s*%|umbral\s+(?:definido|m[ií]nimo|"
+    r"m[aá]ximo)|inferior\s+al\s+umbral|superior\s+al\s+umbral|"
+    r"criterio\s+de\s+aceptaci[oó]n|(?:(?:menor|inferior)\s+a|"
+    r"menos\s+de)\s+"
+    r"(?:un|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|"
+    r"diez)\s+(?:segundos?|minutos?|horas?))"
+)
 
 
 def _crear_guardrail(
@@ -109,27 +146,33 @@ GR_D08_VERIF_METRICAS = _crear_guardrail(
     "Verifica si se definen metricas, umbrales o condiciones de aceptacion.",
     (
         (
-            "metrica_con_umbral",
-            _coocurrencia(
-                r"(?:precisi[oó]n|recall|f1|disponibilidad|latencia|"
-                r"confianza|tasa\s+de\s+error|desempe[nñ]o|"
-                r"tiempo\s+de\s+respuesta|responder)",
-                r"(?:\d+(?:[.,]\d+)?\s*%?|umbral\s+(?:definido|m[ií]nimo|"
-                r"m[aá]ximo)|inferior\s+al\s+umbral|superior\s+al\s+umbral|"
-                r"criterio\s+de\s+aceptaci[oó]n|(?:(?:menor|inferior)\s+a|"
-                r"menos\s+de)\s+"
-                r"(?:un|una|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|"
-                r"diez)\s+(?:segundos?|minutos?|horas?))",
+            "metrica_ia_con_umbral",
+            _coocurrencia_en_enunciado(
+                _METRICAS_IA_INTRINSICAS,
+                _UMBRAL_METRICA,
+            ),
+        ),
+        (
+            "metrica_infra_con_contexto_ia_y_umbral",
+            _coocurrencia_en_enunciado(
+                _CONTEXTO_IA_MODELO,
+                _METRICAS_INFRA,
+                _UMBRAL_METRICA,
             ),
         ),
     ),
     (
         (
-            "metrica_sin_umbral",
+            "metrica_ia_sin_umbral",
             r"(?:m[eé]tricas?|indicadores?).{0,45}(?:desempe[nñ]o|"
-            r"disponibilidad|precisi[oó]n|confianza|calidad)|"
-            r"(?:desempe[nñ]o|disponibilidad|precisi[oó]n|confianza)"
+            r"precisi[oó]n|confianza|calidad)|"
+            r"(?:desempe[nñ]o|precisi[oó]n|confianza)"
             r".{0,45}(?:m[eé]tricas?|indicadores?)",
+        ),
+        (
+            "metrica_infra_sin_contexto_ia",
+            rf"(?:m[eé]tricas?|indicadores?).{{0,45}}{_METRICAS_INFRA}|"
+            rf"{_METRICAS_INFRA}.{{0,45}}(?:m[eé]tricas?|indicadores?)",
         ),
     ),
 )
@@ -402,8 +445,11 @@ GR_D09_RESP_ROLES = _crear_guardrail(
         (
             "rol_poco_delimitado",
             _coocurrencia(
-                r"(?:responsable|equipo|comit[eé]|rol)",
-                r"(?:datos?|modelo|operaci[oó]n|revisi[oó]n|auditor[ií]a)",
+                r"(?:responsable|equipo(?!\s+(?:f[ií]sico|inform[aá]tico))|"
+                r"comit[eé]|rol)",
+                r"(?:datos?(?<!proceso de datos)|"
+                r"modelo|operaci[oó]n|revisi[oó]n|auditor[ií]a)",
+                distancia=200,
             ),
         ),
     ),

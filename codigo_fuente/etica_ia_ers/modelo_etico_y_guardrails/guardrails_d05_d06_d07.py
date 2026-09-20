@@ -26,6 +26,45 @@ def _con_contexto_transparencia(expresion: str) -> str:
     )
 
 
+
+_SALIDA_SISTEMA_IA = (
+    r"(?:decisi[oó]n(?:es)?|resultados?|diagn[oó]stico\w*|"
+    r"recomendaci[oó]n(?:es)?|salidas?|puntaje\w*)"
+)
+
+
+def _con_contexto_salida_ia(expresion: str, distancia: int = 150) -> str:
+    return (
+        rf"(?:{expresion})[^.;]{{0,{distancia}}}{_SALIDA_SISTEMA_IA}|"
+        rf"{_SALIDA_SISTEMA_IA}[^.;]{{0,{distancia}}}(?:{expresion})"
+    )
+
+
+
+_DESTINATARIO_HUMANO = (
+    r"(?:usuario|operador|supervisor|responsable|analista|revisor|"
+    r"afectad[oa]|paciente|cliente\s+final|solicitante|ciudadan[oa])"
+)
+
+
+_CANAL_TECNICO_ENTRE_SISTEMAS = (
+    r"(?:api|endpoint|servicio\s+web|cliente\s+inform[aá]tico|"
+    r"solicitud\s+http|servicio\s+rest|integraci[oó]n\s+de\s+sistemas)"
+)
+
+
+def _con_destinatario_humano(expresion: str, distancia: int = 100) -> str:
+    sin_canal_tecnico = (
+        rf"(?![^.;]{{0,{distancia * 3}}}{_CANAL_TECNICO_ENTRE_SISTEMAS})"
+    )
+    return (
+        rf"{sin_canal_tecnico}(?:{expresion})"
+        rf"[^.;]{{0,{distancia}}}{_DESTINATARIO_HUMANO}|"
+        rf"{sin_canal_tecnico}{_DESTINATARIO_HUMANO}"
+        rf"[^.;]{{0,{distancia}}}(?:{expresion})"
+    )
+
+
 def _crear_guardrail(
     codigo: str,
     nombre: str,
@@ -174,21 +213,25 @@ GR_D05_VERIF_CANAL = _crear_guardrail(
         (
             "momento_comunicacion",
             _con_contexto_transparencia(
-                r"(?:inform|comunic|notific)\w*.{0,100}"
-                r"(?:antes\s+de|cuando|al\s+momento|cada\s+vez)|"
-                r"(?:antes\s+de|cuando|al\s+momento|cada\s+vez).{0,100}"
-                r"(?:inform|comunic|notific)\w*"
+                _con_destinatario_humano(
+                    r"(?:inform|comunic|notific)\w*.{0,100}"
+                    r"(?:antes\s+de|cuando|al\s+momento|cada\s+vez)|"
+                    r"(?:antes\s+de|cuando|al\s+momento|cada\s+vez)"
+                    r".{0,100}(?:inform|comunic|notific)\w*"
+                )
             ),
         ),
         (
             "canal_comunicacion",
             _con_contexto_transparencia(
-                r"(?:informar|comunicar|notificar|aviso|informaci[oó]n)"
-                r".{0,80}(?:mediante|a\s+trav[eé]s\s+de|en)\s+"
-                r"(?:una?\s+)?(?:pantalla|correo|notificaci[oó]n|"
-                r"interfaz|panel)|(?:pantalla|correo|notificaci[oó]n|"
-                r"interfaz|panel).{0,45}(?:informaci[oó]n|aviso|"
-                r"notificaci[oó]n)"
+                _con_destinatario_humano(
+                    r"(?:informar|comunicar|notificar|aviso|"
+                    r"informaci[oó]n).{0,80}(?:mediante|a\s+trav[eé]s\s+de|"
+                    r"en)\s+(?:una?\s+)?(?:pantalla|correo|"
+                    r"notificaci[oó]n|interfaz|panel)|"
+                    r"(?:pantalla|correo|notificaci[oó]n|interfaz|panel)"
+                    r".{0,45}(?:informaci[oó]n|aviso|notificaci[oó]n)"
+                )
             ),
         ),
     ),
@@ -525,20 +568,27 @@ GR_D06_CTRL_REVISION = _crear_guardrail(
     (
         (
             "explicacion_para_revision",
-            r"(?:explicaci[oó]n|justificaci[oó]n).{0,100}"
-            r"(?:revisi[oó]n|reclamo|apelaci[oó]n|an[aá]lisis\s+posterior)|"
-            r"(?:usar|utilizar)\w*.{0,30}(?:explicaci[oó]n|"
-            r"justificaci[oó]n).{0,40}(?:revisi[oó]n|reclamo|"
-            r"apelaci[oó]n|an[aá]lisis)",
+            _con_contexto_salida_ia(
+                r"(?:explicaci[oó]n|justificaci[oó]n).{0,100}"
+                r"(?:revisi[oó]n|reclamo|apelaci[oó]n|"
+                r"an[aá]lisis\s+posterior)|"
+                r"(?:usar|utilizar)\w*.{0,30}(?:explicaci[oó]n|"
+                r"justificaci[oó]n).{0,40}(?:revisi[oó]n|reclamo|"
+                r"apelaci[oó]n|an[aá]lisis)"
+            ),
         ),
     ),
     (
         (
             "mencion_revision_explicacion",
-            r"(?:revisi[oó]n|reclamo|apelaci[oó]n|an[aá]lisis\s+posterior)"
-            r".{0,80}(?:explicaci[oó]n|justificaci[oó]n)|"
-            r"(?:explicaci[oó]n|justificaci[oó]n).{0,80}"
-            r"(?:revisi[oó]n|reclamo|apelaci[oó]n|an[aá]lisis\s+posterior)",
+            _con_contexto_salida_ia(
+                r"(?:revisi[oó]n|reclamo|apelaci[oó]n|"
+                r"an[aá]lisis\s+posterior).{0,80}"
+                r"(?:explicaci[oó]n|justificaci[oó]n)|"
+                r"(?:explicaci[oó]n|justificaci[oó]n).{0,80}"
+                r"(?:revisi[oó]n|reclamo|apelaci[oó]n|"
+                r"an[aá]lisis\s+posterior)"
+            ),
         ),
     ),
 )

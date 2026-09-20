@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from collections import Counter
 from dataclasses import dataclass, field
 from typing import Callable, List, Sequence
 
@@ -94,6 +95,48 @@ def normalizar_numeracion(texto: str) -> str:
     return texto
 
 
+_PATRONES_BOILERPLATE_ADMINISTRATIVO = (
+    re.compile(
+        r"copia\s+aut[eé]ntica\s+imprimible.*"
+        r"documento\s+electr[oó]nico\s+administrativo",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"documento\s+firmado\s+electr[oó]nicamente.*"
+        r"(?:c[oó]digo\s+seguro\s+de\s+verificaci[oó]n|csv)",
+        re.IGNORECASE,
+    ),
+)
+
+
+def eliminar_boilerplate_repetido(
+    texto: str,
+    minimo_repeticiones: int = 3,
+    longitud_minima: int = 25,
+) -> str:
+
+    lineas = texto.split("\n")
+    conteo = Counter(
+        linea.strip()
+        for linea in lineas
+        if len(linea.strip()) >= longitud_minima
+    )
+    boilerplate = {
+        linea
+        for linea, veces in conteo.items()
+        if veces >= minimo_repeticiones
+        and any(
+            patron.search(linea)
+            for patron in _PATRONES_BOILERPLATE_ADMINISTRATIVO
+        )
+    }
+    if not boilerplate:
+        return texto
+    return "\n".join(
+        linea for linea in lineas if linea.strip() not in boilerplate
+    )
+
+
 FuncionNormalizacion = Callable[[str], str]
 
 
@@ -115,6 +158,9 @@ PASOS_POR_DEFECTO: List[PasoNormalizacion] = [
     PasoNormalizacion("eliminar_marcadores_de_pagina", eliminar_marcadores_de_pagina),
     PasoNormalizacion("normalizar_numeracion", normalizar_numeracion),
     PasoNormalizacion("colapsar_espacios", colapsar_espacios),
+    PasoNormalizacion(
+        "eliminar_boilerplate_repetido", eliminar_boilerplate_repetido
+    ),
     PasoNormalizacion("colapsar_lineas_en_blanco", colapsar_lineas_en_blanco),
 ]
 

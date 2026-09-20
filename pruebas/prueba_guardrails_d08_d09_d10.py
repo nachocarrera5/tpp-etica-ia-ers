@@ -164,6 +164,70 @@ def prueba_ejemplo_oficial_combinado_detecta_evidencia_explicita() -> None:
         assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
 
 
+def prueba_disponibilidad_de_infraestructura_sin_contexto_ia_es_ausente() -> None:
+    texto = (
+        "3.1. El sistema debera garantizar una disponibilidad del 99% "
+        "durante el horario de atencion.\n"
+        "3.2. El sistema debera responder cada consulta en menos de tres "
+        "segundos."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.AUSENTE
+
+
+def prueba_metrica_de_modelo_ia_sin_contexto_extra_es_explicita() -> None:
+    texto = (
+        "3.1. La precision del modelo debera ser superior al umbral "
+        "definido antes de su despliegue."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.EXPLICITO
+
+
+def prueba_numero_suelto_sin_porcentaje_no_certifica_umbral() -> None:
+    texto = (
+        "3.1. El sistema debera seguir el enfoque de medicina 6P, con "
+        "precision, personalizacion y proactividad como pilares."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") != NivelCobertura.EXPLICITO
+
+
+def prueba_precision_con_porcentaje_si_certifica_umbral() -> None:
+    texto = "3.1. La precision del modelo debera superar el 95%."
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.EXPLICITO
+
+
+def prueba_disponibilidad_de_ia_con_contexto_de_modelo_es_explicita() -> None:
+    texto = (
+        "3.1. La disponibilidad del modelo de inteligencia artificial "
+        "debera superar el umbral minimo definido."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.EXPLICITO
+
+
+def prueba_metrica_y_porcentaje_de_otro_enunciado_no_se_asocian() -> None:
+    texto = (
+        "La precision se documentara solamente como atributo informativo "
+        "del modelo. La infraestructura general debera alcanzar una "
+        "disponibilidad del 99%."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") != NivelCobertura.EXPLICITO
+
+
+def prueba_metrica_de_ia_se_detecta_despues_de_una_introduccion_larga() -> None:
+    texto = (
+        "Antecedentes generales del proyecto y alcance contractual. " * 7
+        + "La disponibilidad del modelo de inteligencia artificial debera "
+        "superar el 99%."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[1])
+    assert _nivel(resultado, "GR-D08-VERIF-METRICAS") == NivelCobertura.EXPLICITO
+
+
 def prueba_d08_cubre_contingencia_monitoreo_e_incidentes() -> None:
     texto = (
         "Ante una falla se aplicara el plan de contingencia y el modo degradado. "
@@ -180,6 +244,25 @@ def prueba_d08_cubre_contingencia_monitoreo_e_incidentes() -> None:
         "GR-D08-QUAL-DECLARATIVO",
     ):
         assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_equipo_fisico_de_infraestructura_no_es_evidencia_de_rol() -> None:
+    texto = (
+        "3.1. La solucion garantizara alta disponibilidad implementando "
+        "mecanismos de redundancia dentro de un equipo fisico ubicado en "
+        "el Centro de Proceso de Datos."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D09[1])
+    assert _nivel(resultado, "GR-D09-RESP-ROLES") == NivelCobertura.AUSENTE
+
+
+def prueba_rol_de_gobernanza_de_datos_sigue_siendo_explicito() -> None:
+    texto = (
+        "3.1. El responsable de datos debera revisar el cumplimiento "
+        "normativo del modelo cada trimestre."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D09[1])
+    assert _nivel(resultado, "GR-D09-RESP-ROLES") == NivelCobertura.EXPLICITO
 
 
 def prueba_d09_cubre_roles_reclamos_y_reparacion() -> None:

@@ -293,10 +293,11 @@ def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
         "GR-D07-PRES-HUMANO",
         "GR-D07-DELIM-ROLES",
         "GR-D07-CTRL-INTERVENCION",
-        "GR-D08-VERIF-METRICAS",
     ):
         assert codigo in hallazgos_con_evidencia
         assert hallazgos_con_evidencia[codigo]["evidencias"]
+
+    assert "GR-D08-VERIF-METRICAS" not in hallazgos_con_evidencia
 
     assert datos["indicadores"]["dimensiones_parciales"] == 6
     assert datos["indicadores"]["dimensiones_ausentes"] == 4
@@ -316,7 +317,7 @@ def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
                 "D05": "AUSENTE",
                 "D06": "PARCIAL",
                 "D07": "AUSENTE",
-                "D08": "PARCIAL",
+                "D08": "AUSENTE",
                 "D09": "PARCIAL",
                 "D10": "AUSENTE",
             },
@@ -326,7 +327,6 @@ def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
                 "GR-D04-PRES-SESGOS",
                 "GR-D04-DELIM-PROXIES",
                 "GR-D06-PRES-EXPLICACION",
-                "GR-D08-VERIF-METRICAS",
                 "GR-D09-VERIF-REGISTROS",
             },
         ),
@@ -340,7 +340,7 @@ def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
                 "D05": "AUSENTE",
                 "D06": "AUSENTE",
                 "D07": "AUSENTE",
-                "D08": "PARCIAL",
+                "D08": "AUSENTE",
                 "D09": "AUSENTE",
                 "D10": "PARCIAL",
             },
@@ -349,7 +349,6 @@ def prueba_diagnostico_medico_conserva_evidencia_y_brechas() -> None:
                 "GR-D02-PRES-ACTORES",
                 "GR-D02-DELIM-VULNERABLES",
                 "GR-D03-QUAL-PRIVACIDAD",
-                "GR-D08-VERIF-METRICAS",
                 "GR-D10-VERIF-ACCESIBILIDAD",
                 "GR-D10-CTRL-AUTONOMIA",
             },
