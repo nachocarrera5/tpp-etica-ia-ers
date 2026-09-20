@@ -54,18 +54,12 @@ svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width:
   border-bottom: 1px solid #293331;
 }
 
-.marca { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
-.marca-sello { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid #79afa7; color: #a9d2cb; font-size: 12px; font-weight: 700; }
+.marca { color: inherit; text-decoration: none; }
 .marca strong, .marca small { display: block; letter-spacing: 0; }
 .marca strong { font-size: 15px; }
 .marca small { margin-top: 1px; color: #aab7b4; font-size: 11px; }
-.estado-servicio { display: flex; align-items: center; gap: 8px; color: #c5cecb; font-size: 12px; }
-.estado-servicio span { width: 7px; height: 7px; background: #60b893; border-radius: 50%; box-shadow: 0 0 0 3px rgba(96, 184, 147, .12); }
 
 .aplicacion { min-height: calc(100vh - 72px); display: grid; grid-template-columns: 278px minmax(0, 1fr); }
-body.modo-publico .aplicacion { grid-template-columns: minmax(0, 1fr); }
-body.modo-publico .panel-documentos { display: none; }
-body.modo-publico .vista-carga { margin-inline: auto; width: min(1040px, 100%); }
 .panel-documentos { min-height: calc(100vh - 72px); padding: 28px 20px 20px; display: flex; flex-direction: column; background: #e9ece8; border-right: 1px solid var(--linea); }
 .panel-cabecera { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 18px; }
 .panel-cabecera h2 { margin: 2px 0 0; font-family: var(--fuente-titulo); font-size: 24px; font-weight: 500; }
@@ -229,7 +223,7 @@ dialog form { padding: 28px; } dialog h2 { margin: 5px 0 10px; font-family: var(
 }
 
 @media (max-width: 640px) {
-  .barra-superior { height: 64px; padding: 0 16px; }.marca small, .estado-servicio { display: none; }
+  .barra-superior { height: 64px; padding: 0 16px; }.marca small { display: none; }
   .vista-carga, .vista-resultados, .vista-proceso, .vista-error { padding: 34px 18px 56px; }
   .encabezado-vista h1, .cabecera-resultados h1, .vista-error h1, .vista-proceso h1 { font-size: 31px; }
   .formulario-carga { margin-top: 28px; }.zona-archivo { min-height: 190px; padding: 24px 16px; }

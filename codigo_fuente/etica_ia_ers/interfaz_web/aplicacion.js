@@ -26,6 +26,7 @@ const estado = {
   documentos: [],
   documentoActivo: null,
   resultado: null,
+  resultadosTemporales: new Map(),
   dimensionActiva: "D01",
   documentoAEliminar: null,
   configuracion: {
@@ -120,11 +121,30 @@ function renderizarHistorial() {
   `).join("");
 }
 
+function registrarResultadoTemporal(archivo, resultado) {
+  const documentoId = resultado.metadatos.documento_id;
+  const extension = archivo.name.split(".").pop()?.toUpperCase() || "ERS";
+  estado.documentos = estado.documentos.filter(
+    (documento) => documento.documento_id !== documentoId,
+  );
+  estado.documentos.unshift({
+    documento_id: documentoId,
+    nombre_original: resultado.metadatos.nombre_documento || archivo.name,
+    formato_origen: extension,
+    fecha_carga: resultado.metadatos.fecha_inicio || new Date().toISOString(),
+  });
+  estado.resultadosTemporales.set(documentoId, resultado);
+  renderizarHistorial();
+}
+
 function seleccionarArchivo(archivo) {
   estado.archivo = archivo;
   if (!archivo) {
     $("#nombre-archivo").textContent = "Arrastrá o seleccioná una ERS";
-    $("#detalle-archivo").textContent = "TXT, PDF con texto o DOCX";
+    const limite = estado.configuracion.modo_publico
+      ? ` · máximo ${estado.configuracion.tamano_maximo_mb} MB`
+      : "";
+    $("#detalle-archivo").textContent = `TXT, PDF con texto o DOCX${limite}`;
     return;
   }
   const limite = estado.configuracion.tamano_maximo_mb * 1024 * 1024;
@@ -175,6 +195,7 @@ async function analizarDocumento(evento) {
       activarPaso("evaluacion", "Analizando la ERS", "Procesando el texto y aplicando 72 guardrails D01-D10 sin almacenar el documento.");
       estado.resultado = await solicitar("/analisis", { method: "POST", body: formulario });
       estado.documentoActivo = estado.resultado.metadatos.documento_id;
+      registrarResultadoTemporal(archivo, estado.resultado);
     } else {
       const carga = await solicitar("/documentos", { method: "POST", body: formulario });
       estado.documentoActivo = carga.documento_id;
@@ -200,6 +221,17 @@ function pausaVisual(duracion = 120) {
 async function abrirDocumento(documentoId) {
   estado.documentoActivo = documentoId;
   renderizarHistorial();
+  if (estado.configuracion.modo_publico) {
+    const resultado = estado.resultadosTemporales.get(documentoId);
+    if (!resultado) {
+      notificar("El análisis ya no está disponible en esta sesión.");
+      return;
+    }
+    estado.resultado = resultado;
+    renderizarResultado();
+    mostrarVista("resultados");
+    return;
+  }
   mostrarVista("proceso");
   activarPaso("evaluacion", "Reevaluando el documento", "Aplicando la versión activa del catálogo de guardrails.");
   try {
@@ -405,10 +437,9 @@ async function configurarAplicacion() {
   }
 
   if (estado.configuracion.modo_publico) {
-    document.body.classList.add("modo-publico");
-    $("#texto-estado-servicio").textContent = "Sin almacenamiento";
     $("#aviso-privacidad").hidden = false;
     $("#detalle-archivo").textContent = `TXT, PDF con texto o DOCX · máximo ${estado.configuracion.tamano_maximo_mb} MB`;
+    renderizarHistorial();
   } else {
     await cargarHistorial();
   }
@@ -417,7 +448,9 @@ async function configurarAplicacion() {
 function prepararEliminacion(documentoId) {
   const documento = estado.documentos.find((item) => item.documento_id === documentoId);
   estado.documentoAEliminar = documentoId;
-  $("#texto-eliminar").textContent = `Se eliminará ${documento?.nombre_original || "el documento"} y su registro local.`;
+  $("#texto-eliminar").textContent = estado.configuracion.modo_publico
+    ? `Se quitará ${documento?.nombre_original || "el documento"} de esta sesión.`
+    : `Se eliminará ${documento?.nombre_original || "el documento"} y su registro local.`;
   $("#dialogo-eliminar").showModal();
 }
 
@@ -426,6 +459,16 @@ async function confirmarEliminacion() {
   const documentoId = estado.documentoAEliminar;
   estado.documentoAEliminar = null;
   try {
+    if (estado.configuracion.modo_publico) {
+      estado.documentos = estado.documentos.filter(
+        (documento) => documento.documento_id !== documentoId,
+      );
+      estado.resultadosTemporales.delete(documentoId);
+      if (estado.documentoActivo === documentoId) nuevaCarga();
+      else renderizarHistorial();
+      notificar("Análisis quitado de la sesión.");
+      return;
+    }
     await solicitar(`/documentos/${documentoId}`, { method: "DELETE" });
     if (estado.documentoActivo === documentoId) nuevaCarga();
     await cargarHistorial();

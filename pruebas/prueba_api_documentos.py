@@ -115,11 +115,15 @@ def prueba_api_sirve_interfaz_y_estado_de_salud(entorno_api) -> None:
     assert "Revisión ética de ERS" in interfaz.text
     assert 'id="descargar-reporte"' in interfaz.text
     assert 'id="formato-exportacion"' in interfaz.text
+    assert "E10" not in interfaz.text
     assert estilos.status_code == 200
     assert "--acento" in estilos.text
+    assert "body.modo-publico .panel-documentos" not in estilos.text
     assert aplicacion.status_code == 200
     assert "renderizarResultado" in aplicacion.text
     assert "descargarReporte" in aplicacion.text
+    assert "Sin almacenamiento" not in aplicacion.text
+    assert "resultadosTemporales" in aplicacion.text
     assert salud.json() == {"estado": "disponible", "version": "0.1.0"}
 
 
