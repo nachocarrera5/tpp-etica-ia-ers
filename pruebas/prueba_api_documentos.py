@@ -115,6 +115,8 @@ def prueba_api_sirve_interfaz_y_estado_de_salud(entorno_api) -> None:
     assert "Revisión ética de ERS" in interfaz.text
     assert 'id="descargar-reporte"' in interfaz.text
     assert 'id="formato-exportacion"' in interfaz.text
+    assert 'href="/recursos/estilos.css?v=2"' in interfaz.text
+    assert 'src="/recursos/aplicacion.js?v=2"' in interfaz.text
     assert "E10" not in interfaz.text
     assert estilos.status_code == 200
     assert "--acento" in estilos.text
