@@ -377,3 +377,59 @@ def prueba_reconoce_grupo_vulnerable_y_beneficio_publico() -> None:
         aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
         for aplicacion in resultado.aplicaciones
     )
+
+
+def prueba_reconoce_proposito_alcance_y_usuarios_de_un_marco_de_ia() -> None:
+    texto = (
+        "El presente contrato tiene por objeto el desarrollo de un marco de "
+        "trabajo corporativo para inteligencia artificial. Este marco permitira "
+        "abordar la generacion de aplicaciones de IA generativa. El marco "
+        "dara cabida a componentes relacionados con IA generativa, "
+        "incluidos modelos de IA, sistemas RAG y agentes de IA. "
+        "La aplicacion permite disponer de dos tipos de usuarios: administrador "
+        "y usuario."
+    )
+    resultado = _evaluar_texto(
+        texto,
+        GR_D01_PRES_PROPOSITO,
+        GR_D01_DELIM_ALCANCE,
+        GR_D01_DELIM_ACTORES,
+    )
+
+    assert all(
+        aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+        for aplicacion in resultado.aplicaciones
+    )
+
+
+def prueba_condiciones_contractuales_no_son_supuestos_del_sistema() -> None:
+    texto = (
+        "La solucion debera estar basada, siempre que sea posible, en "
+        "tecnologia de contenedores."
+    )
+    resultado = _evaluar_texto(texto, GR_D01_VERIF_SUPUESTOS)
+
+    assert _hallazgo_de(
+        resultado, "GR-D01-VERIF-SUPUESTOS"
+    ).nivel_preliminar == NivelCobertura.AUSENTE
+
+
+def prueba_limite_del_equipo_contractual_no_es_limitacion_del_sistema() -> None:
+    texto = "El equipo de trabajo en ningun caso podra ser mayor de siete personas."
+    resultado = _evaluar_texto(texto, GR_D01_VERIF_LIMITACIONES)
+
+    assert _hallazgo_de(
+        resultado, "GR-D01-VERIF-LIMITACIONES"
+    ).nivel_preliminar == NivelCobertura.AUSENTE
+
+
+def prueba_recomendacion_que_no_sustituye_decision_es_limitacion() -> None:
+    texto = (
+        "La recomendacion sera orientativa y no sustituira la evaluacion "
+        "profesional de las circunstancias particulares."
+    )
+    resultado = _evaluar_texto(texto, GR_D01_VERIF_LIMITACIONES)
+
+    assert _hallazgo_de(
+        resultado, "GR-D01-VERIF-LIMITACIONES"
+    ).nivel_preliminar == NivelCobertura.EXPLICITO

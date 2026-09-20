@@ -44,10 +44,15 @@ GR_D01_PRES_PROPOSITO = GuardrailLexico(
         ),
         senal(
             "objeto_contractual_con_finalidad",
-            r"objeto\s+del\s+(?:presente\s+)?contrato\s+es.{0,240}"
-            r"(?:soluci[oó]n|sistema|servicio).{0,180}"
-            r"(?:permita|para|orientad[oa]\s+a).{0,90}"
-            r"(?:agilizar|automatizar|clasificar|revisar|evaluar|"
+            r"(?:objeto\s+del\s+(?:presente\s+)?contrato\s+es|"
+            r"(?:el\s+)?presente\s+contrato\s+tiene\s+por\s+objeto|"
+            r"finalidad\s+de\s+(?:este|el\s+presente)\s+contrato\s+es)"
+            r".{0,240}(?:soluci[oó]n|sistema|servicio|plataforma|"
+            r"marco\s+de\s+trabajo).{0,180}"
+            r"(?:permita|permitir[aá]|facilite|facilitar[aá]|para|"
+            r"orientad[oa]\s+a).{0,90}"
+            r"(?:abordar|generar|construir|desarrollar|gestionar|monitorizar|"
+            r"automatizar|clasificar|revisar|evaluar|"
             r"optimizar|reducir|mejorar|agilizaci[oó]n|automatizaci[oó]n|"
             r"clasificaci[oó]n|revisi[oó]n|evaluaci[oó]n)",
         ),
@@ -108,6 +113,16 @@ GR_D01_DELIM_ALCANCE = GuardrailLexico(
             r"(?:soluci[oó]n|sistema|servicio).{0,180}"
             r"(?:tramitaci[oó]n|procedimiento|expedientes?|subvenciones?|"
             r"salud|cr[eé]dito|educaci[oó]n|justicia|empleo)",
+        ),
+        senal(
+            "alcance_de_marco_ia_delimitado",
+            r"(?:marco(?:\s+de\s+trabajo)?|plataforma).{0,100}"
+            r"(?:dar[aá]\s+cabida|comprender[aá]|incluir[aá]).{0,500}"
+            r"(?:modelos?\s+de\s+ia|inteligencia\s+artificial|llms?|"
+            r"sistemas?\s+rag|agentes?\s+de\s+ia|"
+            r"componentes?.{0,80}(?:ia\s+generativa|"
+            r"inteligencia\s+artificial)|funcionalidades?.{0,80}"
+            r"(?:ia\s+generativa|inteligencia\s+artificial))",
         ),
     ),
     senales_parciales=(
@@ -199,6 +214,12 @@ GR_D01_DELIM_ACTORES = GuardrailLexico(
             r"personal\s+(?:de|del).{0,70}(?:interactuara|utilizara|"
             r"operara).{0,45}(?:sistemas?\s+de\s+ia|sistema|asistente)",
         ),
+        senal(
+            "tipos_de_usuario_del_sistema",
+            r"(?:sistema|aplicaci[oó]n).{0,100}"
+            r"(?:tipos|roles|perfiles)\s+de\s+usuarios?.{0,100}"
+            r"(?:administrador|operador|usuario|analista|profesional)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_usuarios", r"usuarios?\s+(?:del\s+)?sistema"),
@@ -227,7 +248,7 @@ GR_D01_VERIF_SUPUESTOS = GuardrailLexico(
         senal(
             "supuesto_con_condicion",
             r"(?:se\s+asume\s+que|bajo\s+el\s+supuesto\s+de|"
-            r"condicion\s+previa|requiere\s+que|siempre\s+que).{0,90}\w+",
+            r"condicion\s+previa|requiere\s+que).{0,90}\w+",
         ),
         senal(
             "supuestos_operativos_documentados",
@@ -256,7 +277,11 @@ GR_D01_VERIF_LIMITACIONES = GuardrailLexico(
         senal(
             "limitacion_concreta",
             r"(?:limitaciones?\s+conocidas?|limitado\s+a|solo\s+funciona|"
-            r"no\s+(?:podra|puede|debera|garantiza|reemplaza|admite))"
+            r"(?:sistema|modelo|aplicaci[oó]n|algoritmo).{0,45}"
+            r"no\s+(?:podra|puede|debera|garantiza|reemplaza|admite)|"
+            r"(?:sistema|modelo|recomendaci[oó]n).{0,60}"
+            r"no\s+sustitu(?:ir[aá]|ye)|"
+            r"no\s+(?:garantiza|reemplaza|admite))"
             r".{0,90}\w+",
         ),
         senal(

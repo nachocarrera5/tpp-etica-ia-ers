@@ -418,3 +418,55 @@ def prueba_coocurrencia_no_depende_de_la_posicion_en_fragmento() -> None:
     assert _nivel(resultado, "GR-D10-VERIF-SOSTENIBILIDAD") == (
         NivelCobertura.EXPLICITO
     )
+
+
+def prueba_reconoce_observabilidad_con_metricas_alertas_y_logs() -> None:
+    texto = (
+        "La monitorizacion del funcionamiento de los modelos incluira latencia, "
+        "resultados inexactos, metricas, alertas y logs de operacion."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[4])
+
+    assert _nivel(resultado, "GR-D08-VERIF-MONITOREO") == (
+        NivelCobertura.EXPLICITO
+    )
+
+
+def prueba_reconoce_roles_logs_y_versionado_de_prompts_de_ia() -> None:
+    texto = (
+        "El especialista en etica y cumplimiento de IA coordinara auditorias "
+        "eticas y definira protocolos de control. Se almacenaran logs "
+        "estructurados de los prompts y las salidas con metadatos como version "
+        "del prompt, endpoint y errores. La plataforma mantendra un sistema de "
+        "versionado de prompts y metricas de calidad obtenidas con las "
+        "diferentes versiones de prompts."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D09)
+
+    for codigo in (
+        "GR-D09-PRES-RESPONSABLES",
+        "GR-D09-RESP-ROLES",
+        "GR-D09-VERIF-REGISTROS",
+        "GR-D09-VERIF-VERSIONADO",
+    ):
+        assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_evaluacion_ambiental_del_expediente_no_es_impacto_del_sistema() -> None:
+    texto = (
+        "Geneva ayuda a gestionar expedientes de evaluacion de impacto "
+        "ambiental de la region y determina si requieren evaluacion de impacto "
+        "ambiental simplificada u ordinaria. La aplicacion analiza una "
+        "evaluacion de impacto ambiental."
+    )
+    resultado = _evaluar_texto(
+        texto,
+        GUARDRAILS_D10[0],
+        GUARDRAILS_D10[6],
+    )
+
+    assert all(
+        aplicacion.hallazgo is not None
+        and aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+        for aplicacion in resultado.aplicaciones
+    )

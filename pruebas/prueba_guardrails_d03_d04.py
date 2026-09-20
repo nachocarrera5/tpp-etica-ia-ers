@@ -425,3 +425,33 @@ def prueba_reconoce_prevencion_y_mitigacion_explicita_de_sesgos() -> None:
         aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
         for aplicacion in resultado.aplicaciones
     )
+
+
+def prueba_reconoce_responsable_de_acceso_a_modelos_y_datos() -> None:
+    texto = (
+        "El ingeniero de seguridad con foco en IA debera establecer controles "
+        "de acceso a modelos y datos e implementar cifrado de datos sensibles."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_RESP_ACCESO)
+
+    assert _hallazgo_de(
+        resultado, "GR-D03-RESP-ACCESO"
+    ).hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+
+
+def prueba_reconoce_control_y_responsable_de_revision_de_sesgos() -> None:
+    texto = (
+        "El marco incluira sistemas fundamentales de control de sesgos. "
+        "El especialista en etica y cumplimiento de IA creara protocolos de "
+        "evaluacion de sesgos y fairness y coordinara auditorias eticas."
+    )
+    resultado = _evaluar_texto(
+        texto,
+        GR_D04_PRES_SESGOS,
+        GR_D04_RESP_REVISION,
+    )
+
+    assert all(
+        aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+        for aplicacion in resultado.aplicaciones
+    )
