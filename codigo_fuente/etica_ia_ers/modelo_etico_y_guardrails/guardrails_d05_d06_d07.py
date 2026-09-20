@@ -29,7 +29,8 @@ def _con_contexto_transparencia(expresion: str) -> str:
 
 _SALIDA_SISTEMA_IA = (
     r"(?:decisi[oó]n(?:es)?|resultados?|diagn[oó]stico\w*|"
-    r"recomendaci[oó]n(?:es)?|salidas?|puntaje\w*)"
+    r"recomendaci[oó]n(?:es)?|salidas?|puntaje\w*|"
+    r"informes?\s+generad[oa]s?)"
 )
 
 
@@ -543,9 +544,11 @@ GR_D06_VERIF_UTILIDAD = _crear_guardrail(
     (
         (
             "mencion_utilidad",
-            r"(?:utilidad|suficiencia|adecuaci[oó]n).{0,50}"
-            r"(?:explicaci[oó]n|justificaci[oó]n)|(?:explicaci[oó]n|"
-            r"justificaci[oó]n).{0,50}(?:[uú]til|suficiente|adecuada)",
+            _con_contexto_salida_ia(
+                r"(?:utilidad|suficiencia|adecuaci[oó]n).{0,50}"
+                r"(?:explicaci[oó]n|justificaci[oó]n)|(?:explicaci[oó]n|"
+                r"justificaci[oó]n).{0,50}(?:[uú]til|suficiente|adecuada)"
+            ),
         ),
         (
             "comprension_y_validacion_por_usuarios",
@@ -705,25 +708,53 @@ GR_D07_DELIM_DECISIONES = _crear_guardrail(
     (
         (
             "decisiones_supervisadas",
-            r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
-            r"resultados?).{0,100}"
+            r"(?:decisi[oó]n(?:es)?\s+(?:de\s+alto\s+riesgo|"
+            r"automatizad[oa]s?|del\s+"
+            r"(?:sistema|modelo|algoritmo|ia))|recomendaci[oó]n(?:es)?\s+"
+            r"(?:de\s+alto\s+riesgo|del\s+(?:sistema|modelo|algoritmo)|"
+            r"generad[oa]s?\s+por\s+(?:la\s+)?ia|automatizad[oa]s?)|salidas?|"
+            r"resultados?\s+(?:del\s+(?:sistema|modelo|algoritmo)|"
+            r"generad[oa]s?\s+por\s+(?:la\s+)?ia|automatizad[oa]s?)).{0,100}"
             r"(?:deber[aá]n?|ser[aá]n?|requieren?)\s+(?:ser\s+)?"
             r"(?:revisad|supervisad)\w*|(?:revisar|supervisar)\w*.{0,80}"
-            r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
-            r"resultados?|diagnosticos?)|(?:profesional|medico|"
+            r"(?:decisi[oó]n(?:es)?\s+(?:de\s+alto\s+riesgo|"
+            r"automatizad[oa]s?|del\s+(?:sistema|modelo|algoritmo|ia))|"
+            r"recomendaci[oó]n(?:es)?\s+(?:de\s+alto\s+riesgo|"
+            r"del\s+(?:sistema|modelo|algoritmo)|generad[oa]s?\s+por\s+"
+            r"(?:la\s+)?ia|automatizad[oa]s?)|salidas?|"
+            r"resultados?\s+(?:del\s+(?:sistema|modelo|algoritmo)|"
+            r"generad[oa]s?\s+por\s+(?:la\s+)?ia|automatizad[oa]s?)|"
+            r"diagnosticos?)|(?:profesional|medico|"
             r"especialista).{0,60}(?:revise|revisar|valide|validar)"
             r".{0,45}(?:resultado|diagnostico)",
+        ),
+        (
+            "actor_humano_revisa_recomendacion",
+            r"(?:analistas?|profesionales?|medicos?|supervisores?|"
+            r"personal\s+autorizado).{0,100}(?:revisar|validar|confirmar)"
+            r"\w*.{0,80}(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|"
+            r"salidas?|resultados?|informes?)",
         ),
     ),
     (
         (
             "mencion_decisiones_supervisadas",
-            r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
-            r"resultados?).{0,80}"
+            r"(?:decisi[oó]n(?:es)?\s+(?:de\s+alto\s+riesgo|"
+            r"automatizad[oa]s?|del\s+"
+            r"(?:sistema|modelo|algoritmo|ia))|recomendaci[oó]n(?:es)?\s+"
+            r"(?:de\s+alto\s+riesgo|del\s+(?:sistema|modelo|algoritmo)|"
+            r"generad[oa]s?\s+por\s+(?:la\s+)?ia|automatizad[oa]s?)|salidas?|"
+            r"resultados?\s+(?:del\s+(?:sistema|modelo|algoritmo)|"
+            r"generad[oa]s?\s+por\s+(?:la\s+)?ia|automatizad[oa]s?)).{0,80}"
             r"(?:revisi[oó]n|supervisi[oó]n|intervenci[oó]n)|"
             r"(?:revisi[oó]n|supervisi[oó]n|intervenci[oó]n).{0,80}"
-            r"(?:decisi[oó]n(?:es)?|recomendaci[oó]n(?:es)?|salidas?|"
-            r"resultados?)",
+            r"(?:decisi[oó]n(?:es)?\s+(?:de\s+alto\s+riesgo|"
+            r"automatizad[oa]s?|del\s+(?:sistema|modelo|algoritmo|ia))|"
+            r"recomendaci[oó]n(?:es)?\s+(?:de\s+alto\s+riesgo|"
+            r"del\s+(?:sistema|modelo|algoritmo)|generad[oa]s?\s+por\s+"
+            r"(?:la\s+)?ia|automatizad[oa]s?)|salidas?|"
+            r"resultados?\s+(?:del\s+(?:sistema|modelo|algoritmo)|"
+            r"generad[oa]s?\s+por\s+(?:la\s+)?ia|automatizad[oa]s?))",
         ),
     ),
 )
@@ -738,12 +769,14 @@ GR_D07_DELIM_ROLES = _crear_guardrail(
     (
         (
             "rol_supervisor",
-            r"supervisor\w*\s+(?:autorizad[oa]|responsable)|"
-            r"personal\s+autorizado.{0,50}(?:revisar|intervenir|supervisar)|"
-            r"(?:profesional|medico|especialista).{0,60}"
-            r"(?:revise|revisar|valide|validar|confirme|confirmar)|"
-            r"(?:responsable|rol|equipo).{0,50}(?:revisi[oó]n\s+humana|"
-            r"supervisi[oó]n|intervenci[oó]n)",
+            _con_contexto_salida_ia(
+                r"supervisor\w*\s+(?:autorizad[oa]|responsable)|"
+                r"personal\s+autorizado.{0,50}(?:revisar|intervenir|"
+                r"supervisar)|(?:profesional|medico|especialista).{0,60}"
+                r"(?:revise|revisar|valide|validar|confirme|confirmar)|"
+                r"(?:responsable|rol|equipo).{0,50}"
+                r"(?:revisi[oó]n\s+humana|supervisi[oó]n|intervenci[oó]n)"
+            ),
         ),
         (
             "personas_encargadas_de_vigilancia",
@@ -755,10 +788,13 @@ GR_D07_DELIM_ROLES = _crear_guardrail(
     (
         (
             "mencion_rol_supervision",
-            r"(?:supervisor\w*|personal\s+autorizado|responsable\w*)"
-            r".{0,60}(?:revisar|intervenir|supervisar|revisi[oó]n|"
-            r"supervisi[oó]n)|(?:revisi[oó]n|supervisi[oó]n|intervenci[oó]n)"
-            r".{0,60}(?:supervisor\w*|personal\s+autorizado|responsable\w*)",
+            _con_contexto_salida_ia(
+                r"(?:supervisor\w*|personal\s+autorizado|responsable\w*)"
+                r".{0,60}(?:revisar|intervenir|supervisar|revisi[oó]n|"
+                r"supervisi[oó]n)|(?:revisi[oó]n|supervisi[oó]n|"
+                r"intervenci[oó]n).{0,60}(?:supervisor\w*|"
+                r"personal\s+autorizado|responsable\w*)"
+            ),
         ),
     ),
 )
@@ -895,9 +931,11 @@ GR_D07_RESP_REGISTRO = _crear_guardrail(
     (
         (
             "mencion_registro",
-            r"(?:registrar\w*|registro\w*).{0,50}(?:intervenci[oó]n|"
-            r"revisi[oó]n|supervisi[oó]n|motivo)|(?:intervenci[oó]n|"
-            r"revisi[oó]n|supervisi[oó]n).{0,50}(?:registrar\w*|registro\w*)",
+            r"(?:registrar\w*|registro\w*).{0,50}"
+            r"(?:intervenci[oó]n|revisi[oó]n\s+humana|"
+            r"supervisi[oó]n\s+humana|motivo\s+de\s+la\s+decisi[oó]n)|"
+            r"(?:intervenci[oó]n|revisi[oó]n\s+humana|"
+            r"supervisi[oó]n\s+humana).{0,50}(?:registrar\w*|registro\w*)",
         ),
     ),
 )

@@ -213,6 +213,14 @@ GR_D03_RESP_ACCESO = GuardrailLexico(
             r"(?:cifrad[oa]s?|encriptad[oa]s?).{0,30}"
             r"(?:en\s+reposo|en\s+transito|aes|tls)",
         ),
+        senal(
+            "rol_de_seguridad_con_control_de_acceso",
+            r"(?:ingenier[oa]|especialista|responsable|administrador)"
+            r".{0,80}(?:seguridad|protecci[oó]n).{0,140}"
+            r"(?:establecer|definir|gestionar|implementar)\w*.{0,50}"
+            r"controles?\s+de\s+acceso.{0,45}(?:modelos?|datos|"
+            r"informaci[oó]n)",
+        ),
     ),
     senales_parciales=(
         senal("mencion_acceso", r"acceso\s+a\s+(?:los\s+)?datos"),
@@ -369,6 +377,13 @@ GR_D04_PRES_SESGOS = GuardrailLexico(
             r"sistemas?\s+de\s+ia).{0,120}"
             r"(?:no\s+perpetu\w*|no\s+gener\w*|evit\w*|preven\w*)"
             r".{0,80}sesgos?",
+        ),
+        senal(
+            "control_operativo_de_sesgos",
+            r"(?:sistemas?|mecanismos?|guardarra[ií]les?)\s+"
+            r"(?:fundamentales?\s+)?(?:de\s+)?control\s+de\s+sesgos?|"
+            r"protocolos?\s+de\s+evaluaci[oó]n\s+de\s+sesgos?"
+            r"(?:\s+y\s+fairness)?",
         ),
     ),
     senales_parciales=(
@@ -587,6 +602,12 @@ GR_D04_RESP_REVISION = GuardrailLexico(
             r"(?:comite|equipo|responsable|auditor|area).{0,45}"
             r"(?:revisara|monitoreara|evaluara|investigara|actuara).{0,60}"
             r"(?:sesgo|equidad|brecha|diferencia|desempeno\s+por\s+grupo)",
+        ),
+        senal(
+            "especialista_etico_responsable_de_sesgos",
+            r"especialista\s+en\s+[eé]tica\s+y\s+cumplimiento\s+de\s+ia"
+            r".{0,260}(?:evaluaci[oó]n\s+de\s+sesgos?|fairness|"
+            r"auditor[ií]as?\s+[eé]ticas?)",
         ),
     ),
     senales_parciales=(

@@ -20,6 +20,7 @@ from etica_ia_ers.modelo_etico_y_guardrails import (
     GUARDRAILS_D05_D07,
     GUARDRAILS_D06,
     GUARDRAILS_D07,
+    GR_D07_DELIM_DECISIONES,
     RepositorioGuardrailsEnMemoria,
 )
 from etica_ia_ers.procesamiento_textual_y_nlp import analizar_texto
@@ -361,3 +362,55 @@ def prueba_reconoce_autoridad_humana_para_revertir_e_interrumpir() -> None:
         "GR-D07-VERIF-PROCEDIMIENTO",
     ):
         assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
+
+
+def prueba_justificacion_contractual_no_es_utilidad_de_explicacion_ia() -> None:
+    texto = (
+        "El proveedor presentara una justificacion escrita, detallada y "
+        "suficiente explicando el motivo que suscita el cambio contractual."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D06[4])
+
+    assert _nivel(resultado, "GR-D06-VERIF-UTILIDAD") == NivelCobertura.AUSENTE
+
+
+def prueba_gestion_del_proyecto_no_es_supervision_humana_de_ia() -> None:
+    texto = (
+        "Se designaran responsables del proyecto encargados de dirigir la "
+        "ejecucion del contrato, supervisar al equipo y registrar la revision "
+        "por la direccion y la toma de decisiones."
+    )
+    resultado = _evaluar_texto(texto, *GUARDRAILS_D07)
+
+    assert all(
+        aplicacion.hallazgo is not None
+        and aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+        for aplicacion in resultado.aplicaciones
+    )
+
+
+def prueba_resultados_de_pruebas_tecnicas_no_son_decisiones_supervisadas() -> None:
+    texto = (
+        "Se instalaran actualizaciones siguiendo las recomendaciones del "
+        "fabricante. Despues de la intervencion se verificaran los resultados "
+        "de las pruebas."
+    )
+    resultado = _evaluar_texto(texto, GR_D07_DELIM_DECISIONES)
+
+    assert resultado.aplicaciones[0].hallazgo is not None
+    assert resultado.aplicaciones[0].hallazgo.nivel_preliminar == (
+        NivelCobertura.AUSENTE
+    )
+
+
+def prueba_analista_que_revisa_recomendacion_delimita_supervision() -> None:
+    texto = (
+        "Los analistas de credito deberan revisar la recomendacion antes de "
+        "aprobar, rechazar o solicitar informacion adicional."
+    )
+    resultado = _evaluar_texto(texto, GR_D07_DELIM_DECISIONES)
+
+    assert resultado.aplicaciones[0].hallazgo is not None
+    assert resultado.aplicaciones[0].hallazgo.nivel_preliminar == (
+        NivelCobertura.EXPLICITO
+    )

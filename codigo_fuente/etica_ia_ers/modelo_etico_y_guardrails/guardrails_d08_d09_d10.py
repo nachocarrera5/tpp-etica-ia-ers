@@ -271,6 +271,16 @@ GR_D08_VERIF_MONITOREO = _crear_guardrail(
                 r"alerta|pausar)",
             ),
         ),
+        (
+            "observabilidad_con_senales_operativas",
+            _coocurrencia(
+                r"(?:monitori[sz]aci[oó]n|observabilidad).{0,100}"
+                r"(?:funcionamiento|componentes?|sistemas?|modelos?)",
+                r"(?:latencia|resultados?\s+inexactos?|m[eé]tricas?|"
+                r"alertas?|notificaciones?|logs?|trazas?)",
+                distancia=300,
+            ),
+        ),
     ),
     (
         (
@@ -410,6 +420,14 @@ GR_D09_PRES_RESPONSABLES = _crear_guardrail(
                 r".{0,80}(?:incidentes?|decisi[oó]n(?:es)?|cambios?)",
             ),
         ),
+        (
+            "especialista_ia_con_responsabilidad",
+            r"(?:especialista\s+en\s+[eé]tica\s+y\s+cumplimiento\s+de\s+ia|"
+            r"ingenier[oa]\s+de\s+seguridad\s+con\s+foco\s+en\s+ia|"
+            r"gestor\s+de\s+riesgo\s+especializado\s+en\s+ia)"
+            r".{0,280}(?:coordinar|definir|establecer|implementar|evaluar)"
+            r"\w*.{0,90}(?:auditor[ií]as?|controles?|protocolos?|riesgos?)",
+        ),
     ),
     (
         (
@@ -439,6 +457,14 @@ GR_D09_RESP_ROLES = _crear_guardrail(
             r"equipo\s+de\s+operaciones|comit[eé]\s+de\s+auditor[ií]a|"
             r"auditor|supervisor).{0,90}(?:aprobar|revisar|validar|"
             r"monitorear|auditar|responder|gestionar)\w*",
+        ),
+        (
+            "rol_especializado_de_gobernanza_ia",
+            r"(?:especialista\s+en\s+[eé]tica\s+y\s+cumplimiento\s+de\s+ia|"
+            r"ingenier[oa]\s+de\s+seguridad\s+con\s+foco\s+en\s+ia|"
+            r"gestor\s+de\s+riesgo\s+especializado\s+en\s+ia)"
+            r".{0,280}(?:coordinar|definir|establecer|implementar|evaluar)"
+            r"\w*.{0,90}(?:auditor[ií]as?|controles?|protocolos?|riesgos?)",
         ),
     ),
     (
@@ -497,6 +523,12 @@ GR_D09_VERIF_REGISTROS = _crear_guardrail(
                 r"vigencia|acceso\s+a\s+los\s+archivos)",
             ),
         ),
+        (
+            "logs_de_ia_con_metadatos",
+            r"logs?\s+estructurados?.{0,100}(?:prompts?|entradas?)"
+            r".{0,100}(?:salidas?|respuestas?).{0,120}metadatos?"
+            r".{0,100}(?:versi[oó]n|endpoint|error|modelo)",
+        ),
     ),
     (
         (
@@ -523,10 +555,11 @@ GR_D09_VERIF_VERSIONADO = _crear_guardrail(
             "version_con_cambio_trazable",
             _coocurrencia(
                 r"versi[oó]n.{0,35}(?:modelo|dataset|datos|reglas?|"
-                r"criterios?|configuraci[oó]n)|(?:modelo|dataset|datos|"
-                r"reglas?|criterios?|configuraci[oó]n).{0,35}versi[oó]n",
+                r"criterios?|configuraci[oó]n|prompts?)|(?:modelo|dataset|"
+                r"datos|reglas?|criterios?|configuraci[oó]n|prompts?)"
+                r".{0,35}versi[oó]n",
                 r"(?:fecha|responsable|motivo|aprobaci[oó]n|m[eé]tricas?\s+"
-                r"comparativas?|cambio)",
+                r"(?:comparativas?|de\s+calidad)|cambio)",
             ),
         ),
     ),
@@ -534,7 +567,7 @@ GR_D09_VERIF_VERSIONADO = _crear_guardrail(
         (
             "versionado_generico",
             r"versionado\s+(?:del|de\s+los?|de\s+las?)\s+(?:modelo|"
-            r"dataset|datos|reglas?|criterios?|configuraci[oó]n)|"
+            r"dataset|datos|reglas?|criterios?|configuraci[oó]n|prompts?)|"
             r"versi[oó]n\s+del\s+(?:modelo|dataset)",
         ),
         (
@@ -648,6 +681,13 @@ GUARDRAILS_D09: Tuple[GuardrailLexico, ...] = (
 
 
 # D10 - Impacto social y ambiental
+_IMPACTO_AMBIENTAL_ETICO = (
+    r"(?<!evaluacion\sde\s)(?<!evaluaci[oó]n\sde\s)"
+    r"impacto\s+ambiental(?!\s+(?:de\s+la\s+regi[oó]n|"
+    r"simplificad[oa]|ordinari[oa]))"
+)
+
+
 GR_D10_PRES_IMPACTO = _crear_guardrail(
     "GR-D10-PRES-IMPACTO",
     "Presencia de impactos sociales, laborales o ambientales",
@@ -660,12 +700,21 @@ GR_D10_PRES_IMPACTO = _crear_guardrail(
     ),
     (
         (
-            "impacto_delimitado",
+            "impacto_humano_delimitado",
             _coocurrencia(
-                r"(?:impacto\s+social|impacto\s+laboral|impacto\s+"
-                r"ambiental|efecto\s+sobre|consecuencia\s+sobre)",
+                r"(?:impacto\s+social|impacto\s+laboral|efecto\s+sobre|"
+                r"consecuencia\s+sobre)",
                 r"(?:personas?|comunidades?|trabajadores?|empleados?|"
-                r"terceros?|grupos?|consumo\s+energ[eé]tico|emisiones?)",
+                r"terceros?|grupos?)",
+            ),
+        ),
+        (
+            "impacto_ambiental_delimitado",
+            _coocurrencia(
+                _IMPACTO_AMBIENTAL_ETICO,
+                r"(?:consumo\s+energ[eé]tico|emisiones?|huella\s+de\s+"
+                r"carbono|recursos?\s+consumidos?)",
+                distancia=180,
             ),
         ),
         (
@@ -686,7 +735,8 @@ GR_D10_PRES_IMPACTO = _crear_guardrail(
     (
         (
             "impacto_generico",
-            r"impacto\s+(?:social|laboral|organizacional|ambiental)|"
+            rf"impacto\s+(?:social|laboral|organizacional)|"
+            rf"{_IMPACTO_AMBIENTAL_ETICO}|"
             r"(?:sistema|modelo).{0,50}(?:inclusivo|sostenible)",
         ),
     ),
@@ -908,7 +958,8 @@ GR_D10_QUAL_GENERICO = _crear_guardrail(
             "impacto_verificable",
             _coocurrencia(
                 r"(?:impacto\s+social|impacto\s+laboral|impacto\s+"
-                r"ambiental|accesibilidad|sostenibilidad)",
+                rf"organizacional|{_IMPACTO_AMBIENTAL_ETICO}|"
+                r"accesibilidad|sostenibilidad)",
                 r"(?:personas?|grupos?|terceros?|criterios?|m[eé]tricas?|"
                 r"consumo|medidas?\s+de\s+mitigaci[oó]n|responsable|"
                 r"frecuencia)",
