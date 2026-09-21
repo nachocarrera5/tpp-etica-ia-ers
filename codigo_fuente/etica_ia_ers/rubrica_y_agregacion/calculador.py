@@ -148,6 +148,17 @@ def _validar_trazabilidad(
         ids_vistos.add(hallazgo.id)
 
 
+def _describir_brecha(hallazgo: HallazgoEvaluacion) -> str:
+    if not hallazgo.guardrail_nombre:
+        return hallazgo.justificacion
+    if hallazgo.nivel_preliminar == NivelCobertura.AUSENTE:
+        return f"Falta evidencia documental sobre: {hallazgo.guardrail_nombre}."
+    return (
+        "La evidencia encontrada es parcial para: "
+        f"{hallazgo.guardrail_nombre}."
+    )
+
+
 def _consolidar_dimensiones(
     resultado_evaluacion: ResultadoEvaluacionEtica,
     hallazgos: Sequence[HallazgoEvaluacion],
@@ -183,7 +194,7 @@ def _consolidar_dimensiones(
             and hallazgo.motivo_revision_humana
         )
         brechas = _unicos_en_orden(
-            hallazgo.justificacion
+            _describir_brecha(hallazgo)
             for hallazgo in relacionados
             if hallazgo.nivel_preliminar != NivelCobertura.EXPLICITO
         )

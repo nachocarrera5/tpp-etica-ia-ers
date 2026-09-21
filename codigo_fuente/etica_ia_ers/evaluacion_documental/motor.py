@@ -151,6 +151,7 @@ class MotorEvaluacionEtica:
                     tipo_vinculo=referencia.tipo_vinculo,
                     relevancia=referencia.relevancia,
                     observacion=referencia.observacion,
+                    fragmentos_clave=referencia.fragmentos_clave,
                 )
             )
 
@@ -177,4 +178,6 @@ class MotorEvaluacionEtica:
             motivo_revision_humana=motivo_revision,
             evidencias=tuple(evidencias),
             fecha_generacion=datetime.now(timezone.utc),
+            guardrail_nombre=definicion.nombre,
+            guardrail_descripcion=definicion.descripcion,
         )

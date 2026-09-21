@@ -115,6 +115,7 @@ class EvidenciaHallazgoResponse(BaseModel):
     tipo_vinculo: TipoVinculoEvidencia
     relevancia: Optional[float] = None
     observacion: Optional[str] = None
+    fragmentos_clave: Tuple[str, ...] = ()
 
 
 class HallazgoResponse(BaseModel):
@@ -122,6 +123,8 @@ class HallazgoResponse(BaseModel):
     analisis_id: UUID
     guardrail_codigo: str
     guardrail_version: int
+    guardrail_nombre: Optional[str] = None
+    guardrail_descripcion: Optional[str] = None
     familia_guardrail: FamiliaGuardrail
     dimensiones_asociadas: Tuple[DimensionEtica, ...]
     criterios_asociados: Tuple[str, ...]

@@ -68,8 +68,12 @@ class ReferenciaEvidencia:
     tipo_vinculo: TipoVinculoEvidencia
     relevancia: Optional[float] = None
     observacion: Optional[str] = None
+    fragmentos_clave: Tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
+        object.__setattr__(
+            self, "fragmentos_clave", tuple(self.fragmentos_clave)
+        )
         if self.relevancia is not None and not 0 <= self.relevancia <= 1:
             raise ValueError("La relevancia debe estar entre 0 y 1.")
 
@@ -108,6 +112,12 @@ class EvidenciaHallazgo:
     tipo_vinculo: TipoVinculoEvidencia
     relevancia: Optional[float] = None
     observacion: Optional[str] = None
+    fragmentos_clave: Tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        object.__setattr__(
+            self, "fragmentos_clave", tuple(self.fragmentos_clave)
+        )
 
 
 @dataclass(frozen=True)
@@ -126,6 +136,8 @@ class HallazgoEvaluacion:
     motivo_revision_humana: Optional[str]
     evidencias: Tuple[EvidenciaHallazgo, ...]
     fecha_generacion: datetime
+    guardrail_nombre: Optional[str] = None
+    guardrail_descripcion: Optional[str] = None
     id: UUID = field(default_factory=uuid4)
 
     def __post_init__(self) -> None:

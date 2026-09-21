@@ -46,6 +46,7 @@ def _hallazgo(
     analisis_id=None,
     revision: bool = False,
     justificacion: Optional[str] = None,
+    nombre: Optional[str] = None,
 ) -> HallazgoEvaluacion:
     return HallazgoEvaluacion(
         analisis_id=analisis_id or uuid4(),
@@ -64,6 +65,7 @@ def _hallazgo(
         ),
         evidencias=(),
         fecha_generacion=datetime.now(timezone.utc),
+        guardrail_nombre=nombre,
     )
 
 
@@ -446,3 +448,7 @@ def prueba_integra_motor_con_guardrails_sinteticos_d01_d10() -> None:
     assert cobertura.dimensiones_no_evaluadas == ()
     assert cobertura.indicadores_guardrails.guardrails_aplicados == 10
     assert len(cobertura.indicadores_por_grupo) == 4
+    resultado_d01 = cobertura.resultados_por_dimension[0]
+    assert resultado_d01.brechas_principales == (
+        "Falta evidencia documental sobre: Prueba D01.",
+    )

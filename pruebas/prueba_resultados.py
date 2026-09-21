@@ -142,12 +142,19 @@ def prueba_resultados_evalua_documento_y_arma_reporte_completo(entorno_api) -> N
     assert len(datos["hallazgos"]) == 1
     hallazgo = datos["hallazgos"][0]
     assert hallazgo["guardrail_codigo"] == "GR-PRUEBA-API-01"
+    assert hallazgo["guardrail_nombre"] == (
+        "Guardrail sintetico GR-PRUEBA-API-01"
+    )
+    assert hallazgo["guardrail_descripcion"] == (
+        "Guardrail usado exclusivamente por las pruebas de API."
+    )
     assert hallazgo["nivel_preliminar"] == NivelCobertura.EXPLICITO.value
     assert hallazgo["valor_auxiliar"] == 2
     assert len(hallazgo["evidencias"]) == 1
     assert hallazgo["evidencias"][0]["tipo_vinculo"] == (
         TipoVinculoEvidencia.SOPORTA.value
     )
+    assert hallazgo["evidencias"][0]["fragmentos_clave"] == []
 
     indicadores = datos["indicadores"]
     assert indicadores["total_dimensiones"] == 10

@@ -100,6 +100,12 @@ def prueba_ejemplo_datos_genericos_es_parcial() -> None:
     assert aplicacion.hallazgo.evidencias[0].tipo_vinculo == (
         TipoVinculoEvidencia.CONTEXTUALIZA
     )
+    evidencia = aplicacion.hallazgo.evidencias[0]
+    assert evidencia.fragmentos_clave
+    assert all(
+        fragmento_clave in evidencia.texto
+        for fragmento_clave in evidencia.fragmentos_clave
+    )
 
 
 def prueba_texto_sin_mencion_de_datos_es_ausente() -> None:

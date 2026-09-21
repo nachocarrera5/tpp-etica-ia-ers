@@ -29,6 +29,12 @@ const estado = {
   resultadosTemporales: new Map(),
   dimensionActiva: "D01",
   documentoAEliminar: null,
+  panelVisible: localStorage.getItem("panel-documentos-visible") !== "false",
+  filtroHallazgos: {
+    texto: "",
+    dimension: "TODAS",
+    nivel: "TODOS",
+  },
   configuracion: {
     modo_publico: false,
     persistencia_habilitada: true,
@@ -59,11 +65,59 @@ function escapar(valor) {
     .replaceAll("'", "&#039;");
 }
 
+function resaltarTexto(texto, fragmentos = []) {
+  const rangos = fragmentos
+    .map((fragmento) => {
+      const inicio = texto.indexOf(fragmento);
+      return inicio >= 0 ? [inicio, inicio + fragmento.length] : null;
+    })
+    .filter(Boolean)
+    .sort((a, b) => a[0] - b[0]);
+
+  const combinados = [];
+  rangos.forEach(([inicio, fin]) => {
+    const ultimo = combinados.at(-1);
+    if (ultimo && inicio <= ultimo[1]) ultimo[1] = Math.max(ultimo[1], fin);
+    else combinados.push([inicio, fin]);
+  });
+
+  if (!combinados.length) return escapar(texto);
+  let posicion = 0;
+  const partes = [];
+  combinados.forEach(([inicio, fin]) => {
+    partes.push(escapar(texto.slice(posicion, inicio)));
+    partes.push(`<mark>${escapar(texto.slice(inicio, fin))}</mark>`);
+    posicion = fin;
+  });
+  partes.push(escapar(texto.slice(posicion)));
+  return partes.join("");
+}
+
 function mostrarVista(nombre) {
   Object.entries(vistas).forEach(([clave, elemento]) => {
     elemento.hidden = clave !== nombre;
   });
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function aplicarVisibilidadPanel() {
+  const aplicacion = $(".aplicacion");
+  const panel = $("#panel-documentos");
+  const boton = $("#alternar-panel");
+  aplicacion.classList.toggle("panel-oculto", !estado.panelVisible);
+  panel.setAttribute("aria-hidden", String(!estado.panelVisible));
+  boton.setAttribute("aria-expanded", String(estado.panelVisible));
+  boton.setAttribute(
+    "aria-label",
+    estado.panelVisible ? "Ocultar espacio de trabajo" : "Mostrar espacio de trabajo",
+  );
+  boton.title = boton.getAttribute("aria-label");
+}
+
+function alternarPanel() {
+  estado.panelVisible = !estado.panelVisible;
+  localStorage.setItem("panel-documentos-visible", String(estado.panelVisible));
+  aplicarVisibilidadPanel();
 }
 
 function fechaLegible(fecha) {
@@ -265,8 +319,13 @@ function renderizarResultado() {
     ? resultado.alertas.map((alerta) => filaAlerta(alerta)).join("")
     : '<p class="sin-resultados">No se generaron alertas para las dimensiones evaluadas.</p>';
   $("#navegacion-dimensiones").innerHTML = resultado.resultados_dimension.map((dimension) => navDimension(dimension)).join("");
-  $("#cantidad-hallazgos").textContent = `${resultado.hallazgos.length} hallazgos`;
-  $("#lista-hallazgos").innerHTML = resultado.hallazgos.map((hallazgo) => tarjetaHallazgo(hallazgo)).join("");
+  estado.filtroHallazgos = { texto: "", dimension: "TODAS", nivel: "TODOS" };
+  $("#buscar-hallazgos").value = "";
+  $("#filtrar-dimension").value = "TODAS";
+  $$('[data-filtro-nivel]').forEach((boton) => {
+    boton.classList.toggle("activo", boton.dataset.filtroNivel === "TODOS");
+  });
+  renderizarHallazgos();
   estado.dimensionActiva = resultado.resultados_dimension[0]?.dimension_codigo || "D01";
   renderizarDetalleDimension(estado.dimensionActiva);
 
@@ -338,24 +397,85 @@ function renderizarDetalleDimension(codigo) {
     </div>
     ${recomendacion ? `<div class="bloque-detalle"><h3>Recomendación documental</h3><div class="recomendacion"><strong>${escapar(recomendacion.tipo_mejora.replaceAll("_", " "))}</strong><p>${escapar(recomendacion.accion_sugerida)}</p></div></div>` : ""}
     <div class="bloque-detalle">
+      <h3>Guardrails evaluados</h3>
+      <p class="ayuda-bloque">Cada guardrail representa una comprobación documental concreta dentro de esta dimensión.</p>
+      <div class="guardrails-dimension">${guardrailsDe(hallazgos)}</div>
+    </div>
+    <div class="bloque-detalle">
       <h3>Evidencia vinculada</h3>
       ${evidenciasDe(hallazgos)}
     </div>
   `;
 }
 
+function guardrailsDe(hallazgos) {
+  return hallazgos.map((hallazgo) => `
+    <details class="guardrail-dimension ${hallazgo.nivel_preliminar}">
+      <summary>
+        <span class="estado-guardrail"></span>
+        <span><strong>${escapar(hallazgo.guardrail_nombre || hallazgo.guardrail_codigo)}</strong><small>${escapar(hallazgo.guardrail_codigo)} · ${hallazgo.evidencias.length} evidencia${hallazgo.evidencias.length === 1 ? "" : "s"}</small></span>
+        <span class="etiqueta-nivel ${hallazgo.nivel_preliminar}">${etiquetaNivel(hallazgo.nivel_preliminar)}</span>
+        ${icono("chevron")}
+      </summary>
+      <div class="guardrail-contenido">
+        <p><strong>Qué busca</strong>${escapar(hallazgo.guardrail_descripcion || "Comprobar evidencia documental asociada a este criterio.")}</p>
+        <p><strong>Resultado</strong>${escapar(hallazgo.justificacion)}</p>
+        <small>Criterios: ${hallazgo.criterios_asociados.map(escapar).join(", ")}</small>
+      </div>
+    </details>
+  `).join("");
+}
+
 function evidenciasDe(hallazgos) {
-  const evidencias = hallazgos.flatMap((hallazgo) => hallazgo.evidencias.map((evidencia) => ({ ...evidencia, guardrail: hallazgo.guardrail_codigo })));
+  const evidencias = hallazgos.flatMap((hallazgo) => hallazgo.evidencias.map((evidencia) => ({
+    ...evidencia,
+    guardrail: hallazgo.guardrail_codigo,
+    guardrailNombre: hallazgo.guardrail_nombre || hallazgo.guardrail_codigo,
+  })));
   if (!evidencias.length) return '<p class="sin-resultados">No se encontró evidencia positiva vinculada.</p>';
-  return evidencias.map((evidencia) => `<div class="evidencia"><blockquote>“${escapar(evidencia.texto)}”</blockquote><small>${escapar(evidencia.guardrail)}${evidencia.seccion_origen ? ` · ${escapar(evidencia.seccion_origen)}` : ""}</small></div>`).join("");
+  return evidencias.map((evidencia) => `<div class="evidencia"><blockquote>“${resaltarTexto(evidencia.texto, evidencia.fragmentos_clave)}”</blockquote><small><strong>${escapar(evidencia.guardrailNombre)}</strong><span>${escapar(evidencia.guardrail)}${evidencia.seccion_origen ? ` · ${escapar(evidencia.seccion_origen)}` : ""}</span></small></div>`).join("");
 }
 
 function tarjetaHallazgo(hallazgo) {
-  return `<article class="hallazgo">
-    <div class="hallazgo-codigo">${escapar(hallazgo.guardrail_codigo)}<small>versión ${hallazgo.guardrail_version}</small></div>
-    <div><p>${escapar(hallazgo.justificacion)}</p><div class="hallazgo-evidencias">${hallazgo.evidencias.length} evidencia${hallazgo.evidencias.length === 1 ? "" : "s"} · ${hallazgo.dimensiones_asociadas.join(", ")}</div></div>
-    <span class="prioridad ${hallazgo.prioridad_documental}">${etiquetaNivel(hallazgo.nivel_preliminar)} · ${escapar(hallazgo.prioridad_documental)}</span>
-  </article>`;
+  return `<details class="hallazgo ${hallazgo.nivel_preliminar}">
+    <summary>
+      <span class="estado-guardrail"></span>
+      <span class="hallazgo-identidad"><strong>${escapar(hallazgo.guardrail_nombre || hallazgo.guardrail_codigo)}</strong><small>${escapar(hallazgo.guardrail_codigo)} · versión ${hallazgo.guardrail_version}</small></span>
+      <span class="hallazgo-resumen">${hallazgo.evidencias.length} evidencia${hallazgo.evidencias.length === 1 ? "" : "s"} · ${hallazgo.dimensiones_asociadas.join(", ")}</span>
+      <span class="etiqueta-nivel ${hallazgo.nivel_preliminar}">${etiquetaNivel(hallazgo.nivel_preliminar)}</span>
+      ${icono("chevron")}
+    </summary>
+    <div class="hallazgo-contenido">
+      <div class="hallazgo-explicacion"><p><strong>Qué busca este guardrail</strong>${escapar(hallazgo.guardrail_descripcion || "Comprobar evidencia documental asociada a este criterio.")}</p><p><strong>Qué se detectó</strong>${escapar(hallazgo.justificacion)}</p></div>
+      <div class="hallazgo-meta"><span>Familia ${escapar(hallazgo.familia_guardrail)}</span><span>Prioridad ${escapar(hallazgo.prioridad_documental)}</span><span>Criterios ${hallazgo.criterios_asociados.map(escapar).join(", ")}</span></div>
+      ${hallazgo.evidencias.length ? `<div class="hallazgo-evidencias-detalle"><h4>Evidencia vinculada</h4>${evidenciasDe([hallazgo])}</div>` : ""}
+    </div>
+  </details>`;
+}
+
+function renderizarHallazgos() {
+  const filtro = estado.filtroHallazgos;
+  const texto = filtro.texto.trim().toLocaleLowerCase("es");
+  const hallazgos = estado.resultado.hallazgos.filter((hallazgo) => {
+    const coincideDimension = filtro.dimension === "TODAS"
+      || hallazgo.dimensiones_asociadas.includes(filtro.dimension);
+    const coincideNivel = filtro.nivel === "TODOS"
+      || (filtro.nivel === "EVIDENCIA" && hallazgo.evidencias.length > 0)
+      || (filtro.nivel === "BRECHAS" && hallazgo.nivel_preliminar !== "EXPLICITO");
+    const contenido = [
+      hallazgo.guardrail_codigo,
+      hallazgo.guardrail_nombre,
+      hallazgo.guardrail_descripcion,
+      hallazgo.justificacion,
+      ...hallazgo.criterios_asociados,
+    ].join(" ").toLocaleLowerCase("es");
+    return coincideDimension && coincideNivel && (!texto || contenido.includes(texto));
+  });
+
+  $("#cantidad-hallazgos").textContent = `${hallazgos.length} de ${estado.resultado.hallazgos.length}`;
+  $("#lista-hallazgos").innerHTML = hallazgos.length
+    ? hallazgos.map(tarjetaHallazgo).join("")
+    : '<p class="sin-resultados">No hay hallazgos que coincidan con estos filtros.</p>';
 }
 
 function cambiarPestana(nombre) {
@@ -479,6 +599,7 @@ async function confirmarEliminacion() {
 }
 
 $("#archivo").addEventListener("change", (evento) => seleccionarArchivo(evento.target.files[0]));
+$("#alternar-panel").addEventListener("click", alternarPanel);
 $("#formulario-carga").addEventListener("submit", analizarDocumento);
 $("#nuevo-documento").addEventListener("click", nuevaCarga);
 $("#volver-carga").addEventListener("click", nuevaCarga);
@@ -510,5 +631,21 @@ $("#vista-resultados").addEventListener("click", (evento) => {
 });
 $("#confirmar-eliminar").addEventListener("click", confirmarEliminacion);
 $("#descargar-reporte").addEventListener("click", descargarReporte);
+$("#buscar-hallazgos").addEventListener("input", (evento) => {
+  estado.filtroHallazgos.texto = evento.target.value;
+  renderizarHallazgos();
+});
+$("#filtrar-dimension").addEventListener("change", (evento) => {
+  estado.filtroHallazgos.dimension = evento.target.value;
+  renderizarHallazgos();
+});
+$(".filtros-nivel").addEventListener("click", (evento) => {
+  const boton = evento.target.closest("[data-filtro-nivel]");
+  if (!boton) return;
+  estado.filtroHallazgos.nivel = boton.dataset.filtroNivel;
+  $$('[data-filtro-nivel]').forEach((item) => item.classList.toggle("activo", item === boton));
+  renderizarHallazgos();
+});
 
+aplicarVisibilidadPanel();
 configurarAplicacion();

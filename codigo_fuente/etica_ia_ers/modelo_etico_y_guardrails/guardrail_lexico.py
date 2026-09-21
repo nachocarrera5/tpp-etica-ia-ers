@@ -25,18 +25,55 @@ class SenalLexica:
     patron: Pattern[str]
 
 
+@dataclass(frozen=True)
+class CoincidenciaSenal:
+    nombre: str
+    fragmentos_clave: Tuple[str, ...]
+
+
 def senal(nombre: str, expresion: str) -> SenalLexica:
     return SenalLexica(nombre, re.compile(rf"(?<!\w)(?:{expresion})(?!\w)"))
 
 
+def _normalizar_para_busqueda_con_mapa(texto: str) -> Tuple[str, Tuple[int, ...]]:
+    caracteres: List[str] = []
+    posiciones: List[int] = []
+    for posicion, caracter_original in enumerate(texto):
+        descompuesto = unicodedata.normalize("NFD", caracter_original.casefold())
+        sin_acentos = "".join(
+            caracter
+            for caracter in descompuesto
+            if unicodedata.category(caracter) != "Mn"
+        )
+        for caracter in sin_acentos:
+            if caracter.isspace():
+                if caracteres and caracteres[-1] != " ":
+                    caracteres.append(" ")
+                    posiciones.append(posicion)
+                continue
+            caracteres.append(caracter)
+            posiciones.append(posicion)
+
+    if caracteres and caracteres[-1] == " ":
+        caracteres.pop()
+        posiciones.pop()
+    return "".join(caracteres), tuple(posiciones)
+
+
 def _normalizar_para_busqueda(texto: str) -> str:
-    descompuesto = unicodedata.normalize("NFD", texto.casefold())
-    sin_acentos = "".join(
-        caracter
-        for caracter in descompuesto
-        if unicodedata.category(caracter) != "Mn"
-    )
-    return re.sub(r"\s+", " ", sin_acentos).strip()
+    return _normalizar_para_busqueda_con_mapa(texto)[0]
+
+
+def _acotar_fragmento_clave(fragmento: str) -> Tuple[str, ...]:
+    fragmento = fragmento.strip()
+    if not fragmento:
+        return ()
+    if len(fragmento) <= 180:
+        return (fragmento,)
+
+    inicio = fragmento[:90].rsplit(" ", 1)[0].strip()
+    fin = fragmento[-90:].split(" ", 1)[-1].strip()
+    return tuple(parte for parte in (inicio, fin) if parte)
 
 
 def _fragmentos_evaluables(
@@ -52,27 +89,55 @@ def _fragmentos_evaluables(
 def _buscar_coincidencias(
     fragmentos: Tuple[FragmentoDocumental, ...],
     senales: Tuple[SenalLexica, ...],
-) -> Dict[UUID, List[str]]:
-    coincidencias: Dict[UUID, List[str]] = {}
+) -> Dict[UUID, List[CoincidenciaSenal]]:
+    coincidencias: Dict[UUID, List[CoincidenciaSenal]] = {}
     for fragmento in fragmentos:
-        texto = _normalizar_para_busqueda(fragmento.texto)
-        nombres = [s.nombre for s in senales if s.patron.search(texto)]
-        if nombres:
-            coincidencias[fragmento.id] = nombres
+        texto, mapa_posiciones = _normalizar_para_busqueda_con_mapa(
+            fragmento.texto
+        )
+        detectadas: List[CoincidenciaSenal] = []
+        for senal_lexica in senales:
+            coincidencia = senal_lexica.patron.search(texto)
+            if coincidencia is None:
+                continue
+            inicio, fin = coincidencia.span()
+            if inicio == fin or not mapa_posiciones:
+                fragmentos_clave = ()
+            else:
+                inicio_original = mapa_posiciones[inicio]
+                fin_original = mapa_posiciones[fin - 1] + 1
+                fragmentos_clave = _acotar_fragmento_clave(
+                    fragmento.texto[inicio_original:fin_original]
+                )
+            detectadas.append(
+                CoincidenciaSenal(senal_lexica.nombre, fragmentos_clave)
+            )
+        if detectadas:
+            coincidencias[fragmento.id] = detectadas
     return coincidencias
 
 
 def _crear_evidencias(
-    coincidencias: Dict[UUID, List[str]],
+    coincidencias: Dict[UUID, List[CoincidenciaSenal]],
     tipo_vinculo: TipoVinculoEvidencia,
 ) -> Tuple[ReferenciaEvidencia, ...]:
     return tuple(
         ReferenciaEvidencia(
             fragmento_id=fragmento_id,
             tipo_vinculo=tipo_vinculo,
-            observacion="Senales detectadas: " + ", ".join(sorted(set(nombres))),
+            observacion="Senales detectadas: "
+            + ", ".join(
+                sorted({coincidencia.nombre for coincidencia in detectadas})
+            ),
+            fragmentos_clave=tuple(
+                dict.fromkeys(
+                    fragmento_clave
+                    for coincidencia in detectadas
+                    for fragmento_clave in coincidencia.fragmentos_clave
+                )
+            ),
         )
-        for fragmento_id, nombres in coincidencias.items()
+        for fragmento_id, detectadas in coincidencias.items()
     )
 
 
@@ -108,7 +173,13 @@ class GuardrailLexico:
 
         explicitas = _buscar_coincidencias(fragmentos, self.senales_explicitas)
         if explicitas:
-            nombres = sorted({n for lista in explicitas.values() for n in lista})
+            nombres = sorted(
+                {
+                    coincidencia.nombre
+                    for lista in explicitas.values()
+                    for coincidencia in lista
+                }
+            )
             return EvaluacionPreliminarGuardrail(
                 nivel=NivelCobertura.EXPLICITO,
                 justificacion=(
@@ -134,7 +205,13 @@ class GuardrailLexico:
 
         parciales = _buscar_coincidencias(fragmentos, self.senales_parciales)
         if parciales:
-            nombres = sorted({n for lista in parciales.values() for n in lista})
+            nombres = sorted(
+                {
+                    coincidencia.nombre
+                    for lista in parciales.values()
+                    for coincidencia in lista
+                }
+            )
             return EvaluacionPreliminarGuardrail(
                 nivel=NivelCobertura.PARCIAL,
                 justificacion=(

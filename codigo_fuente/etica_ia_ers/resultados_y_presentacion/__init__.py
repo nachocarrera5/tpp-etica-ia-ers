@@ -307,6 +307,8 @@ def _serializar_hallazgo(hallazgo: Any) -> Dict[str, Any]:
         "analisis_id": str(hallazgo.analisis_id),
         "guardrail_codigo": hallazgo.guardrail_codigo,
         "guardrail_version": hallazgo.guardrail_version,
+        "guardrail_nombre": hallazgo.guardrail_nombre,
+        "guardrail_descripcion": hallazgo.guardrail_descripcion,
         "familia_guardrail": hallazgo.familia_guardrail.value,
         "dimensiones_asociadas": [
             dimension.value for dimension in hallazgo.dimensiones_asociadas
@@ -330,6 +332,7 @@ def _serializar_hallazgo(hallazgo: Any) -> Dict[str, Any]:
                 "tipo_vinculo": evidencia.tipo_vinculo.value,
                 "relevancia": evidencia.relevancia,
                 "observacion": evidencia.observacion,
+                "fragmentos_clave": list(evidencia.fragmentos_clave),
             }
             for evidencia in hallazgo.evidencias
         ],
