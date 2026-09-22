@@ -238,7 +238,11 @@ async function analizarDocumento(evento) {
   activarPaso("carga", "Preparando la ERS", "Extrayendo y normalizando el contenido.");
 
   const metadatos = {};
-  if ($("#dominio").value) metadatos.dominio = $("#dominio").value;
+  if ($("#dominio").value === "otro" && $("#dominio-otro").value.trim()) {
+    metadatos.dominio = $("#dominio-otro").value.trim();
+  } else if ($("#dominio").value) {
+    metadatos.dominio = $("#dominio").value;
+  }
   if ($("#identificador").value.trim()) metadatos.identificador = $("#identificador").value.trim();
   const formulario = new FormData();
   formulario.append("archivo", archivo);
@@ -315,6 +319,7 @@ function renderizarResultado() {
   `;
 
   $("#mapa-dimensiones").innerHTML = resultado.resultados_dimension.map((dimension) => celdaDimension(dimension)).join("");
+  renderizarMatrizGuardrails();
   $("#resumen-alertas").innerHTML = resultado.alertas.length
     ? resultado.alertas.map((alerta) => filaAlerta(alerta)).join("")
     : '<p class="sin-resultados">No se generaron alertas para las dimensiones evaluadas.</p>';
@@ -480,9 +485,99 @@ function renderizarHallazgos() {
 
 function cambiarPestana(nombre) {
   $$(".pestana").forEach((boton) => boton.classList.toggle("activa", boton.dataset.vista === nombre));
-  ["resumen", "dimensiones", "hallazgos"].forEach((panel) => {
+  ["resumen", "matriz", "dimensiones", "hallazgos"].forEach((panel) => {
     $(`#panel-${panel}`).hidden = panel !== nombre;
   });
+}
+
+function letraNivel(nivel) {
+  return { AUSENTE: "A", PARCIAL: "P", EXPLICITO: "E" }[nivel] || "·";
+}
+
+function renderizarMatrizGuardrails() {
+  const resultado = estado.resultado;
+  const dimensiones = resultado.resultados_dimension;
+
+  const codigosGuardrail = [];
+  const vistos = new Set();
+  dimensiones.forEach((dimension) => {
+    resultado.hallazgos
+      .filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo))
+      .sort((a, b) => a.guardrail_codigo.localeCompare(b.guardrail_codigo))
+      .forEach((hallazgo) => {
+        if (!vistos.has(hallazgo.guardrail_codigo)) {
+          vistos.add(hallazgo.guardrail_codigo);
+          codigosGuardrail.push(hallazgo.guardrail_codigo);
+        }
+      });
+  });
+
+  const maximoColumnas = Math.max(...dimensiones.map((dimension) =>
+    resultado.hallazgos.filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo)).length,
+  ), 1);
+
+  const encabezados = Array.from({ length: maximoColumnas }, (_, indice) => `<th scope="col">G${indice + 1}</th>`).join("");
+
+  const filas = dimensiones.map((dimension) => {
+    const hallazgosDimension = resultado.hallazgos
+      .filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo))
+      .sort((a, b) => a.guardrail_codigo.localeCompare(b.guardrail_codigo));
+    const celdas = Array.from({ length: maximoColumnas }, (_, indice) => {
+      const hallazgo = hallazgosDimension[indice];
+      if (!hallazgo) return '<td class="celda-matriz vacia" aria-hidden="true"></td>';
+      const nivel = hallazgo.nivel_preliminar;
+      return `<td class="celda-matriz">
+        <button type="button" class="celda-matriz-boton ${nivel}" data-hallazgo="${hallazgo.hallazgo_id}"
+          title="${escapar(hallazgo.guardrail_codigo)} · ${escapar(etiquetaNivel(nivel))}"
+          aria-label="${escapar(dimension.dimension_codigo)}, ${escapar(hallazgo.guardrail_codigo)}, ${escapar(etiquetaNivel(nivel))}">
+          ${letraNivel(nivel)}
+        </button>
+      </td>`;
+    }).join("");
+    return `<tr>
+      <th scope="row" class="fila-dimension" title="${escapar(dimension.dimension_nombre)}">
+        <strong>${dimension.dimension_codigo}</strong><span>${escapar(dimension.dimension_nombre)}</span>
+      </th>
+      ${celdas}
+    </tr>`;
+  }).join("");
+
+  $("#matriz-guardrails").innerHTML = `
+    <table class="matriz-tabla">
+      <thead><tr><th scope="col" class="esquina-matriz">Dimensión</th>${encabezados}</tr></thead>
+      <tbody>${filas}</tbody>
+    </table>
+  `;
+}
+
+function abrirCeldaMatriz(hallazgoId) {
+  const hallazgo = estado.resultado.hallazgos.find((item) => item.hallazgo_id === hallazgoId);
+  if (!hallazgo) return;
+  const dimensionCodigo = hallazgo.dimensiones_asociadas[0];
+  const dimension = estado.resultado.resultados_dimension.find((item) => item.dimension_codigo === dimensionCodigo);
+
+  $("#celda-dimension-codigo").textContent = dimension
+    ? `${dimension.dimension_codigo} · ${dimension.dimension_nombre}`
+    : dimensionCodigo;
+  $("#celda-guardrail-nombre").textContent = hallazgo.guardrail_nombre || hallazgo.guardrail_codigo;
+  const etiqueta = $("#celda-etiqueta-nivel");
+  etiqueta.textContent = etiquetaNivel(hallazgo.nivel_preliminar);
+  etiqueta.className = `etiqueta-nivel ${hallazgo.nivel_preliminar}`;
+
+  $("#celda-contenido").innerHTML = `
+    <p><strong>Qué busca</strong>${escapar(hallazgo.guardrail_descripcion || "Comprobar evidencia documental asociada a este criterio.")}</p>
+    <p><strong>Resultado</strong>${escapar(hallazgo.justificacion)}</p>
+    <div class="hallazgo-evidencias-detalle">
+      <h4>Evidencia vinculada</h4>
+      ${evidenciasDe([hallazgo])}
+    </div>
+  `;
+
+  $("#celda-ver-dimension").onclick = () => {
+    $("#dialogo-celda").close();
+    irADimension(dimensionCodigo);
+  };
+  $("#dialogo-celda").showModal();
 }
 
 function irADimension(codigo) {
@@ -497,6 +592,7 @@ function nuevaCarga() {
   estado.resultado = null;
   $("#formulario-carga").reset();
   seleccionarArchivo(null);
+  actualizarCampoDominioOtro();
   renderizarHistorial();
   mostrarVista("carga");
 }
@@ -608,9 +704,18 @@ $("#usar-ejemplo").addEventListener("click", () => {
   const archivo = new File([ERS_DEMO], "ers-demo-turnos-medicos.txt", { type: "text/plain" });
   seleccionarArchivo(archivo);
   $("#dominio").value = "salud";
+  actualizarCampoDominioOtro();
   $("#identificador").value = "DEMO-ERS-01";
   notificar("ERS de demostración preparada.");
 });
+
+function actualizarCampoDominioOtro() {
+  const esOtro = $("#dominio").value === "otro";
+  $("#campo-dominio-otro").hidden = !esOtro;
+  if (!esOtro) $("#dominio-otro").value = "";
+}
+
+$("#dominio").addEventListener("change", actualizarCampoDominioOtro);
 
 const zona = $("#zona-archivo");
 ["dragenter", "dragover"].forEach((evento) => zona.addEventListener(evento, (e) => { e.preventDefault(); zona.classList.add("arrastrando"); }));
@@ -628,6 +733,8 @@ $("#vista-resultados").addEventListener("click", (evento) => {
   if (pestana) cambiarPestana(pestana.dataset.vista);
   const dimension = evento.target.closest("[data-dimension]");
   if (dimension) irADimension(dimension.dataset.dimension);
+  const celda = evento.target.closest("[data-hallazgo]");
+  if (celda) abrirCeldaMatriz(celda.dataset.hallazgo);
 });
 $("#confirmar-eliminar").addEventListener("click", confirmarEliminacion);
 $("#descargar-reporte").addEventListener("click", descargarReporte);
