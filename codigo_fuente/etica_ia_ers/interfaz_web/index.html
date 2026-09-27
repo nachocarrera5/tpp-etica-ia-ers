@@ -86,6 +86,10 @@
                 <option value="otro">Otro</option>
               </select>
             </label>
+            <label id="campo-dominio-otro" class="campo-ancho-total" hidden>
+              <span>Especificá el dominio</span>
+              <input id="dominio-otro" name="dominio_otro" type="text" maxlength="80" placeholder="Ej. Logística">
+            </label>
             <label>
               <span>Identificador <small>opcional</small></span>
               <input id="identificador" name="identificador" type="text" maxlength="80" placeholder="Ej. ERS-04">
@@ -147,6 +151,7 @@
 
         <nav class="pestanas" aria-label="Secciones del resultado">
           <button class="pestana activa" data-vista="resumen" type="button">Resumen</button>
+          <button class="pestana" data-vista="matriz" type="button">Matriz</button>
           <button class="pestana" data-vista="dimensiones" type="button">Dimensiones</button>
           <button class="pestana" data-vista="hallazgos" type="button">Hallazgos</button>
         </nav>
@@ -163,6 +168,17 @@
           <div class="seccion-resultados">
             <div class="seccion-titulo"><div><span class="sobrelinea">Prioridad de revisión</span><h2>Alertas documentales</h2></div></div>
             <div id="resumen-alertas" class="lista-alertas"></div>
+          </div>
+        </div>
+
+        <div id="panel-matriz" class="panel-vista" hidden>
+          <div class="seccion-resultados">
+            <div class="seccion-titulo">
+              <div><span class="sobrelinea">Pantallazo general</span><h2>Matriz dimensión × guardrail</h2></div>
+              <div class="leyenda"><span class="ausente">A · Ausente</span><span class="parcial">P · Parcial</span><span class="explicito">E · Explícito</span></div>
+            </div>
+            <p class="ayuda-bloque">Pasá el mouse sobre una celda para ver un resumen o hacé clic para abrir el hallazgo completo con su evidencia.</p>
+            <div id="matriz-guardrails" class="matriz-scroll"></div>
           </div>
         </div>
 
@@ -215,6 +231,23 @@
       </section>
     </main>
   </div>
+
+  <dialog id="dialogo-celda" class="dialogo-celda">
+    <form method="dialog">
+      <div class="dialogo-celda-encabezado">
+        <div>
+          <span class="sobrelinea" id="celda-dimension-codigo"></span>
+          <h2 id="celda-guardrail-nombre"></h2>
+        </div>
+        <span id="celda-etiqueta-nivel" class="etiqueta-nivel"></span>
+      </div>
+      <div id="celda-contenido" class="dialogo-celda-contenido"></div>
+      <div class="acciones-dialogo">
+        <button class="boton boton-secundario" id="celda-ver-dimension" type="button">Ver dimensión completa</button>
+        <button class="boton boton-primario" value="cerrar">Cerrar</button>
+      </div>
+    </form>
+  </dialog>
 
   <dialog id="dialogo-eliminar">
     <form method="dialog">
