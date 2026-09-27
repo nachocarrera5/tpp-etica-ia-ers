@@ -244,15 +244,18 @@ h1, h2, h3, p { letter-spacing: 0; }
 .advertencias { margin-top: 30px; padding: 16px 18px; color: #684a1a; background: var(--parcial-fondo); border-left: 3px solid var(--parcial); font-size: 12px; }
 
 .matriz-scroll { overflow-x: auto; border: 1px solid var(--linea); border-radius: var(--radio); }
-.matriz-tabla { width: 100%; border-collapse: collapse; font-size: 12px; }
+.matriz-tabla { width: max-content; min-width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 12px; }
 .matriz-tabla th, .matriz-tabla td { border-bottom: 1px solid var(--linea); border-right: 1px solid var(--linea); }
 .matriz-tabla thead th { position: sticky; top: 0; z-index: 1; padding: 10px 6px; background: var(--papel); color: var(--tinta-suave); font-size: 10px; font-weight: 700; text-align: center; text-transform: uppercase; white-space: nowrap; }
 .matriz-tabla .esquina-matriz { position: sticky; left: 0; z-index: 2; text-align: left; }
+.matriz-tabla .encabezado-guardrail { width: 42px; min-width: 42px; height: 190px; padding: 8px 0; vertical-align: bottom; }
+.encabezado-guardrail span { display: inline-block; writing-mode: vertical-rl; transform: rotate(180deg); }
+.matriz-tabla .inicio-grupo { border-left: 2px solid var(--linea-fuerte); }
 .fila-dimension { position: sticky; left: 0; z-index: 1; min-width: 190px; padding: 10px 14px; background: var(--superficie); text-align: left; vertical-align: top; }
 .fila-dimension strong { display: block; font-family: var(--fuente-titulo); font-size: 15px; }
 .fila-dimension span { display: block; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 190px; color: var(--tinta-suave); font-size: 10px; }
 .celda-matriz { padding: 4px; text-align: center; }
-.celda-matriz.vacia { background: repeating-linear-gradient(45deg, var(--papel) 0 4px, var(--superficie) 4px 8px); }
+.celda-matriz.vacia { background: var(--papel); }
 .celda-matriz-boton { width: 34px; height: 34px; border: 0; border-radius: 4px; color: #fff; font-family: var(--fuente-titulo); font-size: 14px; font-weight: 700; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease; }
 .celda-matriz-boton:hover, .celda-matriz-boton:focus-visible { transform: scale(1.12); box-shadow: 0 4px 10px rgba(24, 32, 31, .25); z-index: 1; }
 .celda-matriz-boton.AUSENTE { background: var(--ausente); }

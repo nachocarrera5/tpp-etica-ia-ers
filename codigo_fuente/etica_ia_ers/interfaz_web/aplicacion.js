@@ -512,21 +512,33 @@ function renderizarMatrizGuardrails() {
       });
   });
 
-  const maximoColumnas = Math.max(...dimensiones.map((dimension) =>
-    resultado.hallazgos.filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo)).length,
-  ), 1);
+  const hallazgosPorDimensionYCodigo = new Map();
+  resultado.hallazgos.forEach((hallazgo) => {
+    hallazgo.dimensiones_asociadas.forEach((dimensionCodigo) => {
+      hallazgosPorDimensionYCodigo.set(`${dimensionCodigo}:${hallazgo.guardrail_codigo}`, hallazgo);
+    });
+  });
 
-  const encabezados = Array.from({ length: maximoColumnas }, (_, indice) => `<th scope="col">G${indice + 1}</th>`).join("");
+  const iniciosGrupo = new Set();
+  dimensiones.forEach((dimension) => {
+    const primerCodigo = codigosGuardrail.find((codigo) => codigo.includes(`-${dimension.dimension_codigo}-`));
+    if (primerCodigo) iniciosGrupo.add(primerCodigo);
+  });
+
+  const encabezados = codigosGuardrail.map((codigo) => `
+    <th scope="col" class="encabezado-guardrail${iniciosGrupo.has(codigo) ? " inicio-grupo" : ""}"
+      title="${escapar(codigo)}"><span>${escapar(codigo)}</span></th>
+  `).join("");
 
   const filas = dimensiones.map((dimension) => {
-    const hallazgosDimension = resultado.hallazgos
-      .filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo))
-      .sort((a, b) => a.guardrail_codigo.localeCompare(b.guardrail_codigo));
-    const celdas = Array.from({ length: maximoColumnas }, (_, indice) => {
-      const hallazgo = hallazgosDimension[indice];
-      if (!hallazgo) return '<td class="celda-matriz vacia" aria-hidden="true"></td>';
+    const celdas = codigosGuardrail.map((codigo) => {
+      const hallazgo = hallazgosPorDimensionYCodigo.get(`${dimension.dimension_codigo}:${codigo}`);
+      const claseGrupo = iniciosGrupo.has(codigo) ? " inicio-grupo" : "";
+      if (!hallazgo) {
+        return `<td class="celda-matriz vacia${claseGrupo}" aria-label="${escapar(codigo)} no corresponde a ${escapar(dimension.dimension_codigo)}"></td>`;
+      }
       const nivel = hallazgo.nivel_preliminar;
-      return `<td class="celda-matriz">
+      return `<td class="celda-matriz${claseGrupo}">
         <button type="button" class="celda-matriz-boton ${nivel}" data-hallazgo="${hallazgo.hallazgo_id}"
           title="${escapar(hallazgo.guardrail_codigo)} · ${escapar(etiquetaNivel(nivel))}"
           aria-label="${escapar(dimension.dimension_codigo)}, ${escapar(hallazgo.guardrail_codigo)}, ${escapar(etiquetaNivel(nivel))}">
