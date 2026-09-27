@@ -1,0 +1,8 @@
+documento,archivo,tipo,origen,dominio
+MEDICO-SINTETICO,ers_apoyo_diagnostico_medico.pdf,SINTETICA,Equipo del proyecto,Salud
+SCORING-SINTETICO,ers_scoring_crediticio.pdf,SINTETICA,Equipo del proyecto,Finanzas
+RECOMENDADOR-SINTETICO,ers_sistema_recomendador_contenidos.pdf,SINTETICA,Equipo del proyecto,Contenidos
+ARAGON-REAL,ers_caso_real_asistente_ia_gobierno_aragon.pdf,REAL,Gobierno de Aragon,Administracion publica
+CLM-REAL,ers_caso_real_marco_ia_generativa_castilla_la_mancha.pdf,REAL,Junta de Comunidades de Castilla-La Mancha,Administracion publica
+NOTAS-CLINICAS-REAL,ers_caso_real_notas_clinicas_iso_29148.pdf,REAL,Caso de estudio de notas clinicas,Salud
+SMS-MURCIA-REAL,ers_caso_real_plataforma_integral_sms.pdf,REAL,Servicio Murciano de Salud,Salud

@@ -209,6 +209,25 @@ La suite genera documentos TXT, PDF y DOCX mínimos en memoria o en directorios 
 
 GitHub Actions ejecuta la suite en cada pull request hacia `main`.
 
+## Validacion del catalogo
+
+`validacion/` contiene el protocolo, la referencia documental y los informes
+de SCRUM-120 a SCRUM-123. La linea base evalua las diez dimensiones y los 72
+guardrails sobre siete documentos, conservando separados el acuerdo exacto de
+nivel y la deteccion de evidencia.
+
+La corrida puede reproducirse con los PDF del corpus local:
+
+```bash
+python validacion/ejecutar_validacion.py \
+  --corpus "/ruta/a/ERS de prueba" \
+  --referencia validacion/referencia_dimensiones.csv \
+  --salida /tmp/validacion-sprint-11
+```
+
+Los resultados son una validacion documental preliminar y requieren revision
+humana. No representan cumplimiento, aprobacion ni certificacion del sistema.
+
 ## Dependencias lingüísticas
 
 El procesamiento usa spaCy 3.8.7 y `es_core_news_sm` 3.8.0. spaCy se distribuye bajo licencia MIT y el [modelo español](https://spacy.io/models/es) bajo GNU GPL 3.0. El modelo se instala desde su wheel oficial y no se almacena en el repositorio.
