@@ -14,3 +14,4 @@ build/
 datos/almacenamiento/*
 !datos/almacenamiento/.gitkeep
 datos/salida/
+validacion/resultados/evidencias.json

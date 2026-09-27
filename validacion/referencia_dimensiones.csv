@@ -1,0 +1,71 @@
+documento,dimension,nivel_esperado,justificacion,estado_revision
+MEDICO-SINTETICO,D01,EXPLICITO,"Define proposito, contexto clinico, alcance, usos prohibidos, supuestos y limitaciones.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D02,EXPLICITO,"Identifica usuarios, afectados directos e indirectos, responsables, beneficios y riesgos previsibles.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D03,EXPLICITO,"Especifica categorias, origen y finalidad de datos, calidad, acceso, seguridad, retencion y eliminacion.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D04,EXPLICITO,"Define grupos, proxies prohibidos, metricas, umbrales, mitigacion y responsables de equidad.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D05,EXPLICITO,"Define destinatario, contenido, canal y advertencias para comunicar el uso y los limites de la IA.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D06,EXPLICITO,"Define salidas explicadas, factores, formato, validacion de utilidad y responsable clinico.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D07,EXPLICITO,"Define revision obligatoria, autoridad de intervencion, activacion, procedimiento y registro.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D08,EXPLICITO,"Incluye umbrales, fallas, contingencia, monitoreo, incidentes y pruebas de seguridad.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D09,EXPLICITO,"Asigna responsables y define trazas, versionado, auditoria, reclamos y reparacion.",PENDIENTE_SEGUNDA_REVISION
+MEDICO-SINTETICO,D10,EXPLICITO,"Especifica accesibilidad, autonomia, impactos amplios, sostenibilidad y mitigacion.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D01,EXPLICITO,"Define finalidad crediticia, alcance, exclusiones, supuestos, limitaciones y uso orientativo.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D02,EXPLICITO,"Identifica usuarios, afectados y vulnerables, beneficios, perjuicios y responsables.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D03,EXPLICITO,"Documenta datos, finalidad, calidad, responsables, acceso, retencion y eliminacion.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D04,EXPLICITO,"Especifica grupos, atributos sensibles, proxies, metricas, umbrales y mitigacion.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D05,EXPLICITO,"Comunica IA, finalidad, limites y revision tanto a analistas como a solicitantes.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D06,EXPLICITO,"Define razones, factores, destinatarios, lenguaje claro y evaluacion de utilidad.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D07,EXPLICITO,"Toda decision adversa tiene revision, autoridad, activadores, escalamiento y registro.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D08,EXPLICITO,"Contiene metricas, disponibilidad, fallas, monitoreo, contingencia y seguridad.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D09,EXPLICITO,"Permite reconstruir decisiones y define responsables, auditoria, reclamos y reparacion.",PENDIENTE_SEGUNDA_REVISION
+SCORING-SINTETICO,D10,EXPLICITO,"Incluye accesibilidad, impactos, autonomia, sostenibilidad y criterios de aceptacion.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D01,EXPLICITO,"Define finalidad, usuarios, alcance, usos excluidos, supuestos y limitaciones.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D02,EXPLICITO,"Identifica usuarios, menores, creadores, responsables, impactos y revision periodica.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D03,EXPLICITO,"Detalla datos, finalidad, controles del usuario, calidad, acceso, retencion y eliminacion.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D04,EXPLICITO,"Define grupos, proxies, metricas, umbrales, mitigacion y responsable de revision.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D05,EXPLICITO,"Define aviso de IA, destinatarios, factores, limites y comunicacion de cambios.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D06,EXPLICITO,"Explica recomendaciones, factores y formato accesible con control del usuario.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D07,PARCIAL,"Ofrece control al usuario y al adulto responsable, pero no un procedimiento completo de supervision de decisiones.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D08,EXPLICITO,"Define rendimiento, calidad, fallas, contingencia, monitoreo, incidentes y pruebas.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D09,EXPLICITO,"Registra recomendaciones y versiones, asigna propietarios y contempla reclamos y correccion.",PENDIENTE_SEGUNDA_REVISION
+RECOMENDADOR-SINTETICO,D10,EXPLICITO,"Cubre accesibilidad, autonomia, menores, diversidad, sostenibilidad y aceptacion.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D01,PARCIAL,"El pliego define objeto, contexto y alcance, pero no completa de forma uniforme supuestos, limites y usos prohibidos.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D02,PARCIAL,"Identifica usuarios y algunos afectados, sin desarrollar de manera completa impactos y mecanismos de atencion.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D03,PARCIAL,"Incluye privacidad, acceso, trazabilidad y retencion, con criterios dispersos y cobertura desigual de calidad y minimizacion.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D04,PARCIAL,"Exige evitar sesgos y discriminacion, pero no desarrolla todo el esquema de grupos, metricas y correccion.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D05,PARCIAL,"Incluye transparencia sobre IA, aunque los destinatarios, canales y actualizacion no quedan completos para todos los casos.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D06,PARCIAL,"Contiene requisitos de explicabilidad y verificabilidad, sin validar de forma completa utilidad y formato por destinatario.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D07,PARCIAL,"Exige supervision humana eficaz, pero no agota activadores, autoridad y registro de cada intervencion.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D08,PARCIAL,"Cubre seguridad, registro, continuidad y monitoreo, con criterios repartidos en distintas secciones.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D09,PARCIAL,"Incluye responsables, auditoria, trazabilidad y registros, pero carece de cobertura completa de reclamo y reparacion.",PENDIENTE_SEGUNDA_REVISION
+ARAGON-REAL,D10,EXPLICITO,"Define afectados, accesibilidad con pruebas, control humano, objetivos ambientales y mitigacion verificable.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D01,PARCIAL,"Define objeto, contexto y servicios del marco, pero no documenta de forma completa limitaciones y usos excluidos.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D02,PARCIAL,"Identifica equipos y usuarios institucionales, sin un analisis completo de afectados e impactos previsibles.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D03,PARCIAL,"Contiene privacidad, anonimizacion y seguridad de datos, con faltantes sobre ciclo de vida y calidad por caso.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D04,PARCIAL,"Contempla control de sesgos y fairness, pero no especifica para todos los casos grupos, metricas y umbrales.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D05,PARCIAL,"Menciona transparencia e interpretabilidad como guias, sin especificar completamente la comunicacion al usuario final.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D06,PARCIAL,"Prevé guias de interpretabilidad, pero no define explicaciones verificables por salida y destinatario.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D07,AUSENTE,"No se localizaron requisitos concretos de supervision o intervencion humana sobre salidas de IA.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D08,PARCIAL,"Incluye observabilidad, ciberseguridad y calidad, sin completar fallas, umbrales y contingencia en cada servicio.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D09,PARCIAL,"Define registros, versionado, responsables y auditorias, pero no cubre integralmente reclamos y reparacion.",PENDIENTE_SEGUNDA_REVISION
+CLM-REAL,D10,PARCIAL,"Incluye sostenibilidad, eficiencia y accesibilidad, sin un analisis completo de impactos sociales y autonomia.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D01,PARCIAL,"Se reconoce el proposito clinico y el entorno, con alcance, supuestos y limites incompletos.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D02,PARCIAL,"Menciona beneficiarios, personal clinico y pacientes, pero el analisis de impactos es insuficiente.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D03,PARCIAL,"Define datos clinicos, consentimiento, privacidad, acceso y eliminacion, sin ciclo de vida y calidad completos.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D04,AUSENTE,"No se localizaron requisitos concretos de equidad, sesgo, grupos o pruebas por subpoblacion.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D05,PARCIAL,"El consentimiento informa intervencion de IA, pero faltan contenido, canal, limites y mantenimiento del aviso.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D06,AUSENTE,"La visualizacion de resultados no incluye requisitos de explicacion de salidas o factores.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D07,PARCIAL,"Permite correccion y validacion manual, sin procedimiento, activadores y registro completos.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D08,PARCIAL,"Incluye precision, latencia, respaldo, continuidad y seguridad, sin monitoreo e incidentes completos.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D09,AUSENTE,"El uso de Git y autenticacion tecnica no constituye evidencia suficiente de accountability, auditoria o reparacion de decisiones.",PENDIENTE_SEGUNDA_REVISION
+NOTAS-CLINICAS-REAL,D10,PARCIAL,"Considera accesibilidad del habla, privacidad y bajo consumo, sin evaluacion integral de impactos y mitigacion.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D01,PARCIAL,"El pliego define objeto, alcance y casos de uso, pero supuestos, limites y exclusiones de IA estan dispersos.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D02,PARCIAL,"Identifica profesionales, pacientes y responsables, sin completar beneficios, perjuicios y grupos vulnerables.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D03,PARCIAL,"La plataforma especifica privacidad, acceso, seguridad y trazabilidad, con cobertura desigual de calidad y retencion.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D04,AUSENTE,"No se localizaron requisitos verificables de sesgo, equidad, proxies o comparacion por subpoblaciones.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D05,PARCIAL,"Exige avisar la interaccion con IA y marcar contenido generado, sin completar todos los limites y responsables de actualizacion.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D06,AUSENTE,"No se localizaron requisitos concretos para explicar factores o razones de las salidas generadas.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D07,PARCIAL,"Exige supervision humana si el sistema pasa a alto riesgo, pero el procedimiento y registro quedan condicionados y generales.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D08,PARCIAL,"Contiene seguridad, disponibilidad, precision y contingencia, sin cobertura completa de monitoreo e incidentes de IA.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D09,PARCIAL,"Incluye responsables, registros, versionado y auditoria, pero no un circuito completo de reclamo y reparacion por IA.",PENDIENTE_SEGUNDA_REVISION
+SMS-MURCIA-REAL,D10,PARCIAL,"Incluye accesibilidad y sostenibilidad tecnica, sin evaluacion completa de autonomia e impactos sociales o ambientales.",PENDIENTE_SEGUNDA_REVISION

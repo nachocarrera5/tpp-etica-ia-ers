@@ -1,0 +1,57 @@
+{
+  "fecha_utc": "2026-09-27T21:56:19.651973+00:00",
+  "commit": "20b3e5a1be313afb00e40ae1bdbcc36867fc41c0",
+  "documentos": [
+    {
+      "documento": "MEDICO-SINTETICO",
+      "archivo": "ers_apoyo_diagnostico_medico.pdf",
+      "tipo": "SINTETICA",
+      "origen": "Equipo del proyecto",
+      "dominio": "Salud"
+    },
+    {
+      "documento": "SCORING-SINTETICO",
+      "archivo": "ers_scoring_crediticio.pdf",
+      "tipo": "SINTETICA",
+      "origen": "Equipo del proyecto",
+      "dominio": "Finanzas"
+    },
+    {
+      "documento": "RECOMENDADOR-SINTETICO",
+      "archivo": "ers_sistema_recomendador_contenidos.pdf",
+      "tipo": "SINTETICA",
+      "origen": "Equipo del proyecto",
+      "dominio": "Contenidos"
+    },
+    {
+      "documento": "ARAGON-REAL",
+      "archivo": "ers_caso_real_asistente_ia_gobierno_aragon.pdf",
+      "tipo": "REAL",
+      "origen": "Gobierno de Aragon",
+      "dominio": "Administracion publica"
+    },
+    {
+      "documento": "CLM-REAL",
+      "archivo": "ers_caso_real_marco_ia_generativa_castilla_la_mancha.pdf",
+      "tipo": "REAL",
+      "origen": "Junta de Comunidades de Castilla-La Mancha",
+      "dominio": "Administracion publica"
+    },
+    {
+      "documento": "NOTAS-CLINICAS-REAL",
+      "archivo": "ers_caso_real_notas_clinicas_iso_29148.pdf",
+      "tipo": "REAL",
+      "origen": "Caso de estudio de notas clinicas",
+      "dominio": "Salud"
+    },
+    {
+      "documento": "SMS-MURCIA-REAL",
+      "archivo": "ers_caso_real_plataforma_integral_sms.pdf",
+      "tipo": "REAL",
+      "origen": "Servicio Murciano de Salud",
+      "dominio": "Salud"
+    }
+  ],
+  "cantidad_guardrails": 72,
+  "cantidad_evaluaciones": 504
+}

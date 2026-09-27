@@ -1,0 +1,505 @@
+documento,tipo_documento,tarea,dimension,guardrail,nombre_guardrail,nivel_obtenido,prioridad,cantidad_evidencias,justificacion
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: comportamiento_orientado_a_finalidad."
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,EXPLICITO,ALTA,2,"Se hallo evidencia documental clara y localizada: uso_previsto_delimitado, uso_prohibido_con_finalidad."
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: destinatarios_identificados.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: limitacion_concreta.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_uso_ia."
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",EXPLICITO,ALTA,2,"Se hallo evidencia documental clara y localizada: actor_destinatario_identificado, actores_concretos_identificados."
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_analisis_impacto."
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: categorias_de_informacion_clinica.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: proteccion_tecnica_especifica.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_consentimiento."
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_equidad."
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: comparacion_generica_por_grupo, mencion_subpoblacion."
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,EXPLICITO,ALTA,1,"Se hallo evidencia documental clara y localizada: salida_ia_identificada, uso_ia_comunicado."
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: contenido_minimo.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_comunicacion."
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: limites_y_advertencias.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: explicacion_de_salida.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: salidas_identificadas.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: formato_explicacion.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: supervision_humana.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: decisiones_supervisadas.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_rol_supervision."
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_intervencion."
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: registro_intervencion.
+MEDICO-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: respuesta_operativa_ante_riesgo.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: metrica_ia_con_umbral.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: comportamiento_ante_falla.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: contingencia_definida.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: responsable_de_incidentes.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: robustez_verificable.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,EXPLICITO,ALTA,2,"Se hallo evidencia documental clara y localizada: responsabilidad_asignada, responsable_en_registro_de_incidente."
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,PARCIAL,MEDIA,6,"Se hallo evidencia generica, incompleta o ambigua: rol_poco_delimitado."
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: registro_con_campos.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: version_con_cambio_trazable.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: canal_de_reclamo.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: afectados_identificados.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: accesibilidad_verificable.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: sostenibilidad_generica."
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+MEDICO-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: impacto_verificable.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,EXPLICITO,ALTA,2,"Se hallo evidencia documental clara y localizada: uso_previsto_delimitado, uso_prohibido_con_finalidad."
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: limitacion_concreta.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: actores_concretos_identificados.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,EXPLICITO,ALTA,2,"Se hallo evidencia documental clara y localizada: grupo_vulnerable_identificado, personas_con_discapacidad."
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_analisis_impacto."
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_uso_datos."
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_equidad, mencion_sesgos."
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,PARCIAL,ALTA,3,"Se hallo evidencia generica, incompleta o ambigua: comparacion_generica_por_grupo."
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_atributos_sensibles."
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: metrica_falsos_negativos_por_grupo.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: accion_condicionada_ante_brecha.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_transparencia."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_destinatarios."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: contenido_minimo.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_comunicacion."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: limites_y_advertencias.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: explicacion_de_salida.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: salidas_identificadas.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,PARCIAL,MEDIA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_receptor_explicacion."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: formato_explicacion.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_revision_explicacion."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: explicabilidad_declarativa."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_revision_humana."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: actor_humano_revisa_recomendacion.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_rol_supervision."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,PARCIAL,ALTA,3,"Se hallo evidencia generica, incompleta o ambigua: mencion_intervencion."
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: condicion_revision.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: registro_intervencion.
+SCORING-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: respuesta_operativa_ante_riesgo.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: comportamiento_ante_falla.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: contingencia_definida.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: incidente_sin_responsabilidad_completa."
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: robustez_verificable.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,EXPLICITO,ALTA,4,"Se hallo evidencia documental clara y localizada: responsabilidad_asignada, responsable_en_registro_de_incidente."
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: rol_con_responsabilidad.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: registro_con_campos.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,EXPLICITO,MEDIA,3,Se hallo evidencia documental clara y localizada: version_con_cambio_trazable.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: canal_de_reclamo.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: correccion_generica."
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: afectados_identificados.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: accesibilidad_verificable.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: consumo_revisable.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SCORING-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: uso_prohibido_con_finalidad.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_afectados, usuarios_registrados."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_analisis_impacto."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: categorias_datos_especificas.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_completitud."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: eliminacion_condicionada.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_equidad."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: proxy_con_atributo_sensible.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: uso_ia_comunicado.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: explicacion_de_salida.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_salida_explicable."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: formato_explicacion.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_responsable_explicacion."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: metrica_ia_con_umbral.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: responsable_de_incidentes.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: robustez_verificable.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: responsable_en_registro_de_incidente.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,PARCIAL,MEDIA,4,"Se hallo evidencia generica, incompleta o ambigua: rol_poco_delimitado."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: registro_con_campos.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: version_con_cambio_trazable.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: afectados_identificados.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: accesibilidad_verificable.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: control_de_autonomia.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: sostenibilidad_generica."
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+RECOMENDADOR-SINTETICO,SINTETICA,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: impacto_verificable.
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: objeto_contractual_con_finalidad.
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: alcance_contractual_delimitado.
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: funciones_de_ia_delimitadas."
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: personal_que_interactua_con_ia.
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: limitacion_concreta.
+ARAGON-REAL,REAL,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,PARCIAL,MEDIA,3,"Se hallo evidencia generica, incompleta o ambigua: mencion_uso_ia."
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",PARCIAL,ALTA,3,"Se hallo evidencia generica, incompleta o ambigua: mencion_afectados, mencion_usuario."
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: personas_con_discapacidad.
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: mejora_de_servicio_a_ciudadania.
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_analisis_impacto."
+ARAGON-REAL,REAL,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,EXPLICITO,ALTA,6,Se hallo evidencia documental clara y localizada: categorias_datos_especificas.
+ARAGON-REAL,REAL,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_representatividad."
+ARAGON-REAL,REAL,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,PARCIAL,MEDIA,11,"Se hallo evidencia generica, incompleta o ambigua: mencion_acceso, proteccion_de_datos_mediante_cifrado, proteccion_o_confidencialidad_de_datos."
+ARAGON-REAL,REAL,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: trazabilidad_del_uso.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: prevencion_explicita_de_sesgos.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: mecanismo_preventivo_de_sesgos.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,PARCIAL,ALTA,7,"Se hallo evidencia generica, incompleta o ambigua: mencion_transparencia."
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: transparencia_declarativa."
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: explicacion_de_salida.
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: salidas_identificadas.
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: destinatarios_que_comprenden_decisiones.
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: factores_clave_del_resultado.
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: comprension_y_validacion_por_usuarios."
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: proveedor_obligado_a_explicar.
+ARAGON-REAL,REAL,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: explicabilidad_verificable.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,EXPLICITO,ALTA,4,Se hallo evidencia documental clara y localizada: supervision_humana.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_decisiones_supervisadas."
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: personas_encargadas_de_vigilancia.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: capacidad_de_revertir_salidas.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: mecanismo_de_interrupcion.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,PARCIAL,MEDIA,3,"Se hallo evidencia generica, incompleta o ambigua: supervision_declarativa."
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: seguridad_y_solidez_en_ciclo_de_vida.
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,PARCIAL,MEDIA,3,"Se hallo evidencia generica, incompleta o ambigua: metrica_ia_sin_umbral."
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: deteccion_y_respuesta_a_anomalias.
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: observabilidad_con_senales_operativas.
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: gestion_de_incidencias."
+ARAGON-REAL,REAL,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,4,"Se hallo evidencia documental clara y localizada: robustez_verificable, seguridad_desde_diseno_con_riesgos."
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: responsabilidad_asignada.
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,PARCIAL,MEDIA,6,"Se hallo evidencia generica, incompleta o ambigua: rol_poco_delimitado."
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: registro_automatico_con_retencion_contractual.
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: actualizaciones_documentadas."
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: objetivos_ambientales_concretos.
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,EXPLICITO,MEDIA,5,"Se hallo evidencia documental clara y localizada: afectados_identificados, personas_con_discapacidad_afectadas."
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: accesibilidad_con_pruebas_de_usuarios.
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: persona_puede_revertir_salida.
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: objetivos_de_sostenibilidad.
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: reduccion_de_impacto_ambiental.
+ARAGON-REAL,REAL,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: impacto_verificable.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: objeto_contractual_con_finalidad.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,EXPLICITO,MEDIA,4,Se hallo evidencia documental clara y localizada: alcance_de_marco_ia_delimitado.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: tipos_de_usuario_del_sistema.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: limitacion_concreta.
+CLM-REAL,REAL,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,PARCIAL,MEDIA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_uso_ia."
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_usuario, roles_del_dominio."
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,PARCIAL,MEDIA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_analisis_impacto."
+CLM-REAL,REAL,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: categorias_datos_especificas.
+CLM-REAL,REAL,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: rol_de_seguridad_con_control_de_acceso.
+CLM-REAL,REAL,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_anonimizacion."
+CLM-REAL,REAL,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_privacidad_generica."
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: control_operativo_de_sesgos.
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_accion_correctiva."
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: especialista_etico_responsable_de_sesgos.
+CLM-REAL,REAL,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,PARCIAL,ALTA,3,"Se hallo evidencia generica, incompleta o ambigua: mencion_transparencia."
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: robustez_declarativa."
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,PARCIAL,MEDIA,3,"Se hallo evidencia generica, incompleta o ambigua: metrica_ia_sin_umbral."
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: falla_sin_respuesta."
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: observabilidad_con_senales_operativas.
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,PARCIAL,ALTA,7,"Se hallo evidencia generica, incompleta o ambigua: gestion_de_incidencias, incidente_sin_responsabilidad_completa."
+CLM-REAL,REAL,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: robustez_verificable.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,EXPLICITO,ALTA,3,Se hallo evidencia documental clara y localizada: especialista_ia_con_responsabilidad.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,EXPLICITO,MEDIA,3,Se hallo evidencia documental clara y localizada: rol_especializado_de_gobernanza_ia.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: logs_de_ia_con_metadatos.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: version_con_cambio_trazable.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: accesibilidad_declarativa."
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: sostenibilidad_generica."
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+CLM-REAL,REAL,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: actores_principales_definidos.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",PARCIAL,ALTA,6,"Se hallo evidencia generica, incompleta o ambigua: mencion_stakeholders, roles_del_dominio."
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,EXPLICITO,ALTA,4,Se hallo evidencia documental clara y localizada: categorias_de_informacion_clinica.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: informacion_clinica_vinculada_a_procesamiento.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: autenticacion_de_usuarios_autorizados.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: eliminacion_definitiva_a_solicitud.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,PARCIAL,MEDIA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_consentimiento, mencion_privacidad_generica."
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: consentimiento_sobre_intervencion_ia.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: paciente_destinatario_del_consentimiento.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: intervencion_ia_comunicada.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: consentimiento_en_cada_interaccion.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: validacion_manual_de_salida.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: transcripcion_sujeta_a_validacion_manual.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: capacidad_de_corregir_salida_manualmente.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",EXPLICITO,ALTA,2,"Se hallo evidencia documental clara y localizada: recuperacion_ante_fallos, robustez_ante_variaciones_y_ruido."
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: tiempo_de_procesamiento_ia_con_umbral.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: respaldo_y_recuperacion_ante_falla.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: recuperacion_automatica_ante_falla.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: condicion_de_robustez_verificable.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: sostenibilidad_generica."
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+NOTAS-CLINICAS-REAL,REAL,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-PRES-PROPOSITO,Presencia del proposito del sistema,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ALCANCE,Delimitacion del dominio y alcance operativo,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: area_de_aplicacion_concreta.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-USOS,Delimitacion de usos previstos y prohibidos,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_restriccion_uso."
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-DELIM-ACTORES,Delimitacion de usuarios y actores principales,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-SUPUESTOS,Verificabilidad de supuestos operativos,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: supuesto_con_condicion.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-VERIF-LIMITACIONES,Verificabilidad de limitaciones conocidas,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D01,GR-D01-QUAL-PROPOSITO,Calidad documental y proporcionalidad del proposito,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: proposito_cuantificado.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-PRES-ACTORES,"Presencia de usuarios, operadores y afectados",PARCIAL,ALTA,106,"Se hallo evidencia generica, incompleta o ambigua: mencion_usuario, roles_del_dominio."
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-INDIRECTOS,Delimitacion de afectados indirectos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-DELIM-VULNERABLES,Delimitacion de grupos vulnerables o expuestos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-IMPACTOS,Verificabilidad de impactos negativos previsibles,EXPLICITO,ALTA,3,"Se hallo evidencia documental clara y localizada: destinatario_con_impacto_negativo, impacto_negativo_con_destinatario."
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-VERIF-BENEFICIOS,Verificabilidad de beneficios esperados,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_beneficio."
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-CTRL-REVISION,Control de impactos no anticipados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-RESP-ACTORES,Responsabilidad sobre afectados e impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-120,D02,GR-D02-QUAL-IMPACTO,Calidad documental del analisis de impacto,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_analisis_impacto."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D03,GR-D03-PRES-DATOS,Presencia de datos utilizados por el sistema,EXPLICITO,ALTA,23,"Se hallo evidencia documental clara y localizada: categorias_datos_especificas, datos_clinicos_del_paciente."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D03,GR-D03-DELIM-FINALIDAD,Delimitacion de la finalidad de uso de los datos,PARCIAL,MEDIA,3,"Se hallo evidencia generica, incompleta o ambigua: mencion_finalidad, mencion_uso_datos."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D03,GR-D03-VERIF-CALIDAD,Verificabilidad de la calidad y representatividad de datos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: criterio_cuantificado_de_calidad.
+SMS-MURCIA-REAL,REAL,SCRUM-121,D03,GR-D03-RESP-ACCESO,Responsabilidad sobre el acceso a los datos,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: proteccion_tecnica_especifica.
+SMS-MURCIA-REAL,REAL,SCRUM-121,D03,GR-D03-CTRL-RETENCION,"Control de retencion, eliminacion y anonimizacion",PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: mencion_anonimizacion."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D03,GR-D03-QUAL-PRIVACIDAD,Calidad documental de las afirmaciones sobre privacidad,PARCIAL,MEDIA,8,"Se hallo evidencia generica, incompleta o ambigua: mencion_consentimiento, mencion_privacidad_generica."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-PRES-SESGOS,"Presencia de mencion a sesgos, equidad o trato desigual",AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-GRUPOS,Delimitacion de grupos o subpoblaciones relevantes,PARCIAL,ALTA,1,"Se hallo evidencia generica, incompleta o ambigua: comparacion_generica_por_grupo."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-DELIM-PROXIES,Delimitacion de atributos sensibles y variables proxy,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-VERIF-METRICAS,Verificabilidad de metricas y pruebas de equidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-CTRL-MITIGACION,Control de acciones correctivas ante sesgos,PARCIAL,ALTA,2,"Se hallo evidencia generica, incompleta o ambigua: mencion_accion_correctiva."
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-RESP-REVISION,Responsabilidad sobre la revision de sesgos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-121,D04,GR-D04-QUAL-DECLARATIVO,Calidad documental: equidad como requisito verificable,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-PRES-IA,Presencia de comunicacion sobre uso de IA,PARCIAL,ALTA,6,"Se hallo evidencia generica, incompleta o ambigua: mencion_transparencia."
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-DESTINATARIOS,Delimitacion de destinatarios de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-DELIM-CONTENIDO,Delimitacion del contenido comunicado,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-CANAL,Verificabilidad del momento y canal de comunicacion,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: canal_comunicacion.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-VERIF-LIMITES,Verificabilidad de limites y advertencias comunicados,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-RESP-ACTUALIZACION,Responsabilidad de actualizacion de la informacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D05,GR-D05-QUAL-DECLARATIVO,Calidad documental de la transparencia,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-PRES-EXPLICACION,Presencia de explicaciones de salidas,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-SALIDAS,Delimitacion de salidas que requieren explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-DELIM-DESTINATARIOS,Delimitacion de destinatarios de explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-FORMATO,Verificabilidad del formato y detalle de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-VERIF-UTILIDAD,Verificabilidad de la utilidad de la explicacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-CTRL-REVISION,Control de uso de explicaciones para revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-RESP-EXPLICACION,Responsabilidad sobre las explicaciones,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D06,GR-D06-QUAL-DECLARATIVO,Calidad documental de la explicabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-PRES-HUMANO,Presencia de supervision humana,EXPLICITO,ALTA,2,Se hallo evidencia documental clara y localizada: supervision_humana.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-DECISIONES,Delimitacion de decisiones supervisadas,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-DELIM-ROLES,Delimitacion de roles de supervision,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: rol_supervisor.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-CTRL-INTERVENCION,Control de autoridad de intervencion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: autoridad_intervencion.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-ACTIVACION,Verificabilidad de condiciones de activacion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-VERIF-PROCEDIMIENTO,Verificabilidad del procedimiento de revision,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-RESP-REGISTRO,Responsabilidad y registro de la intervencion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-122,D07,GR-D07-QUAL-DECLARATIVO,Calidad documental de la supervision humana,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: supervision_declarativa."
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-PRES-ROBUSTEZ,"Presencia de robustez, seguridad y fiabilidad",EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: seguridad_y_solidez_en_ciclo_de_vida.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-METRICAS,Verificabilidad de metricas y umbrales operativos,PARCIAL,MEDIA,5,"Se hallo evidencia generica, incompleta o ambigua: metrica_ia_sin_umbral, metrica_infra_sin_contexto_ia, precision_sin_umbral."
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-FALLAS,Control ante fallas y degradacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: comportamiento_ante_falla.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-CTRL-CONTINGENCIA,Control de contingencias e interrupcion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-VERIF-MONITOREO,Verificabilidad del monitoreo de cambios,EXPLICITO,MEDIA,2,Se hallo evidencia documental clara y localizada: observabilidad_con_senales_operativas.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-RESP-INCIDENTES,Responsabilidad y registro de incidentes,PARCIAL,ALTA,28,"Se hallo evidencia generica, incompleta o ambigua: gestion_de_incidencias, incidente_sin_responsabilidad_completa."
+SMS-MURCIA-REAL,REAL,SCRUM-123,D08,GR-D08-QUAL-DECLARATIVO,Calidad documental de robustez y seguridad,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: robustez_verificable.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-PRES-RESPONSABLES,Presencia de responsables de decisiones y operacion,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-RESP-ROLES,Responsabilidad diferenciada por roles,PARCIAL,MEDIA,2,"Se hallo evidencia generica, incompleta o ambigua: rol_poco_delimitado."
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-REGISTROS,Verificabilidad de registros y trazabilidad,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: registro_con_campos.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-VERIF-VERSIONADO,Verificabilidad del versionado y los cambios,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-RECLAMOS,Control de reclamos e impugnaciones,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-CTRL-REPARACION,Control de correccion y reparacion,EXPLICITO,ALTA,1,Se hallo evidencia documental clara y localizada: reparacion_ante_error.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D09,GR-D09-QUAL-DIFUSO,Calidad documental de la responsabilidad,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-PRES-IMPACTO,"Presencia de impactos sociales, laborales o ambientales",AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-DELIM-AFECTADOS,Delimitacion de personas y grupos afectados,EXPLICITO,MEDIA,1,Se hallo evidencia documental clara y localizada: afectados_identificados.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-ACCESIBILIDAD,Verificabilidad de accesibilidad e inclusion,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-AUTONOMIA,Control frente a manipulacion y perdida de autonomia,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-VERIF-SOSTENIBILIDAD,Verificabilidad de consumo y sostenibilidad,PARCIAL,MEDIA,1,"Se hallo evidencia generica, incompleta o ambigua: sostenibilidad_generica."
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-CTRL-MITIGACION,Control y revision de impactos,AUSENTE,ALTA,0,No se hallo evidencia documental relevante para este guardrail.
+SMS-MURCIA-REAL,REAL,SCRUM-123,D10,GR-D10-QUAL-GENERICO,Calidad documental de impactos,AUSENTE,MEDIA,0,No se hallo evidencia documental relevante para este guardrail.
