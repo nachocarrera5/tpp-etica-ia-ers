@@ -1,0 +1,8 @@
+documento,tipo_documento,fragmentos_evaluables,palabras_normalizadas,fragmentos_con_senal,terminos_vagos,expresiones_ambiguas,total_senales,fragmentos_con_senal_pct,senales_cada_100_fragmentos,senales_cada_1000_palabras
+MEDICO-SINTETICO,SINTETICA,17,1665,2,2,0,2,11.76,11.76,1.2
+SCORING-SINTETICO,SINTETICA,17,1481,1,1,0,1,5.88,5.88,0.68
+RECOMENDADOR-SINTETICO,SINTETICA,17,1487,1,1,0,1,5.88,5.88,0.67
+ARAGON-REAL,REAL,188,17550,30,35,3,38,15.96,20.21,2.17
+CLM-REAL,REAL,388,18321,32,38,2,40,8.25,10.31,2.18
+NOTAS-CLINICAS-REAL,REAL,26,1695,4,5,0,5,15.38,19.23,2.95
+SMS-MURCIA-REAL,REAL,3371,41506,63,62,5,67,1.87,1.99,1.61
