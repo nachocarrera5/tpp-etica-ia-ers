@@ -1,0 +1,8 @@
+documento,tipo_documento,dimensiones_evaluadas,ausentes,parciales,explicitas,cobertura_no_ausente_pct,cobertura_explicita_pct
+MEDICO-SINTETICO,SINTETICA,10,0,10,0,100.0,0.0
+SCORING-SINTETICO,SINTETICA,10,0,10,0,100.0,0.0
+RECOMENDADOR-SINTETICO,SINTETICA,10,1,9,0,90.0,0.0
+ARAGON-REAL,REAL,10,0,9,1,100.0,10.0
+CLM-REAL,REAL,10,2,8,0,80.0,0.0
+NOTAS-CLINICAS-REAL,REAL,10,3,7,0,70.0,0.0
+SMS-MURCIA-REAL,REAL,10,1,9,0,90.0,0.0

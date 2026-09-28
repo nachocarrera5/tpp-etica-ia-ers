@@ -1,0 +1,3 @@
+tipo_documento,documentos,dimensiones,cobertura_no_ausente_pct,cobertura_explicita_pct,senales_ambiguedad_vaguedad,senales_cada_1000_palabras,verificabilidad_con_evidencia_pct,aplicaciones_con_evidencia_pct
+SINTETICA,3,30,96.67,0.0,4,0.86,48.15,49.07
+REAL,4,40,85.0,2.5,150,1.9,43.06,44.44

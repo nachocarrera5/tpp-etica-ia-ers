@@ -1,0 +1,8 @@
+documento,tipo_documento,aplicaciones_guardrail,aplicaciones_con_evidencia,aplicaciones_con_evidencia_pct,vinculos_evidencia,mediana_vinculos_si_hay_evidencia,maximo_vinculos_en_un_guardrail,inconsistencias_nivel_evidencia
+MEDICO-SINTETICO,SINTETICA,72,39,54.17,53,1,6,0
+SCORING-SINTETICO,SINTETICA,72,42,58.33,68,1.0,4,0
+RECOMENDADOR-SINTETICO,SINTETICA,72,25,34.72,33,1,4,0
+ARAGON-REAL,REAL,72,48,66.67,97,1.0,11,0
+CLM-REAL,REAL,72,27,37.5,53,2,7,0
+NOTAS-CLINICAS-REAL,REAL,72,20,27.78,32,1.0,6,0
+SMS-MURCIA-REAL,REAL,72,33,45.83,212,1,106,0

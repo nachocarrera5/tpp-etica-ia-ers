@@ -1,0 +1,64 @@
+{
+  "linea_base": {
+    "commit": "20b3e5a1be313afb00e40ae1bdbcc36867fc41c0",
+    "fecha_utc": "2026-09-27T21:56:19.651973+00:00",
+    "documentos_con_hash": 7
+  },
+  "corpus": {
+    "documentos": 7,
+    "dimensiones": 70,
+    "aplicaciones_guardrail": 504
+  },
+  "cobertura_etica": {
+    "dimensiones_ausentes": 7,
+    "dimensiones_parciales": 62,
+    "dimensiones_explicitas": 1,
+    "cobertura_no_ausente_pct": 90.0,
+    "cobertura_explicita_pct": 1.43
+  },
+  "ambiguedad": {
+    "fragmentos_evaluables": 4024,
+    "palabras_normalizadas": 83705,
+    "fragmentos_con_senal": 133,
+    "fragmentos_con_senal_pct": 3.31,
+    "terminos_vagos": 144,
+    "expresiones_ambiguas": 10,
+    "total_senales": 154,
+    "senales_cada_1000_palabras": 1.84
+  },
+  "verificabilidad": {
+    "aplicaciones": 126,
+    "con_evidencia": 57,
+    "con_evidencia_pct": 45.24
+  },
+  "evidencia_documental": {
+    "aplicaciones_con_evidencia": 234,
+    "aplicaciones_con_evidencia_pct": 46.43,
+    "vinculos_evidencia": 548,
+    "inconsistencias_nivel_evidencia": 0
+  },
+  "por_tipo_documento": [
+    {
+      "tipo_documento": "SINTETICA",
+      "documentos": 3,
+      "dimensiones": 30,
+      "cobertura_no_ausente_pct": 96.67,
+      "cobertura_explicita_pct": 0.0,
+      "senales_ambiguedad_vaguedad": 4,
+      "senales_cada_1000_palabras": 0.86,
+      "verificabilidad_con_evidencia_pct": 48.15,
+      "aplicaciones_con_evidencia_pct": 49.07
+    },
+    {
+      "tipo_documento": "REAL",
+      "documentos": 4,
+      "dimensiones": 40,
+      "cobertura_no_ausente_pct": 85.0,
+      "cobertura_explicita_pct": 2.5,
+      "senales_ambiguedad_vaguedad": 150,
+      "senales_cada_1000_palabras": 1.9,
+      "verificabilidad_con_evidencia_pct": 43.06,
+      "aplicaciones_con_evidencia_pct": 44.44
+    }
+  ]
+}

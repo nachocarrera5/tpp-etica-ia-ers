@@ -71,3 +71,16 @@ problemas de calibracion confirmados en SCRUM-124. El informe detallado se
 encuentra en `informes/SCRUM-124.md`. Los errores de deteccion se mantienen
 separados de los desacuerdos `PARCIAL/EXPLICITO` para no inflar artificialmente
 las metricas de precision y exhaustividad.
+
+## Calidad documental
+
+SCRUM-152 evalua cobertura etica, ambiguedad, verificabilidad y evidencia con
+`evaluar_calidad_documental.py`. Los resultados reproducibles se versionan en
+`resultados_calidad/` y su interpretacion se documenta en
+`informes/SCRUM-152.md`.
+
+```bash
+python validacion/evaluar_calidad_documental.py \
+  --corpus "/ruta/a/ERS de prueba" \
+  --salida validacion/resultados_calidad
+```
