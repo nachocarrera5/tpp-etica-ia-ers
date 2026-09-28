@@ -63,3 +63,11 @@ Los defectos encontrados durante esta medicion se registran en el informe, sin
 modificar reglas ni umbrales. Esos cambios corresponden a la tarea posterior
 de ajuste del modelo, para evitar medir una version que cambia durante la
 validacion.
+
+## Registro de discrepancias
+
+`registro_discrepancias.csv` contiene los falsos positivos, falsos negativos y
+problemas de calibracion confirmados en SCRUM-124. El informe detallado se
+encuentra en `informes/SCRUM-124.md`. Los errores de deteccion se mantienen
+separados de los desacuerdos `PARCIAL/EXPLICITO` para no inflar artificialmente
+las metricas de precision y exhaustividad.
