@@ -96,9 +96,15 @@ Exportación JSON / Markdown / HTML
 
 ## Cómo leer el resultado
 
-Cada guardrail produce un hallazgo preliminar `AUSENTE`, `PARCIAL` o `EXPLICITO`, con prioridad documental y evidencia trazable a fragmentos de la ERS. Una dimensión es `AUSENTE` cuando ninguno de sus guardrails presenta evidencia, `PARCIAL` cuando combina evidencia con brechas o evidencia incompleta y `EXPLICITO` únicamente cuando todos sus hallazgos son explícitos. Esta consolidación mantiene una lectura exigente sin ocultar la evidencia encontrada.
+Cada guardrail produce un hallazgo preliminar `AUSENTE`, `PARCIAL` o `EXPLICITO`, con prioridad documental, peso y evidencia trazable a fragmentos de la ERS. Una dimensión es `AUSENTE` cuando ninguno de sus guardrails presenta evidencia, `PARCIAL` cuando combina evidencia con brechas o evidencia incompleta y `EXPLICITO` cuando todos sus hallazgos son explícitos o cuando sólo le quedan brechas menores. Esta consolidación mantiene una lectura exigente sin ocultar la evidencia encontrada.
 
-El porcentaje de cobertura no ausente se calcula sobre dimensiones efectivamente evaluadas. Los errores de reglas y las dimensiones no cubiertas por el catálogo se muestran como advertencias, no como ausencias inventadas.
+### Ponderación de guardrails
+
+Cada guardrail aporta a su dimensión según su peso. Por defecto el peso deriva de la prioridad documental (`BAJA` = 1, `MEDIA` = 2, `ALTA` = 3) y el catálogo puede fijar uno explícito. La cobertura ponderada de una dimensión es la suma de los pesos multiplicados por el aporte del nivel (`AUSENTE` = 0, `PARCIAL` = 0,5, `EXPLICITO` = 1), dividida por la suma de los pesos.
+
+Una dimensión con hallazgos no explícitos se consolida como `EXPLICITO` sólo si su cobertura ponderada alcanza el 85 % **y** ningún guardrail de prioridad alta queda sin evidencia explícita. Los guardrails críticos pendientes se informan en cada dimensión y las brechas menores siguen visibles. El umbral se calibró contra la línea base de validación; el detalle está en `validacion/informes/SCRUM-155.md`.
+
+El porcentaje de cobertura no ausente y la cobertura ponderada global se calculan sobre dimensiones efectivamente evaluadas. Los errores de reglas y las dimensiones no cubiertas por el catálogo se muestran como advertencias, no como ausencias inventadas.
 
 Las recomendaciones provienen de plantillas locales y versionadas. No se usa un LLM para generar el resultado y el documento no se envía a servicios externos.
 

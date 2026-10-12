@@ -84,3 +84,13 @@ python validacion/evaluar_calidad_documental.py \
   --corpus "/ruta/a/ERS de prueba" \
   --salida validacion/resultados_calidad
 ```
+
+## Ponderacion de guardrails
+
+SCRUM-155 reconsolida la linea base de `resultados/` con la rubrica ponderada
+y compara varios umbrales contra la referencia. No necesita los PDF del
+corpus. La interpretacion se documenta en `informes/SCRUM-155.md`.
+
+```bash
+python validacion/evaluar_ponderacion.py
+```

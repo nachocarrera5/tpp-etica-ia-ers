@@ -131,6 +131,7 @@ class HallazgoResponse(BaseModel):
     nivel_preliminar: NivelCobertura
     valor_auxiliar: int
     prioridad_documental: PrioridadDocumental
+    peso: float = 1.0
     justificacion: str
     justificacion_prioridad: str
     requiere_revision_humana: bool
@@ -152,6 +153,8 @@ class ResultadoDimensionResponse(BaseModel):
     motivo_revision_humana: Optional[str] = None
     brechas_principales: Tuple[str, ...]
     hallazgos_relacionados: Tuple[UUID, ...]
+    porcentaje_cobertura_ponderada: Optional[float] = None
+    guardrails_criticos_pendientes: Tuple[str, ...] = ()
 
 
 class IndicadoresPorGrupoResponse(BaseModel):
@@ -171,6 +174,7 @@ class IndicadoresGlobalesResponse(BaseModel):
     dimensiones_explicitas: int
     porcentaje_cobertura_explicita: float
     porcentaje_cobertura_no_ausente: float
+    porcentaje_cobertura_ponderada: float = 0.0
     total_hallazgos: int
     total_alertas: int
     total_recomendaciones: int

@@ -138,6 +138,7 @@ class HallazgoEvaluacion:
     fecha_generacion: datetime
     guardrail_nombre: Optional[str] = None
     guardrail_descripcion: Optional[str] = None
+    peso: float = 1.0
     id: UUID = field(default_factory=uuid4)
 
     def __post_init__(self) -> None:
@@ -152,6 +153,8 @@ class HallazgoEvaluacion:
             tuple(self.criterios_asociados),
         )
         object.__setattr__(self, "evidencias", tuple(self.evidencias))
+        if self.peso <= 0:
+            raise ValueError("El peso del hallazgo debe ser positivo.")
 
 
 @dataclass(frozen=True)

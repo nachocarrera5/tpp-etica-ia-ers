@@ -75,6 +75,17 @@ _ORDEN_PRIORIDAD = {
     PrioridadDocumental.ALTA: 2,
 }
 
+_APORTE_NIVEL = {
+    NivelCobertura.AUSENTE: 0.0,
+    NivelCobertura.PARCIAL: 0.5,
+    NivelCobertura.EXPLICITO: 1.0,
+}
+
+# Proporcion ponderada minima para consolidar EXPLICITO cuando no todos los
+# guardrails lo son. Se calibro contra la linea base de SCRUM-124: valores
+# menores elevan dimensiones que la referencia considera parciales.
+UMBRAL_EXPLICITO_PONDERADO = 0.85
+
 
 def calcular_cobertura_etica(
     resultado_evaluacion: ResultadoEvaluacionEtica,
@@ -179,7 +190,14 @@ def _consolidar_dimensiones(
         conteo_niveles = Counter(
             hallazgo.nivel_preliminar for hallazgo in relacionados
         )
-        nivel = _consolidar_nivel(conteo_niveles, len(relacionados))
+        cobertura_ponderada = _cobertura_ponderada(relacionados)
+        criticos_pendientes = _criticos_pendientes(relacionados)
+        nivel = _consolidar_nivel(
+            conteo_niveles,
+            len(relacionados),
+            cobertura_ponderada,
+            criticos_pendientes,
+        )
         prioridad = max(
             (hallazgo.prioridad_documental for hallazgo in relacionados),
             key=_ORDEN_PRIORIDAD.__getitem__,
@@ -210,6 +228,8 @@ def _consolidar_dimensiones(
                 justificacion=_justificar_consolidacion(
                     relacionados,
                     conteo_niveles,
+                    cobertura_ponderada,
+                    criticos_pendientes,
                     nivel,
                 ),
                 hallazgos_relacionados=tuple(
@@ -220,6 +240,10 @@ def _consolidar_dimensiones(
                 motivo_revision_humana=(
                     " ".join(motivos_revision) if motivos_revision else None
                 ),
+                porcentaje_cobertura_ponderada=round(
+                    cobertura_ponderada * 100, 2
+                ),
+                guardrails_criticos_pendientes=criticos_pendientes,
             )
         )
     return tuple(resultados)
@@ -228,24 +252,75 @@ def _consolidar_dimensiones(
 def _justificar_consolidacion(
     hallazgos: Sequence[HallazgoEvaluacion],
     conteo_niveles: Counter,
+    cobertura_ponderada: float,
+    criticos_pendientes: Tuple[str, ...],
     nivel: NivelCobertura,
 ) -> str:
+    criticos = (
+        "Guardrails criticos sin evidencia explicita: "
+        + ", ".join(criticos_pendientes)
+        + ". "
+        if criticos_pendientes
+        else "Todos los guardrails criticos tienen evidencia explicita. "
+    )
     return (
         f"Se consolidaron {len(hallazgos)} hallazgos: "
         f"{conteo_niveles[NivelCobertura.AUSENTE]} ausentes, "
         f"{conteo_niveles[NivelCobertura.PARCIAL]} parciales y "
-        f"{conteo_niveles[NivelCobertura.EXPLICITO]} explicitos. "
+        f"{conteo_niveles[NivelCobertura.EXPLICITO]} explicitos, con una "
+        f"cobertura ponderada de {cobertura_ponderada * 100:.2f}%. "
+        f"{criticos}"
         "La dimension es AUSENTE solo si no presenta evidencia, PARCIAL "
         "si combina evidencia con brechas o evidencia incompleta, y "
-        "EXPLICITO solo si todos sus hallazgos son explicitos; el resultado "
-        f"es {nivel.value}."
+        "EXPLICITO si todos sus hallazgos son explicitos o si la cobertura "
+        f"ponderada alcanza {UMBRAL_EXPLICITO_PONDERADO * 100:.0f}% sin "
+        f"guardrails criticos pendientes; el resultado es {nivel.value}."
     )
 
 
-def _consolidar_nivel(conteo_niveles: Counter, total: int) -> NivelCobertura:
+def _cobertura_ponderada(hallazgos: Sequence[HallazgoEvaluacion]) -> float:
+    peso_total = sum(hallazgo.peso for hallazgo in hallazgos)
+    if peso_total == 0:
+        return 0.0
+    # Se redondea para que el umbral no dependa de errores de coma flotante.
+    return round(
+        sum(
+            hallazgo.peso * _APORTE_NIVEL[hallazgo.nivel_preliminar]
+            for hallazgo in hallazgos
+        )
+        / peso_total,
+        4,
+    )
+
+
+def _criticos_pendientes(
+    hallazgos: Sequence[HallazgoEvaluacion],
+) -> Tuple[str, ...]:
+    """Guardrails de prioridad alta que impiden consolidar EXPLICITO."""
+    return _unicos_en_orden(
+        hallazgo.guardrail_codigo
+        for hallazgo in hallazgos
+        if hallazgo.prioridad_documental == PrioridadDocumental.ALTA
+        and hallazgo.nivel_preliminar != NivelCobertura.EXPLICITO
+    )
+
+
+def _consolidar_nivel(
+    conteo_niveles: Counter,
+    total: int,
+    cobertura_ponderada: float,
+    criticos_pendientes: Tuple[str, ...],
+) -> NivelCobertura:
     if conteo_niveles[NivelCobertura.AUSENTE] == total:
         return NivelCobertura.AUSENTE
     if conteo_niveles[NivelCobertura.EXPLICITO] == total:
+        return NivelCobertura.EXPLICITO
+    # La ponderacion solo tolera brechas menores: un guardrail critico sin
+    # evidencia explicita mantiene la dimension en PARCIAL.
+    if (
+        not criticos_pendientes
+        and cobertura_ponderada >= UMBRAL_EXPLICITO_PONDERADO
+    ):
         return NivelCobertura.EXPLICITO
     return NivelCobertura.PARCIAL
 
@@ -261,6 +336,18 @@ def _calcular_indicadores_globales(
     hallazgos_revision = sum(
         hallazgo.requiere_revision_humana for hallazgo in hallazgos
     )
+    cobertura_ponderada = (
+        round(
+            sum(
+                resultado.porcentaje_cobertura_ponderada
+                for resultado in resultados
+            )
+            / total,
+            2,
+        )
+        if total
+        else 0.0
+    )
     return IndicadoresGlobales(
         total_dimensiones=total,
         dimensiones_ausentes=conteos[NivelCobertura.AUSENTE],
@@ -274,6 +361,7 @@ def _calcular_indicadores_globales(
             hallazgos_revision,
             len(hallazgos),
         ),
+        porcentaje_cobertura_ponderada=cobertura_ponderada,
     )
 
 

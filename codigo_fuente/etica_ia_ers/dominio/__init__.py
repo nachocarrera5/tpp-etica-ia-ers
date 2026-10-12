@@ -34,6 +34,7 @@ from .guardrail import (
     FamiliaGuardrail,
     IdentidadGuardrailVersionada,
     NivelCobertura,
+    PESO_POR_PRIORIDAD,
     PrioridadDocumental,
     TipoVinculoEvidencia,
 )
@@ -74,6 +75,7 @@ __all__ = [
     "IndicadoresGuardrails",
     "IndicadoresPrioridad",
     "NivelCobertura",
+    "PESO_POR_PRIORIDAD",
     "PrioridadDocumental",
     "ReferenciaEvidencia",
     "RecomendacionDocumental",

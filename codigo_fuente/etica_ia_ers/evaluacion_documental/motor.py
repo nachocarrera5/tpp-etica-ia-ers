@@ -180,4 +180,5 @@ class MotorEvaluacionEtica:
             fecha_generacion=datetime.now(timezone.utc),
             guardrail_nombre=definicion.nombre,
             guardrail_descripcion=definicion.descripcion,
+            peso=definicion.peso_efectivo,
         )

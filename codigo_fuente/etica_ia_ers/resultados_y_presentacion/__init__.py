@@ -81,6 +81,8 @@ def _resultado_dimension_no_evaluada(
         ),
         "brechas_principales": [],
         "hallazgos_relacionados": [],
+        "porcentaje_cobertura_ponderada": None,
+        "guardrails_criticos_pendientes": [],
     }
 
 
@@ -189,6 +191,7 @@ def _serializar_indicadores(
         "dimensiones_explicitas": globales.dimensiones_explicitas,
         "porcentaje_cobertura_explicita": globales.porcentaje_cobertura_explicita,
         "porcentaje_cobertura_no_ausente": globales.porcentaje_cobertura_no_ausente,
+        "porcentaje_cobertura_ponderada": globales.porcentaje_cobertura_ponderada,
         "total_hallazgos": globales.total_hallazgos,
         "total_alertas": len(resultado_recomendaciones.alertas),
         "total_recomendaciones": len(resultado_recomendaciones.recomendaciones),
@@ -249,6 +252,10 @@ def _serializar_resultado_dimension(
         "hallazgos_relacionados": [
             str(hallazgo_id) for hallazgo_id in resultado.hallazgos_relacionados
         ],
+        "porcentaje_cobertura_ponderada": resultado.porcentaje_cobertura_ponderada,
+        "guardrails_criticos_pendientes": list(
+            resultado.guardrails_criticos_pendientes
+        ),
     }
 
 
@@ -317,6 +324,7 @@ def _serializar_hallazgo(hallazgo: Any) -> Dict[str, Any]:
         "nivel_preliminar": hallazgo.nivel_preliminar.value,
         "valor_auxiliar": valor_auxiliar,
         "prioridad_documental": hallazgo.prioridad_documental.value,
+        "peso": hallazgo.peso,
         "justificacion": hallazgo.justificacion,
         "justificacion_prioridad": hallazgo.justificacion_prioridad,
         "requiere_revision_humana": hallazgo.requiere_revision_humana,

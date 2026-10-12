@@ -313,6 +313,7 @@ function renderizarResultado() {
   $("#fecha-analisis").textContent = `Evaluado ${fechaLegible(metadatos.fecha_fin)}`;
   $("#indicadores").innerHTML = `
     <div class="indicador"><span>Cobertura no ausente</span><strong>${indicadores.porcentaje_cobertura_no_ausente.toFixed(2)}%</strong><div class="barra-indicador"><span style="width:${indicadores.porcentaje_cobertura_no_ausente}%"></span></div><small>Sobre dimensiones evaluadas</small></div>
+    <div class="indicador"><span>Cobertura ponderada</span><strong>${(indicadores.porcentaje_cobertura_ponderada ?? 0).toFixed(2)}%</strong><div class="barra-indicador"><span style="width:${indicadores.porcentaje_cobertura_ponderada ?? 0}%"></span></div><small>Promedio por dimensión según peso de cada guardrail</small></div>
     <div class="indicador"><span>Guardrails con evidencia</span><strong>${parciales + explicitos}</strong><small>${explicitos} explícitos · ${parciales} parciales</small></div>
     <div class="indicador"><span>Alertas</span><strong>${indicadores.total_alertas}</strong><small>${indicadores.recomendaciones_alta_prioridad} de prioridad alta</small></div>
     <div class="indicador"><span>Guardrails</span><strong>${indicadores.guardrails_aplicados}</strong><small>${indicadores.guardrails_no_aplicables} no aplicables · ${indicadores.guardrails_con_error} errores</small></div>
@@ -354,9 +355,14 @@ function celdaDimension(dimension) {
   return `<button class="dimension-celda ${nivel}" data-dimension="${dimension.dimension_codigo}" type="button">
     <span class="codigo">${dimension.dimension_codigo}</span>
     <span class="nombre">${escapar(dimension.dimension_nombre)}</span>
-    <span class="composicion">${resumen.explicitos} explícitos · ${resumen.parciales} parciales</span>
+    <span class="composicion">${resumen.explicitos} explícitos · ${resumen.parciales} parciales${coberturaPonderada(dimension) ? ` · ${coberturaPonderada(dimension)} ponderada` : ""}</span>
     <span class="nivel">${etiquetaNivel(nivel)}</span>
   </button>`;
+}
+
+function coberturaPonderada(dimension) {
+  const valor = dimension.porcentaje_cobertura_ponderada;
+  return valor === null || valor === undefined ? "" : `${Number(valor).toFixed(0)}%`;
 }
 
 function resumenHallazgos(dimension) {
@@ -399,6 +405,7 @@ function renderizarDetalleDimension(codigo) {
     <div class="bloque-detalle">
       <h3>Brechas principales</h3>
       ${dimension.brechas_principales.length ? `<ul class="brechas">${dimension.brechas_principales.map((brecha) => `<li>${escapar(brecha)}</li>`).join("")}</ul>` : '<p class="sin-resultados">No se registraron brechas para esta dimensión.</p>'}
+      ${(dimension.guardrails_criticos_pendientes || []).length ? `<p class="ayuda-bloque">Guardrails críticos sin evidencia explícita: ${dimension.guardrails_criticos_pendientes.map(escapar).join(", ")}.</p>` : ""}
     </div>
     ${recomendacion ? `<div class="bloque-detalle"><h3>Recomendación documental</h3><div class="recomendacion"><strong>${escapar(recomendacion.tipo_mejora.replaceAll("_", " "))}</strong><p>${escapar(recomendacion.accion_sugerida)}</p></div></div>` : ""}
     <div class="bloque-detalle">
@@ -425,7 +432,7 @@ function guardrailsDe(hallazgos) {
       <div class="guardrail-contenido">
         <p><strong>Qué busca</strong>${escapar(hallazgo.guardrail_descripcion || "Comprobar evidencia documental asociada a este criterio.")}</p>
         <p><strong>Resultado</strong>${escapar(hallazgo.justificacion)}</p>
-        <small>Criterios: ${hallazgo.criterios_asociados.map(escapar).join(", ")}</small>
+        <small>Criterios: ${hallazgo.criterios_asociados.map(escapar).join(", ")} · Peso ${hallazgo.peso ?? 1}</small>
       </div>
     </details>
   `).join("");
@@ -452,7 +459,7 @@ function tarjetaHallazgo(hallazgo) {
     </summary>
     <div class="hallazgo-contenido">
       <div class="hallazgo-explicacion"><p><strong>Qué busca este guardrail</strong>${escapar(hallazgo.guardrail_descripcion || "Comprobar evidencia documental asociada a este criterio.")}</p><p><strong>Qué se detectó</strong>${escapar(hallazgo.justificacion)}</p></div>
-      <div class="hallazgo-meta"><span>Familia ${escapar(hallazgo.familia_guardrail)}</span><span>Prioridad ${escapar(hallazgo.prioridad_documental)}</span><span>Criterios ${hallazgo.criterios_asociados.map(escapar).join(", ")}</span></div>
+      <div class="hallazgo-meta"><span>Familia ${escapar(hallazgo.familia_guardrail)}</span><span>Prioridad ${escapar(hallazgo.prioridad_documental)}</span><span>Peso ${hallazgo.peso ?? 1}</span><span>Criterios ${hallazgo.criterios_asociados.map(escapar).join(", ")}</span></div>
       ${hallazgo.evidencias.length ? `<div class="hallazgo-evidencias-detalle"><h4>Evidencia vinculada</h4>${evidenciasDe([hallazgo])}</div>` : ""}
     </div>
   </details>`;

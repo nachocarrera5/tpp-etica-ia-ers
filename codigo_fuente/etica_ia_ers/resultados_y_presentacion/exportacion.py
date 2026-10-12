@@ -81,6 +81,7 @@ _ETIQUETAS_INDICADOR = (
     ("dimensiones_explicitas", "Dimensiones explícitas"),
     ("porcentaje_cobertura_explicita", "Cobertura explícita (%)"),
     ("porcentaje_cobertura_no_ausente", "Cobertura no ausente (%)"),
+    ("porcentaje_cobertura_ponderada", "Cobertura ponderada (%)"),
     ("total_hallazgos", "Hallazgos registrados"),
     ("total_alertas", "Alertas generadas"),
     ("total_recomendaciones", "Recomendaciones generadas"),
@@ -345,6 +346,11 @@ def _etiqueta_prioridad(valor: Any) -> str:
     return _ETIQUETAS_PRIORIDAD.get(str(_valor_plano(valor)), _texto(valor))
 
 
+def _cobertura_ponderada(resultado: Mapping[str, Any]) -> str:
+    valor = resultado.get("porcentaje_cobertura_ponderada")
+    return _SIN_DATO if valor is None else f"{_texto(valor)}%"
+
+
 def _revision_humana(elemento: Mapping[str, Any]) -> str:
     if not elemento.get("requiere_revision_humana"):
         return "No"
@@ -395,6 +401,7 @@ def _filas_dimensiones(resultados: Sequence[Mapping[str, Any]]) -> List[List[str
             _texto(resultado.get("dimension_nombre")),
             _texto(resultado.get("grupo_tematico")),
             _etiqueta_nivel(resultado.get("nivel_consolidado")),
+            _cobertura_ponderada(resultado),
             _etiqueta_prioridad(resultado.get("prioridad_documental")),
             _texto(bool(resultado.get("requiere_revision_humana"))),
         ]
@@ -538,6 +545,7 @@ def _exportar_markdown(
                 "Dimensión",
                 "Grupo temático",
                 "Nivel",
+                "Cobertura ponderada",
                 "Prioridad",
                 "Revisión humana",
             ),
@@ -553,10 +561,13 @@ def _exportar_markdown(
                 f"{_texto(resultado.get('dimension_nombre'))}",
                 "",
                 f"- **Nivel consolidado:** {_etiqueta_nivel(resultado.get('nivel_consolidado'))}",
+                f"- **Cobertura ponderada:** {_cobertura_ponderada(resultado)}",
                 f"- **Prioridad documental:** "
                 f"{_etiqueta_prioridad(resultado.get('prioridad_documental'))}",
                 f"- **Justificación:** {_texto(resultado.get('justificacion'))}",
                 f"- **Brechas principales:** {_lista(resultado.get('brechas_principales'))}",
+                f"- **Guardrails críticos pendientes:** "
+                f"{_lista(resultado.get('guardrails_criticos_pendientes'))}",
                 f"- **Revisión humana:** {_revision_humana(resultado)}",
                 f"- **Hallazgos relacionados:** "
                 f"{len(resultado.get('hallazgos_relacionados', []))}",
@@ -588,6 +599,7 @@ def _exportar_markdown(
                 f"- **Prioridad documental:** "
                 f"{_etiqueta_prioridad(hallazgo.get('prioridad_documental'))} "
                 f"({_texto(hallazgo.get('justificacion_prioridad'))})",
+                f"- **Peso en la cobertura ponderada:** {_texto(hallazgo.get('peso'))}",
                 f"- **Justificación:** {_texto(hallazgo.get('justificacion'))}",
                 f"- **Revisión humana:** {_revision_humana(hallazgo)}",
             ]
@@ -905,6 +917,7 @@ def _exportar_html(
             _texto(resultado.get("dimension_nombre")),
             _texto(resultado.get("grupo_tematico")),
             _nivel_html(resultado.get("nivel_consolidado")),
+            _cobertura_ponderada(resultado),
             _prioridad_html(resultado.get("prioridad_documental")),
             _texto(bool(resultado.get("requiere_revision_humana"))),
         ]
@@ -920,11 +933,12 @@ def _exportar_html(
                     "Dimensión",
                     "Grupo temático",
                     "Nivel",
+                    "Cobertura ponderada",
                     "Prioridad",
                     "Revisión humana",
                 ),
                 filas_dimensiones,
-                columnas_crudas=(3, 4),
+                columnas_crudas=(3, 5),
             ),
             "</div>",
         ]
@@ -937,6 +951,7 @@ def _exportar_html(
                 f"{_e(resultado.get('dimension_nombre'))} "
                 f"{_nivel_html(resultado.get('nivel_consolidado'))}</h3>",
                 '<div class="tarjeta">',
+                _dato_html("Cobertura ponderada", _cobertura_ponderada(resultado)),
                 _dato_html(
                     "Prioridad documental",
                     _etiqueta_prioridad(resultado.get("prioridad_documental")),
@@ -945,6 +960,10 @@ def _exportar_html(
                 _dato_html(
                     "Brechas principales",
                     _lista(resultado.get("brechas_principales")),
+                ),
+                _dato_html(
+                    "Guardrails críticos pendientes",
+                    _lista(resultado.get("guardrails_criticos_pendientes")),
                 ),
                 _dato_html("Revisión humana", _revision_humana(resultado)),
                 "</div>",
@@ -977,6 +996,10 @@ def _exportar_html(
                     "Prioridad documental",
                     f"{_etiqueta_prioridad(hallazgo.get('prioridad_documental'))} "
                     f"({_texto(hallazgo.get('justificacion_prioridad'))})",
+                ),
+                _dato_html(
+                    "Peso en la cobertura ponderada",
+                    _texto(hallazgo.get("peso")),
                 ),
                 _dato_html("Justificación", _texto(hallazgo.get("justificacion"))),
                 _dato_html("Revisión humana", _revision_humana(hallazgo)),

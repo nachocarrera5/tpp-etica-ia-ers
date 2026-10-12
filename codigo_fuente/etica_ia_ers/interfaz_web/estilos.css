@@ -146,7 +146,7 @@ h1, h2, h3, p { letter-spacing: 0; }
 .pestana.activa { color: var(--acento); border-bottom-color: var(--acento); }
 .panel-vista { padding-top: 28px; }
 
-.indicadores { display: grid; grid-template-columns: 1.35fr repeat(3, 1fr); border: 1px solid var(--linea); background: var(--superficie); }
+.indicadores { display: grid; grid-template-columns: repeat(2, 1.2fr) repeat(3, 1fr); border: 1px solid var(--linea); background: var(--superficie); }
 .indicador { min-height: 116px; padding: 20px; border-right: 1px solid var(--linea); }
 .indicador:last-child { border-right: 0; }
 .indicador span { color: var(--tinta-suave); font-size: 11px; text-transform: uppercase; }
@@ -285,7 +285,7 @@ dialog form { padding: 28px; } dialog h2 { margin: 5px 0 10px; font-family: var(
   .lista-documentos { display: none; }.panel-nota { display: none; }
   .vista { min-height: calc(100vh - 137px); }
   .mapa-dimensiones { grid-template-columns: repeat(2, 1fr); }
-  .indicadores { grid-template-columns: 1fr 1fr; }.indicador:nth-child(2) { border-right: 0; }.indicador:nth-child(-n+2) { border-bottom: 1px solid var(--linea); }
+  .indicadores { grid-template-columns: 1fr 1fr; }.indicador:nth-child(2n) { border-right: 0; }.indicador:nth-child(-n+4) { border-bottom: 1px solid var(--linea); }.indicador:last-child { grid-column: 1 / -1; }
   .explorador-dimensiones { grid-template-columns: 200px minmax(0, 1fr); }
   .controles-hallazgos { grid-template-columns: 1fr 220px; }.filtros-nivel { grid-column: 1 / -1; justify-self: start; }
 }
