@@ -24,6 +24,7 @@ from starlette.staticfiles import StaticFiles
 from etica_ia_ers.dominio import (
     DimensionEtica,
     DocumentoERS,
+    DominioAplicacion,
     EstadoAnalisis,
     FamiliaGuardrail,
     FormatoDocumento,
@@ -199,6 +200,8 @@ class MetadatosAnalisisResponse(BaseModel):
     fecha_inicio: str
     fecha_fin: str
     estado: EstadoAnalisis
+    dominio_declarado: Optional[str] = None
+    dominio_aplicacion: Optional[DominioAplicacion] = None
 
 
 class AlertaDocumentalResponse(BaseModel):

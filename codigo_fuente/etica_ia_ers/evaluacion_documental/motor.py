@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from typing import Dict, List
+from typing import Dict, List, Sequence, Tuple
 from uuid import UUID, uuid4
 
 from etica_ia_ers.dominio import (
@@ -18,7 +18,10 @@ from etica_ia_ers.dominio import (
     ResultadoEvaluacionEtica,
     SolicitudEvaluacionEtica,
 )
-from etica_ia_ers.modelo_etico_y_guardrails import RepositorioGuardrails
+from etica_ia_ers.modelo_etico_y_guardrails import (
+    GuardrailEvaluable,
+    RepositorioGuardrails,
+)
 
 from .errores import EvidenciaInvalidaError, EvaluacionGuardrailInvalidaError
 
@@ -41,8 +44,9 @@ class MotorEvaluacionEtica:
         )
         fragmentos = self._indexar_fragmentos(solicitud)
         aplicaciones: List[ResultadoAplicacionGuardrail] = []
+        guardrails = self._repositorio.listar()
 
-        for guardrail in self._repositorio.listar():
+        for guardrail in guardrails:
             definicion = guardrail.definicion
             if definicion.estado != EstadoGuardrail.ACTIVA:
                 continue
@@ -92,7 +96,30 @@ class MotorEvaluacionEtica:
             fecha_inicio=fecha_inicio,
             fecha_fin=datetime.now(timezone.utc),
             aplicaciones=tuple(aplicaciones),
+            advertencias=self._advertencias_dominio(contexto, guardrails),
             metadatos=solicitud.metadatos,
+        )
+
+    @staticmethod
+    def _advertencias_dominio(
+        contexto: ContextoEvaluacionEtica,
+        guardrails: Sequence[GuardrailEvaluable],
+    ) -> Tuple[str, ...]:
+        declarado = contexto.metadatos.get("dominio")
+        if (
+            not isinstance(declarado, str)
+            or not declarado.strip()
+            or contexto.dominio_aplicacion is not None
+            or not any(
+                guardrail.definicion.es_especifico_de_dominio
+                for guardrail in guardrails
+            )
+        ):
+            return ()
+        return (
+            f"El dominio declarado '{declarado.strip()}' no tiene guardrails "
+            "especificos en el catalogo; se aplicaron solo los guardrails "
+            "generales.",
         )
 
     @staticmethod

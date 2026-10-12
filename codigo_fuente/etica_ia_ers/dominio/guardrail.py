@@ -6,6 +6,8 @@ from enum import Enum
 from types import MappingProxyType
 from typing import Optional, Tuple
 
+from .dominio_aplicacion import DominioAplicacion
+
 
 class DimensionEtica(str, Enum):
     D01 = "D01"
@@ -101,10 +103,12 @@ class DefinicionGuardrail:
     prioridad_base: PrioridadDocumental = PrioridadDocumental.MEDIA
     requiere_revision_por_defecto: bool = False
     peso: Optional[float] = None
+    dominios: Tuple[DominioAplicacion, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "dimensiones", tuple(self.dimensiones))
         object.__setattr__(self, "criterios", tuple(self.criterios))
+        object.__setattr__(self, "dominios", tuple(self.dominios))
         IdentidadGuardrailVersionada(self.codigo, self.version)
         if not self.nombre.strip():
             raise ValueError("El nombre del guardrail no puede estar vacio.")
@@ -120,6 +124,8 @@ class DefinicionGuardrail:
             raise ValueError("Los criterios del guardrail no pueden estar vacios.")
         if self.peso is not None and self.peso <= 0:
             raise ValueError("El peso del guardrail debe ser positivo.")
+        if len(set(self.dominios)) != len(self.dominios):
+            raise ValueError("Los dominios del guardrail no pueden repetirse.")
 
     @property
     def peso_efectivo(self) -> float:
@@ -127,6 +133,14 @@ class DefinicionGuardrail:
         if self.peso is not None:
             return self.peso
         return PESO_POR_PRIORIDAD[self.prioridad_base]
+
+    @property
+    def es_especifico_de_dominio(self) -> bool:
+        return bool(self.dominios)
+
+    def aplica_a_dominio(self, dominio: Optional[DominioAplicacion]) -> bool:
+        """Un guardrail general aplica siempre; uno de dominio, solo al suyo."""
+        return not self.dominios or dominio in self.dominios
 
     @property
     def identidad_versionada(self) -> IdentidadGuardrailVersionada:

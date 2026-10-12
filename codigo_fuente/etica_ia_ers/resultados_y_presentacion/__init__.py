@@ -15,6 +15,7 @@ from etica_ia_ers.dominio import (
     ResultadoCoberturaEtica,
     ResultadoDimensionEtica,
     ResultadoEvaluacionEtica,
+    resolver_dominio_aplicacion,
 )
 from etica_ia_ers.recomendaciones import generar_alertas_y_recomendaciones
 from etica_ia_ers.rubrica_y_agregacion import (
@@ -131,6 +132,10 @@ def serializar_reporte_resultados(
         cobertura,
     )
     total_hallazgos = cobertura.indicadores_globales.total_hallazgos
+    dominio_declarado = evaluacion.metadatos.get("dominio")
+    if not isinstance(dominio_declarado, str) or not dominio_declarado.strip():
+        dominio_declarado = None
+    dominio_aplicacion = resolver_dominio_aplicacion(dominio_declarado)
 
     resultados_serializados = {
         resultado.dimension: _serializar_resultado_dimension(resultado)
@@ -152,6 +157,10 @@ def serializar_reporte_resultados(
             "fecha_inicio": evaluacion.fecha_inicio.isoformat(),
             "fecha_fin": evaluacion.fecha_fin.isoformat(),
             "estado": "EVALUADO",
+            "dominio_declarado": dominio_declarado,
+            "dominio_aplicacion": (
+                dominio_aplicacion.value if dominio_aplicacion else None
+            ),
         },
         "resumen_ejecutivo": _resumen_ejecutivo(total_hallazgos),
         "lectura_global": _lectura_global(

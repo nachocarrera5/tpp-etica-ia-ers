@@ -151,6 +151,18 @@ class GuardrailLexico:
         self,
         contexto: ContextoEvaluacionEtica,
     ) -> DecisionAplicabilidad:
+        if not self.definicion.aplica_a_dominio(contexto.dominio_aplicacion):
+            dominios = ", ".join(
+                dominio.value for dominio in self.definicion.dominios
+            )
+            return DecisionAplicabilidad(
+                aplica=False,
+                motivo=(
+                    "El guardrail es especifico del dominio "
+                    f"{dominios} y la ERS no declara ese dominio."
+                ),
+            )
+
         fragmentos = _fragmentos_evaluables(contexto)
         if not fragmentos:
             return DecisionAplicabilidad(

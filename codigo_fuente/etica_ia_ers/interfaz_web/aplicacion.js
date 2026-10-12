@@ -250,7 +250,7 @@ async function analizarDocumento(evento) {
 
   try {
     if (estado.configuracion.modo_publico) {
-      activarPaso("evaluacion", "Analizando la ERS", "Procesando el texto y aplicando 72 guardrails D01-D10 sin almacenar el documento.");
+      activarPaso("evaluacion", "Analizando la ERS", "Procesando el texto y aplicando los guardrails D01-D10 y los del dominio sin almacenar el documento.");
       estado.resultado = await solicitar("/analisis", { method: "POST", body: formulario });
       estado.documentoActivo = estado.resultado.metadatos.documento_id;
       registrarResultadoTemporal(archivo, estado.resultado);
@@ -259,7 +259,7 @@ async function analizarDocumento(evento) {
       estado.documentoActivo = carga.documento_id;
       activarPaso("nlp", "Leyendo requisitos", "Segmentando el texto e identificando actores, acciones y condiciones.");
       await pausaVisual();
-      activarPaso("evaluacion", "Aplicando el catálogo ético", "Contrastando evidencia documental con 72 guardrails D01-D10.");
+      activarPaso("evaluacion", "Aplicando el catálogo ético", "Contrastando evidencia documental con los guardrails D01-D10 y los del dominio.");
       estado.resultado = await solicitar(`/documentos/${carga.documento_id}/resultados`);
     }
     activarPaso("salida", "Organizando resultados", "Preparando alertas, evidencias y recomendaciones trazables.");
@@ -310,7 +310,7 @@ function renderizarResultado() {
   $("#titulo-documento").textContent = metadatos.nombre_documento;
   $("#resumen-ejecutivo").textContent = resultado.resumen_ejecutivo;
   $("#lectura-global").textContent = resultado.lectura_global;
-  $("#fecha-analisis").textContent = `Evaluado ${fechaLegible(metadatos.fecha_fin)}`;
+  $("#fecha-analisis").textContent = `Evaluado ${fechaLegible(metadatos.fecha_fin)}${textoDominio(metadatos)}`;
   $("#indicadores").innerHTML = `
     <div class="indicador"><span>Cobertura no ausente</span><strong>${indicadores.porcentaje_cobertura_no_ausente.toFixed(2)}%</strong><div class="barra-indicador"><span style="width:${indicadores.porcentaje_cobertura_no_ausente}%"></span></div><small>Sobre dimensiones evaluadas</small></div>
     <div class="indicador"><span>Cobertura ponderada</span><strong>${(indicadores.porcentaje_cobertura_ponderada ?? 0).toFixed(2)}%</strong><div class="barra-indicador"><span style="width:${indicadores.porcentaje_cobertura_ponderada ?? 0}%"></span></div><small>Promedio por dimensión según peso de cada guardrail</small></div>
@@ -339,6 +339,14 @@ function renderizarResultado() {
   advertencias.hidden = !resultado.advertencias.length;
   advertencias.innerHTML = resultado.advertencias.map((texto) => `<p>${escapar(texto)}</p>`).join("");
   cambiarPestana("resumen");
+}
+
+function textoDominio(metadatos) {
+  if (metadatos.dominio_aplicacion) {
+    const opcion = $(`#dominio option[value="${metadatos.dominio_aplicacion}"]`);
+    return ` · Dominio: ${opcion ? opcion.textContent : metadatos.dominio_aplicacion}`;
+  }
+  return metadatos.dominio_declarado ? ` · Dominio: ${metadatos.dominio_declarado} (sin guardrails específicos)` : "";
 }
 
 function nivelDe(dimension) {

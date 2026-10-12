@@ -116,7 +116,7 @@ def prueba_api_sirve_interfaz_y_estado_de_salud(entorno_api) -> None:
     assert 'id="descargar-reporte"' in interfaz.text
     assert 'id="formato-exportacion"' in interfaz.text
     assert 'href="/recursos/estilos.css?v=4"' in interfaz.text
-    assert 'src="/recursos/aplicacion.js?v=4"' in interfaz.text
+    assert 'src="/recursos/aplicacion.js?v=5"' in interfaz.text
     assert 'id="alternar-panel"' in interfaz.text
     assert 'id="buscar-hallazgos"' in interfaz.text
     assert "E10" not in interfaz.text

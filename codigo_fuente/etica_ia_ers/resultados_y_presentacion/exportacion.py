@@ -27,7 +27,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Sequence, Union
 from uuid import UUID
 
-from etica_ia_ers.dominio import NivelCobertura, PrioridadDocumental
+from etica_ia_ers.dominio import (
+    DominioAplicacion,
+    NivelCobertura,
+    PrioridadDocumental,
+)
 
 from .errores import (
     ErrorEscrituraReporte,
@@ -72,6 +76,15 @@ _ETIQUETAS_PRIORIDAD = {
     PrioridadDocumental.BAJA.value: "Baja",
     PrioridadDocumental.MEDIA.value: "Media",
     PrioridadDocumental.ALTA.value: "Alta",
+}
+
+_NOMBRES_DOMINIO = {
+    DominioAplicacion.CREDITICIO.value: "Crédito y finanzas",
+    DominioAplicacion.SALUD.value: "Salud",
+    DominioAplicacion.EMPLEO.value: "Empleo",
+    DominioAplicacion.EDUCACION.value: "Educación",
+    DominioAplicacion.SECTOR_PUBLICO.value: "Sector público",
+    DominioAplicacion.RECOMENDACION.value: "Recomendación y contenidos",
 }
 
 _ETIQUETAS_INDICADOR = (
@@ -346,6 +359,17 @@ def _etiqueta_prioridad(valor: Any) -> str:
     return _ETIQUETAS_PRIORIDAD.get(str(_valor_plano(valor)), _texto(valor))
 
 
+def _dominio(metadatos: Mapping[str, Any]) -> str:
+    aplicado = metadatos.get("dominio_aplicacion")
+    if aplicado:
+        nombre = _NOMBRES_DOMINIO.get(str(_valor_plano(aplicado)), _texto(aplicado))
+        return f"{nombre} (con guardrails específicos)"
+    declarado = metadatos.get("dominio_declarado")
+    if declarado:
+        return f"{_texto(declarado)} (sin guardrails específicos)"
+    return "Sin especificar"
+
+
 def _cobertura_ponderada(resultado: Mapping[str, Any]) -> str:
     valor = resultado.get("porcentaje_cobertura_ponderada")
     return _SIN_DATO if valor is None else f"{_texto(valor)}%"
@@ -499,6 +523,7 @@ def _exportar_markdown(
                 ["ID del documento", _texto(metadatos.get("documento_id"))],
                 ["ID del análisis", _texto(metadatos.get("analisis_id"))],
                 ["Estado", _texto(metadatos.get("estado"))],
+                ["Dominio de aplicación", _dominio(metadatos)],
                 ["Inicio del análisis", _texto(metadatos.get("fecha_inicio"))],
                 ["Fin del análisis", _texto(metadatos.get("fecha_fin"))],
                 ["Fecha de exportación", fecha_generacion.isoformat()],
@@ -871,6 +896,7 @@ def _exportar_html(
                 ["ID del documento", _texto(metadatos.get("documento_id"))],
                 ["ID del análisis", _texto(metadatos.get("analisis_id"))],
                 ["Estado", _texto(metadatos.get("estado"))],
+                ["Dominio de aplicación", _dominio(metadatos)],
                 ["Inicio del análisis", _texto(metadatos.get("fecha_inicio"))],
                 ["Fin del análisis", _texto(metadatos.get("fecha_fin"))],
                 ["Fecha de exportación", fecha_generacion.isoformat()],

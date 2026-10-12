@@ -6,6 +6,7 @@ from types import MappingProxyType
 from typing import Any, Mapping, Optional, Tuple
 from uuid import UUID, uuid4
 
+from .dominio_aplicacion import DominioAplicacion, resolver_dominio_aplicacion
 from .guardrail import (
     DimensionEtica,
     EstadoAplicacionGuardrail,
@@ -50,6 +51,10 @@ class ContextoEvaluacionEtica:
             "metadatos",
             _metadatos_inmutables(self.metadatos),
         )
+
+    @property
+    def dominio_aplicacion(self) -> Optional[DominioAplicacion]:
+        return resolver_dominio_aplicacion(self.metadatos.get("dominio"))
 
 
 @dataclass(frozen=True)

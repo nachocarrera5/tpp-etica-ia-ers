@@ -15,6 +15,7 @@ from .cobertura_etica import (
     ResultadoCoberturaEtica,
     ResultadoDimensionEtica,
 )
+from .dominio_aplicacion import DominioAplicacion, resolver_dominio_aplicacion
 from .evaluacion_etica import (
     ContextoEvaluacionEtica,
     DecisionAplicabilidad,
@@ -58,6 +59,7 @@ __all__ = [
     "DefinicionGuardrail",
     "DimensionEtica",
     "DocumentoERS",
+    "DominioAplicacion",
     "EstadoAnalisis",
     "EstadoAplicacionGuardrail",
     "EstadoGuardrail",
@@ -95,4 +97,5 @@ __all__ = [
     "TipoMejora",
     "TipoSenalNLP",
     "TipoVinculoEvidencia",
+    "resolver_dominio_aplicacion",
 ]
