@@ -119,6 +119,27 @@ def prueba_catalogo_coincide_con_la_matriz_d01_d02() -> None:
     assert len(GUARDRAILS_D01_D02) == 15
 
 
+def prueba_trabajadores_de_prevencion_de_riesgos_laborales_no_es_evidencia() -> None:
+    texto = (
+        "Antes del comienzo de la actividad, la empresa adjudicataria "
+        "facilitara a sus trabajadores la totalidad de EPIs derivada de "
+        "su evaluacion de riesgos."
+    )
+    resultado = _evaluar_texto(texto, GR_D02_PRES_ACTORES)
+    hallazgo = _hallazgo_de(resultado, "GR-D02-PRES-ACTORES")
+    assert hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+
+
+def prueba_trabajadores_como_afectados_reales_sigue_siendo_evidencia() -> None:
+    texto = (
+        "El sistema de IA evaluara el desempeno de los trabajadores de la "
+        "empresa para recomendar ascensos."
+    )
+    resultado = _evaluar_texto(texto, GR_D02_PRES_ACTORES)
+    hallazgo = _hallazgo_de(resultado, "GR-D02-PRES-ACTORES")
+    assert hallazgo.nivel_preliminar == NivelCobertura.PARCIAL
+
+
 def prueba_catalogo_no_tiene_identidades_duplicadas() -> None:
     repositorio = RepositorioGuardrailsEnMemoria(GUARDRAILS_D01_D02)
 

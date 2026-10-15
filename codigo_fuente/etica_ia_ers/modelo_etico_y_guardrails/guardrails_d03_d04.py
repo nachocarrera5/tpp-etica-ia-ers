@@ -33,9 +33,10 @@ GR_D03_PRES_DATOS = GuardrailLexico(
         senal(
             "categorias_datos_especificas",
             r"datos\s+(?:de\s+entrenamiento|de\s+validacion|de\s+inferencia|"
-            r"personales|sensibles|biometricos|clinicos|de\s+salud|"
-            r"financieros|crediticios|demograficos|de\s+ubicacion|"
-            r"de\s+identificacion)",
+            r"sensibles|biometricos|clinicos|de\s+salud|financieros|"
+            r"crediticios|demograficos|de\s+ubicacion|de\s+identificacion|"
+            r"personales(?!\s+y\s+(?:a\s+la\s+libre\s+circulaci[oó]n|"
+            r"garantia))\b)",
         ),
         senal(
             "origen_de_datos_especifico",
@@ -74,6 +75,11 @@ GR_D03_PRES_DATOS = GuardrailLexico(
             r"(?:usar|usara|utilizar|utilizara|procesar|procesara)\s+"
             r"(?:los\s+)?datos",
         ),
+        senal(
+            "cita_normativa_de_datos_personales",
+            r"datos\s+personales\s+y\s+(?:a\s+la\s+libre\s+circulaci[oó]n|"
+            r"garantia)",
+        ),
     ),
 )
 
@@ -102,6 +108,14 @@ GR_D03_DELIM_FINALIDAD = GuardrailLexico(
             r"\s+(?:estrictamente\s+)?necesari[oa]s|(?:excluir[a]?|"
             r"se\s+excluiran)\s+(?:variables|datos)\s+no\s+necesari[oa]s)"
             r"\s+para\s+(?:la\s+)?(?:finalidad|objetivo|proposito)",
+        ),
+        senal(
+            "prohibicion_de_uso_para_fin_distinto",
+            r"(?:no\s+se\s+podra|no\s+podra|no\s+se\s+(?:utilizara|"
+            r"usara|proporcionara)).{0,90}(?:datos|informacion)"
+            r".{0,90}(?:finalidades?|fines?)\s+distint[oa]s?\s+a"
+            r"(?:\s+aquell[oa]s)?.{0,60}(?:recogid[oa]s?|recabad[oa]s?|"
+            r"obtenid[oa]s?|recopilad[oa]s?)",
         ),
         senal(
             "datos_vinculados_a_finalidad",
@@ -214,7 +228,7 @@ GR_D03_RESP_ACCESO = GuardrailLexico(
             "roles_autorizados_definidos",
             r"(?:roles?|responsables?|personal|equipo|administradores?|"
             r"analistas?)\s+(?:autorizad[oa]s?|designad[oa]s?)?.{0,25}"
-            r"(?:acceder|podran\s+acceder|con\s+acceso|tendran\s+acceso)"
+            r"(?:podr[aá]n?\s+acceder|con\s+acceso|tendr[aá]n?\s+acceso)"
             r".{0,40}(?:datos|dataset|informacion)",
         ),
         senal(
@@ -289,6 +303,15 @@ GR_D03_CTRL_RETENCION = GuardrailLexico(
             "eliminacion_condicionada",
             r"(?:eliminaran|borraran|anonimizaran).{0,50}"
             r"(?:despues|tras|cuando|al\s+finalizar|en\s+un\s+plazo)",
+        ),
+        senal(
+            "destruccion_o_borrado_irrecuperable_condicionado",
+            r"(?:(?:una\s+vez\s+finalizado|al\s+finalizar|tras\s+la\s+"
+            r"finalizacion|cuando|si|despues\s+de).{0,120}"
+            r"(?:destruccion|borrado\s+irrecuperable)|"
+            r"(?:destruccion|borrado\s+irrecuperable).{0,120}"
+            r"(?:ya\s+no\s+deba|no\s+deba|deje\s+de|haya\s+finalizado|"
+            r"una\s+vez\s+finalizado|al\s+finalizar))",
         ),
         senal(
             "eliminacion_definitiva_a_solicitud",

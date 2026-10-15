@@ -67,6 +67,58 @@ def prueba_catalogo_no_tiene_codigos_duplicados() -> None:
     assert len(codigos) == len(set(codigos))
 
 
+def prueba_cita_de_titulo_normativo_rgpd_no_es_explicita() -> None:
+    texto = (
+        "Reglamento (UE) 2016/679 relativo a la proteccion de las personas "
+        "fisicas en lo que respecta al tratamiento de datos personales y a "
+        "la libre circulacion de estos datos."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_PRES_DATOS)
+    aplicacion = _hallazgo_de(resultado, "GR-D03-PRES-DATOS")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.PARCIAL
+
+
+def prueba_cita_de_titulo_normativo_lopdgdd_no_es_explicita() -> None:
+    texto = (
+        "Ley Organica 3/2018, de 5 de diciembre, de Proteccion de Datos "
+        "Personales y garantia de los derechos digitales."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_PRES_DATOS)
+    aplicacion = _hallazgo_de(resultado, "GR-D03-PRES-DATOS")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.PARCIAL
+
+
+def prueba_categoria_real_de_datos_sigue_siendo_explicita() -> None:
+    texto = (
+        "El sistema debera procesar datos clinicos y datos financieros de "
+        "los solicitantes para generar el puntaje de riesgo."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_PRES_DATOS)
+    aplicacion = _hallazgo_de(resultado, "GR-D03-PRES-DATOS")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+
+
+def prueba_clausula_de_acceso_previo_generica_no_es_explicita() -> None:
+    texto = (
+        "El adjudicatario debera proporcionar al personal a su cargo, "
+        "antes de acceder a informacion de FREMAP, procedimientos "
+        "adecuados para realizar un uso adecuado de la misma."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_RESP_ACCESO)
+    aplicacion = _hallazgo_de(resultado, "GR-D03-RESP-ACCESO")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+
+
+def prueba_personal_autorizado_con_podra_acceder_sigue_siendo_explicita() -> None:
+    texto = (
+        "El personal autorizado podra acceder unicamente a los datos "
+        "personales necesarios."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_RESP_ACCESO)
+    aplicacion = _hallazgo_de(resultado, "GR-D03-RESP-ACCESO")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+
+
 def prueba_catalogo_se_puede_cargar_en_repositorio() -> None:
     repositorio = RepositorioGuardrailsEnMemoria(GUARDRAILS_D03_D04)
     assert len(repositorio.listar()) == 13
@@ -130,6 +182,44 @@ def prueba_mencion_incidental_de_finalidad_no_es_evidencia_explicita() -> None:
     resultado = _evaluar_texto(texto, GR_D03_DELIM_FINALIDAD)
 
     aplicacion = _hallazgo_de(resultado, "GR-D03-DELIM-FINALIDAD")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
+
+
+def prueba_prohibicion_de_uso_para_fin_distinto_es_explicita() -> None:
+    texto = (
+        "El adjudicatario no podra utilizar ni proporcionar a terceros "
+        "datos o informacion de caracter personal para finalidades "
+        "distintas a aquellas para las que los datos hubieran sido "
+        "recogidos."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_DELIM_FINALIDAD)
+
+    aplicacion = _hallazgo_de(resultado, "GR-D03-DELIM-FINALIDAD")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+
+
+def prueba_destruccion_o_borrado_irrecuperable_condicionado_es_explicita() -> None:
+    texto = (
+        "Una vez finalizado el contrato, el adjudicatario debera "
+        "desarrollar las acciones necesarias para la transferencia de la "
+        "informacion o la destruccion de la misma, incluyendo el borrado "
+        "irrecuperable de cualquier informacion de FREMAP que ya no deba "
+        "ser conservada."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_CTRL_RETENCION)
+
+    aplicacion = _hallazgo_de(resultado, "GR-D03-CTRL-RETENCION")
+    assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
+
+
+def prueba_destruccion_sin_condicion_de_retencion_no_es_explicita() -> None:
+    texto = (
+        "El edificio sufrio la destruccion parcial de su fachada durante "
+        "el temporal de la semana pasada."
+    )
+    resultado = _evaluar_texto(texto, GR_D03_CTRL_RETENCION)
+
+    aplicacion = _hallazgo_de(resultado, "GR-D03-CTRL-RETENCION")
     assert aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
 
 
