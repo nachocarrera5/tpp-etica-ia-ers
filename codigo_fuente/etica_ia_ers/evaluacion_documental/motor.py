@@ -208,4 +208,5 @@ class MotorEvaluacionEtica:
             guardrail_nombre=definicion.nombre,
             guardrail_descripcion=definicion.descripcion,
             peso=definicion.peso_efectivo,
+            guardrail_dominios=definicion.dominios,
         )

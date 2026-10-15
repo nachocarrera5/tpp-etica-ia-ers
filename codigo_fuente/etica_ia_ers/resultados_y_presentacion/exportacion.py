@@ -370,6 +370,18 @@ def _dominio(metadatos: Mapping[str, Any]) -> str:
     return "Sin especificar"
 
 
+def _dominios_guardrail(hallazgo: Mapping[str, Any]) -> str:
+    dominios = hallazgo.get("guardrail_dominios") or []
+    if not dominios:
+        return "General"
+    return _lista(
+        [
+            _NOMBRES_DOMINIO.get(str(_valor_plano(dominio)), _texto(dominio))
+            for dominio in dominios
+        ]
+    )
+
+
 def _cobertura_ponderada(resultado: Mapping[str, Any]) -> str:
     valor = resultado.get("porcentaje_cobertura_ponderada")
     return _SIN_DATO if valor is None else f"{_texto(valor)}%"
@@ -618,6 +630,7 @@ def _exportar_markdown(
                 f"{_etiqueta_nivel(hallazgo.get('nivel_preliminar'))}",
                 "",
                 f"- **Familia:** {_texto(hallazgo.get('familia_guardrail'))}",
+                f"- **Dominio del guardrail:** {_dominios_guardrail(hallazgo)}",
                 f"- **Dimensiones asociadas:** "
                 f"{_lista(hallazgo.get('dimensiones_asociadas'))}",
                 f"- **Criterios asociados:** {_lista(hallazgo.get('criterios_asociados'))}",
@@ -1010,6 +1023,7 @@ def _exportar_html(
                 f"{_nivel_html(hallazgo.get('nivel_preliminar'))}</h3>",
                 '<div class="tarjeta">',
                 _dato_html("Familia", _texto(hallazgo.get("familia_guardrail"))),
+                _dato_html("Dominio del guardrail", _dominios_guardrail(hallazgo)),
                 _dato_html(
                     "Dimensiones asociadas",
                     _lista(hallazgo.get("dimensiones_asociadas")),

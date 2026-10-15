@@ -126,6 +126,7 @@ class HallazgoResponse(BaseModel):
     guardrail_version: int
     guardrail_nombre: Optional[str] = None
     guardrail_descripcion: Optional[str] = None
+    guardrail_dominios: Tuple[DominioAplicacion, ...] = ()
     familia_guardrail: FamiliaGuardrail
     dimensiones_asociadas: Tuple[DimensionEtica, ...]
     criterios_asociados: Tuple[str, ...]

@@ -325,6 +325,9 @@ def _serializar_hallazgo(hallazgo: Any) -> Dict[str, Any]:
         "guardrail_version": hallazgo.guardrail_version,
         "guardrail_nombre": hallazgo.guardrail_nombre,
         "guardrail_descripcion": hallazgo.guardrail_descripcion,
+        "guardrail_dominios": [
+            dominio.value for dominio in hallazgo.guardrail_dominios
+        ],
         "familia_guardrail": hallazgo.familia_guardrail.value,
         "dimensiones_asociadas": [
             dimension.value for dimension in hallazgo.dimensiones_asociadas

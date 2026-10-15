@@ -507,3 +507,25 @@ def prueba_api_aplica_los_guardrails_del_dominio_declarado(monkeypatch) -> None:
     codigos = {hallazgo["guardrail_codigo"] for hallazgo in resultado["hallazgos"]}
     assert "GR-D07-CTRL-SALUD-DECISION" in codigos
     assert "GR-D06-VERIF-CRED-MOTIVOS" not in codigos
+
+
+def prueba_hallazgo_identifica_si_el_guardrail_es_de_dominio() -> None:
+    resultado = _evaluar(
+        "El sistema no deberá emitir un diagnóstico sin la validación de un "
+        "profesional.",
+        "salud",
+        GUARDRAILS_GENERALES[0],
+        GR_D07_CTRL_SALUD_DECISION,
+    )
+
+    reporte = serializar_reporte_resultados(resultado, "ers.txt")
+
+    dominios = {
+        hallazgo["guardrail_codigo"]: hallazgo["guardrail_dominios"]
+        for hallazgo in reporte["hallazgos"]
+    }
+    assert dominios[GUARDRAILS_GENERALES[0].definicion.codigo] == []
+    assert dominios["GR-D07-CTRL-SALUD-DECISION"] == ["salud"]
+    contenido = exportar_reporte(reporte, FormatoExportacion.MARKDOWN).contenido
+    assert "- **Dominio del guardrail:** Salud" in contenido
+    assert "- **Dominio del guardrail:** General" in contenido

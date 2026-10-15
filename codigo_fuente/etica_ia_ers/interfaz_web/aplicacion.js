@@ -341,10 +341,14 @@ function renderizarResultado() {
   cambiarPestana("resumen");
 }
 
+function nombreDominio(valor) {
+  const opcion = $(`#dominio option[value="${valor}"]`);
+  return opcion ? opcion.textContent : valor;
+}
+
 function textoDominio(metadatos) {
   if (metadatos.dominio_aplicacion) {
-    const opcion = $(`#dominio option[value="${metadatos.dominio_aplicacion}"]`);
-    return ` · Dominio: ${opcion ? opcion.textContent : metadatos.dominio_aplicacion}`;
+    return ` · Dominio: ${nombreDominio(metadatos.dominio_aplicacion)}`;
   }
   return metadatos.dominio_declarado ? ` · Dominio: ${metadatos.dominio_declarado} (sin guardrails específicos)` : "";
 }
@@ -433,7 +437,7 @@ function guardrailsDe(hallazgos) {
     <details class="guardrail-dimension ${hallazgo.nivel_preliminar}">
       <summary>
         <span class="estado-guardrail"></span>
-        <span><strong>${escapar(hallazgo.guardrail_nombre || hallazgo.guardrail_codigo)}</strong><small>${escapar(hallazgo.guardrail_codigo)} · ${hallazgo.evidencias.length} evidencia${hallazgo.evidencias.length === 1 ? "" : "s"}</small></span>
+        <span><strong>${escapar(hallazgo.guardrail_nombre || hallazgo.guardrail_codigo)}</strong><small>${escapar(hallazgo.guardrail_codigo)} · ${hallazgo.evidencias.length} evidencia${hallazgo.evidencias.length === 1 ? "" : "s"}${insigniaDominio(hallazgo)}</small></span>
         <span class="etiqueta-nivel ${hallazgo.nivel_preliminar}">${etiquetaNivel(hallazgo.nivel_preliminar)}</span>
         ${icono("chevron")}
       </summary>
@@ -460,7 +464,7 @@ function tarjetaHallazgo(hallazgo) {
   return `<details class="hallazgo ${hallazgo.nivel_preliminar}">
     <summary>
       <span class="estado-guardrail"></span>
-      <span class="hallazgo-identidad"><strong>${escapar(hallazgo.guardrail_nombre || hallazgo.guardrail_codigo)}</strong><small>${escapar(hallazgo.guardrail_codigo)} · versión ${hallazgo.guardrail_version}</small></span>
+      <span class="hallazgo-identidad"><strong>${escapar(hallazgo.guardrail_nombre || hallazgo.guardrail_codigo)}</strong><small>${escapar(hallazgo.guardrail_codigo)} · versión ${hallazgo.guardrail_version}${insigniaDominio(hallazgo)}</small></span>
       <span class="hallazgo-resumen">${hallazgo.evidencias.length} evidencia${hallazgo.evidencias.length === 1 ? "" : "s"} · ${hallazgo.dimensiones_asociadas.join(", ")}</span>
       <span class="etiqueta-nivel ${hallazgo.nivel_preliminar}">${etiquetaNivel(hallazgo.nivel_preliminar)}</span>
       ${icono("chevron")}
@@ -509,61 +513,74 @@ function letraNivel(nivel) {
   return { AUSENTE: "A", PARCIAL: "P", EXPLICITO: "E" }[nivel] || "·";
 }
 
+const FAMILIAS_GUARDRAIL = [
+  ["G-PRES", "Presencia"],
+  ["G-DELIM", "Delimitación"],
+  ["G-VERIF", "Verificabilidad"],
+  ["G-RESP", "Responsabilidad"],
+  ["G-CTRL", "Control"],
+  ["G-QUAL", "Calidad documental"],
+];
+
+function esDeDominio(hallazgo) {
+  return (hallazgo.guardrail_dominios || []).length > 0;
+}
+
+function insigniaDominio(hallazgo) {
+  if (!esDeDominio(hallazgo)) return "";
+  const nombres = hallazgo.guardrail_dominios.map(nombreDominio).join(", ");
+  return `<span class="insignia-dominio" title="Guardrail específico del dominio">${escapar(nombres)}</span>`;
+}
+
+function etiquetaCortaGuardrail(hallazgo) {
+  // GR-D01-DELIM-ACTORES -> ACTORES; GR-D07-CTRL-SALUD-DECISION -> DECISION.
+  return hallazgo.guardrail_codigo.split("-").slice(esDeDominio(hallazgo) ? 4 : 3).join(" ");
+}
+
+function chipGuardrail(hallazgo) {
+  const nivel = hallazgo.nivel_preliminar;
+  const nombre = hallazgo.guardrail_nombre || hallazgo.guardrail_codigo;
+  return `<button type="button" class="chip-guardrail ${nivel}${esDeDominio(hallazgo) ? " de-dominio" : ""}" data-hallazgo="${hallazgo.hallazgo_id}"
+    title="${escapar(nombre)} · ${escapar(hallazgo.guardrail_codigo)} · ${escapar(etiquetaNivel(nivel))}"
+    aria-label="${escapar(nombre)}, ${escapar(etiquetaNivel(nivel))}">
+    <span class="chip-nivel">${letraNivel(nivel)}</span><span class="chip-nombre">${escapar(etiquetaCortaGuardrail(hallazgo))}</span>
+  </button>`;
+}
+
 function renderizarMatrizGuardrails() {
   const resultado = estado.resultado;
-  const dimensiones = resultado.resultados_dimension;
+  const dominios = [...new Set(resultado.hallazgos.flatMap((hallazgo) => hallazgo.guardrail_dominios || []))];
+  // Los guardrails propios del dominio declarado van primero, en columnas
+  // resaltadas; las familias de la taxonomía agrupan los guardrails generales.
+  const columnas = [
+    ...dominios.map((dominio) => ({
+      nombre: `Dominio: ${nombreDominio(dominio)}`,
+      clase: " columna-dominio",
+      incluye: (hallazgo) => (hallazgo.guardrail_dominios || []).includes(dominio),
+    })),
+    ...FAMILIAS_GUARDRAIL.map(([familia, nombre]) => ({
+      nombre,
+      clase: "",
+      incluye: (hallazgo) => !esDeDominio(hallazgo) && hallazgo.familia_guardrail === familia,
+    })),
+  ];
 
-  const codigosGuardrail = [];
-  const vistos = new Set();
-  dimensiones.forEach((dimension) => {
-    resultado.hallazgos
-      .filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo))
-      .sort((a, b) => a.guardrail_codigo.localeCompare(b.guardrail_codigo))
-      .forEach((hallazgo) => {
-        if (!vistos.has(hallazgo.guardrail_codigo)) {
-          vistos.add(hallazgo.guardrail_codigo);
-          codigosGuardrail.push(hallazgo.guardrail_codigo);
-        }
-      });
-  });
-
-  const hallazgosPorDimensionYCodigo = new Map();
-  resultado.hallazgos.forEach((hallazgo) => {
-    hallazgo.dimensiones_asociadas.forEach((dimensionCodigo) => {
-      hallazgosPorDimensionYCodigo.set(`${dimensionCodigo}:${hallazgo.guardrail_codigo}`, hallazgo);
-    });
-  });
-
-  const iniciosGrupo = new Set();
-  dimensiones.forEach((dimension) => {
-    const primerCodigo = codigosGuardrail.find((codigo) => codigo.includes(`-${dimension.dimension_codigo}-`));
-    if (primerCodigo) iniciosGrupo.add(primerCodigo);
-  });
-
-  const encabezados = codigosGuardrail.map((codigo) => `
-    <th scope="col" class="encabezado-guardrail${iniciosGrupo.has(codigo) ? " inicio-grupo" : ""}"
-      title="${escapar(codigo)}"><span>${escapar(codigo)}</span></th>
+  const encabezados = columnas.map((columna) => `
+    <th scope="col" class="encabezado-familia${columna.clase}">${escapar(columna.nombre)}</th>
   `).join("");
 
-  const filas = dimensiones.map((dimension) => {
-    const celdas = codigosGuardrail.map((codigo) => {
-      const hallazgo = hallazgosPorDimensionYCodigo.get(`${dimension.dimension_codigo}:${codigo}`);
-      const claseGrupo = iniciosGrupo.has(codigo) ? " inicio-grupo" : "";
-      if (!hallazgo) {
-        return `<td class="celda-matriz vacia${claseGrupo}" aria-label="${escapar(codigo)} no corresponde a ${escapar(dimension.dimension_codigo)}"></td>`;
-      }
-      const nivel = hallazgo.nivel_preliminar;
-      return `<td class="celda-matriz${claseGrupo}">
-        <button type="button" class="celda-matriz-boton ${nivel}" data-hallazgo="${hallazgo.hallazgo_id}"
-          title="${escapar(hallazgo.guardrail_codigo)} · ${escapar(etiquetaNivel(nivel))}"
-          aria-label="${escapar(dimension.dimension_codigo)}, ${escapar(hallazgo.guardrail_codigo)}, ${escapar(etiquetaNivel(nivel))}">
-          ${letraNivel(nivel)}
-        </button>
-      </td>`;
+  const filas = resultado.resultados_dimension.map((dimension) => {
+    const hallazgosDimension = resultado.hallazgos.filter((hallazgo) => hallazgo.dimensiones_asociadas.includes(dimension.dimension_codigo));
+    const celdas = columnas.map((columna) => {
+      const hallazgos = hallazgosDimension
+        .filter(columna.incluye)
+        .sort((a, b) => a.guardrail_codigo.localeCompare(b.guardrail_codigo));
+      return `<td class="celda-matriz${columna.clase}${hallazgos.length ? "" : " vacia"}">${hallazgos.map(chipGuardrail).join("")}</td>`;
     }).join("");
+    const nivel = nivelDe(dimension);
     return `<tr>
-      <th scope="row" class="fila-dimension" title="${escapar(dimension.dimension_nombre)}">
-        <strong>${dimension.dimension_codigo}</strong><span>${escapar(dimension.dimension_nombre)}</span>
+      <th scope="row" class="fila-dimension" title="${escapar(dimension.dimension_nombre)} · ${escapar(etiquetaNivel(nivel))}">
+        <strong>${dimension.dimension_codigo} <i class="punto-nivel ${nivel}"></i></strong><span>${escapar(dimension.dimension_nombre)}</span>
       </th>
       ${celdas}
     </tr>`;
