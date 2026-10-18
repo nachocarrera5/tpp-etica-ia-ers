@@ -383,7 +383,10 @@ GR_D02_PRES_ACTORES = GuardrailLexico(
         senal(
             "roles_del_dominio",
             r"(?:profesionales?\s+medicos?|pacientes?|docentes?|"
-            r"estudiantes?|solicitantes?|trabajadores?)",
+            r"estudiantes?|solicitantes?|"
+            r"trabajadores?(?!.{0,120}(?:epi|epis|riesgos?\s+laboral\w*|"
+            r"prevencion\s+de\s+riesgos|accidentes?\s+de\s+trabajo|"
+            r"vigilancia\s+de\s+la\s+salud)))",
         ),
         senal("usuarios_registrados", r"usuarios?\s+registrados?"),
         senal("mencion_stakeholders", r"stakeholders?|partes?\s+interesadas"),

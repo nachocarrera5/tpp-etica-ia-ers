@@ -215,6 +215,27 @@ def prueba_ejemplo_oficial_combinado_detecta_evidencia_explicita() -> None:
         assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
 
 
+def prueba_seguridad_social_y_contingencias_laborales_no_certifican_robustez() -> None:
+    texto = (
+        "FREMAP es una Entidad Colaboradora con la Seguridad Social, sin "
+        "animo de lucro, que tiene por objeto colaborar en la gestion de "
+        "las prestaciones economicas, comprendidas en la proteccion de "
+        "las contingencias profesionales, asi como la prestacion "
+        "economica de las contingencias comunes."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[6])
+    assert _nivel(resultado, "GR-D08-QUAL-DECLARATIVO") == NivelCobertura.AUSENTE
+
+
+def prueba_seguridad_del_modelo_con_contingencias_tecnicas_sigue_siendo_explicita() -> None:
+    texto = (
+        "La seguridad del modelo se verificara mediante pruebas y "
+        "contingencias ante fallas del sistema."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[6])
+    assert _nivel(resultado, "GR-D08-QUAL-DECLARATIVO") == NivelCobertura.EXPLICITO
+
+
 def prueba_disponibilidad_de_infraestructura_sin_contexto_ia_es_ausente() -> None:
     texto = (
         "3.1. El sistema debera garantizar una disponibilidad del 99% "
@@ -297,6 +318,22 @@ def prueba_d08_cubre_contingencia_monitoreo_e_incidentes() -> None:
         assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
 
 
+def prueba_interlocutor_contractual_y_vigilancia_de_epis_no_es_evidencia_de_rol() -> None:
+    texto_interlocutor = (
+        "FREMAP se reserva el derecho de solicitar otro interlocutor "
+        "responsable. Cualquier cambio sera comunicado informando de los "
+        "datos del nuevo responsable asignado."
+    )
+    texto_epis = (
+        "Los trabajadores estan obligados al uso correcto de los EPIs. El "
+        "encargado sera el responsable de vigilar por la utilizacion de "
+        "los mismos de manera correcta."
+    )
+    for texto in (texto_interlocutor, texto_epis):
+        resultado = _evaluar_texto(texto, GUARDRAILS_D09[1])
+        assert _nivel(resultado, "GR-D09-RESP-ROLES") == NivelCobertura.AUSENTE
+
+
 def prueba_equipo_fisico_de_infraestructura_no_es_evidencia_de_rol() -> None:
     texto = (
         "3.1. La solucion garantizara alta disponibilidad implementando "
@@ -314,6 +351,31 @@ def prueba_rol_de_gobernanza_de_datos_sigue_siendo_explicito() -> None:
     )
     resultado = _evaluar_texto(texto, GUARDRAILS_D09[1])
     assert _nivel(resultado, "GR-D09-RESP-ROLES") == NivelCobertura.EXPLICITO
+
+
+def prueba_modelo_de_gobernanza_que_asigna_roles_es_explicito() -> None:
+    texto = (
+        "4.3 Revision y adaptacion del modelo de gobernanza de la IA en la "
+        "entidad. El adjudicatario dara el soporte necesario para revisar "
+        "y en su caso adaptar el sistema interno de gobernanza de la IA "
+        "que permita establecer los roles y responsabilidades de cada uno "
+        "de los departamentos o areas respecto de los sistemas de gestion "
+        "de la IA que debera ser aprobado por los organos de gobierno de "
+        "la entidad."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D09[0])
+    assert (
+        _nivel(resultado, "GR-D09-PRES-RESPONSABLES") == NivelCobertura.EXPLICITO
+    )
+
+
+def prueba_mencion_generica_de_gobernanza_sin_roles_no_es_explicita() -> None:
+    texto = (
+        "El modelo de gobernanza de la IA en la entidad sera revisado "
+        "anualmente por el comite directivo."
+    )
+    resultado = _evaluar_texto(texto, GUARDRAILS_D09[0])
+    assert _nivel(resultado, "GR-D09-PRES-RESPONSABLES") != NivelCobertura.EXPLICITO
 
 
 def prueba_d09_cubre_roles_reclamos_y_reparacion() -> None:
@@ -521,3 +583,9 @@ def prueba_evaluacion_ambiental_del_expediente_no_es_impacto_del_sistema() -> No
         and aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
         for aplicacion in resultado.aplicaciones
     )
+
+
+def prueba_contingencias_laborales_no_son_verificacion_de_seguridad() -> None:
+    texto = "El contrato incluye seguridad y cobertura de contingencias profesionales."
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[6])
+    assert _nivel(resultado, "GR-D08-QUAL-DECLARATIVO") != NivelCobertura.EXPLICITO

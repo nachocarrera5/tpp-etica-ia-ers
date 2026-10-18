@@ -386,10 +386,11 @@ GR_D08_QUAL_DECLARATIVO = _crear_guardrail(
         (
             "robustez_verificable",
             _coocurrencia(
-                r"(?:robustez|seguridad|fiabilidad|sistema\s+robusto|"
-                r"sistema\s+seguro|sistema\s+confiable)",
+                r"(?:robustez|seguridad(?!\s+social)|fiabilidad|"
+                r"sistema\s+robusto|sistema\s+seguro|sistema\s+confiable)",
                 r"(?:pruebas?|m[eé]tricas?|umbrales?|criterios?\s+de\s+"
-                r"aceptaci[oó]n|contingencias?|simulaci[oó]n\s+de\s+fallas?)",
+                r"aceptaci[oó]n|contingencias?(?!\s+(?:profesionales?|"
+                r"comunes?))|simulaci[oó]n\s+de\s+fallas?)",
             ),
         ),
         (
@@ -468,6 +469,13 @@ GR_D09_PRES_RESPONSABLES = _crear_guardrail(
             r".{0,280}(?:coordinar|definir|establecer|implementar|evaluar)"
             r"\w*.{0,90}(?:auditor[ií]as?|controles?|protocolos?|riesgos?)",
         ),
+        (
+            "gobernanza_asigna_roles_y_responsabilidades",
+            r"(?:modelo|sistema)\s+(?:interno\s+)?de\s+gobernanza\s+de\s+"
+            r"(?:la\s+)?ia.{0,200}(?:establecer|definir|determinar)\w*"
+            r".{0,45}(?:roles?\s+y\s+responsabilidades?|responsabilidades?"
+            r"\s+y\s+roles?)",
+        ),
     ),
     (
         (
@@ -511,9 +519,11 @@ GR_D09_RESP_ROLES = _crear_guardrail(
         (
             "rol_poco_delimitado",
             _coocurrencia(
-                r"(?:responsable|equipo(?!\s+(?:f[ií]sico|inform[aá]tico))|"
+                r"(?:responsable(?!\s+de\s+vigilar)|"
+                r"equipo(?!\s+(?:f[ií]sico|inform[aá]tico))|"
                 r"comit[eé]|\brol(?:es)?\b)",
-                r"(?:datos?(?<!proceso de datos)|"
+                r"(?:datos(?!\s+del\s+(?:nuevo\s+)?responsable)"
+                r"(?<!proceso de datos)|"
                 r"modelo|operaci[oó]n|revisi[oó]n|auditor[ií]a)",
                 distancia=200,
             ),
