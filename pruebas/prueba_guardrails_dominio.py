@@ -529,3 +529,43 @@ def prueba_hallazgo_identifica_si_el_guardrail_es_de_dominio() -> None:
     contenido = exportar_reporte(reporte, FormatoExportacion.MARKDOWN).contenido
     assert "- **Dominio del guardrail:** Salud" in contenido
     assert "- **Dominio del guardrail:** General" in contenido
+
+
+@pytest.mark.parametrize(
+    "texto",
+    (
+        "El sistema podra emitir un diagnostico sin la validacion de un profesional.",
+        "El sistema debera emitir el diagnostico sin la confirmacion de un medico.",
+    ),
+)
+def prueba_decision_clinica_sin_supervision_no_es_control_explicito(texto) -> None:
+    guardrail = GR_D07_CTRL_SALUD_DECISION
+    nivel = _nivel(_evaluar(texto, "salud", guardrail), guardrail.definicion.codigo)
+    assert nivel != NivelCobertura.EXPLICITO
+
+
+@pytest.mark.parametrize(
+    "texto",
+    (
+        "La bibliografia incluye el RGPD.",
+        "Se cita la Ley Organica 3/2018 de Proteccion de Datos Personales.",
+    ),
+)
+def prueba_cita_legal_no_define_base_de_tratamiento_clinico(texto) -> None:
+    guardrail = GR_D03_DELIM_SALUD_CONSENTIMIENTO
+    nivel = _nivel(_evaluar(texto, "salud", guardrail), guardrail.definicion.codigo)
+    assert nivel == NivelCobertura.PARCIAL
+
+
+@pytest.mark.parametrize(
+    "texto",
+    (
+        "El sistema no podra generar resultados sin la confirmacion de un medico.",
+        "No se debera comunicar un diagnostico sin la revision previa de un especialista.",
+        "El sistema no emitira informes sin la aprobacion de un profesional.",
+    ),
+)
+def prueba_prohibir_decisiones_sin_supervision_es_control_explicito(texto) -> None:
+    guardrail = GR_D07_CTRL_SALUD_DECISION
+    nivel = _nivel(_evaluar(texto, "salud", guardrail), guardrail.definicion.codigo)
+    assert nivel == NivelCobertura.EXPLICITO

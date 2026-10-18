@@ -187,7 +187,9 @@ GR_D07_CTRL_SALUD_DECISION = _crear_guardrail(
     (
         (
             "validacion_profesional_obligatoria",
-            r"sin\s+(?:la\s+)?(?:validacion|confirmacion|revision|"
+            r"no\s+(?:(?:se\s+)?(?:debera|podra)\s+)?"
+            r"(?:emitir\w*|generar\w*|comunicar\w*|publicar\w*)"
+            r"[^.;]{0,100}sin\s+(?:la\s+)?(?:validacion|confirmacion|revision|"
             r"aprobacion)\s+(?:previa\s+)?de\s+(?:un|una|el|la)\s+"
             r"(?:profesional|medic[oa]|especialista|clinic[oa])",
         ),
@@ -269,14 +271,16 @@ GR_D03_DELIM_SALUD_CONSENTIMIENTO = _crear_guardrail(
             r"(?:anonimiza\w*|seudonimiza\w*|disocia\w*).{0,80}"
             r"(?:datos|imagenes?|historias?|registros?)",
         ),
+    ),
+    (
+        # Una cita normativa contextualiza, pero no define por si sola
+        # el consentimiento ni la base concreta del tratamiento.
         (
             "normativa_de_datos_de_salud",
             r"ley\s+(?:n\W{0,2}\s*)?(?:25\.?326|26\.?529)|rgpd|"
             r"reglamento\s+general\s+de\s+proteccion\s+de\s+datos|"
             r"ley\s+organica\s+3/2018|lopdgdd|hipaa",
         ),
-    ),
-    (
         (
             "proteccion_generica_de_datos_clinicos",
             r"(?:confidencialidad|privacidad|proteccion).{0,60}datos.{0,30}"
