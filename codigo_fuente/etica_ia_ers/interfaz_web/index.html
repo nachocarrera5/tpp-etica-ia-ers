@@ -6,7 +6,7 @@
   <meta name="description" content="Revisión ética documental de especificaciones de requisitos de sistemas de IA.">
   <title>Revisión ética de ERS</title>
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="/recursos/estilos.css?v=3">
+  <link rel="stylesheet" href="/recursos/estilos.css?v=5">
 </head>
 <body>
   <!-- Iconos derivados de Lucide, licencia ISC: https://lucide.dev/license -->
@@ -174,10 +174,10 @@
         <div id="panel-matriz" class="panel-vista" hidden>
           <div class="seccion-resultados">
             <div class="seccion-titulo">
-              <div><span class="sobrelinea">Pantallazo general</span><h2>Matriz dimensión × guardrail</h2></div>
+              <div><span class="sobrelinea">Pantallazo general</span><h2>Matriz dimensión × familia de guardrail</h2></div>
               <div class="leyenda"><span class="ausente">A · Ausente</span><span class="parcial">P · Parcial</span><span class="explicito">E · Explícito</span></div>
             </div>
-            <p class="ayuda-bloque">Pasá el mouse sobre una celda para ver un resumen o hacé clic para abrir el hallazgo completo con su evidencia.</p>
+            <p class="ayuda-bloque">Cada celda agrupa los guardrails de una dimensión según su familia. Las columnas resaltadas reúnen los guardrails propios del dominio declarado. Pasá el mouse sobre un guardrail para ver su nombre o hacé clic para abrir el hallazgo con su evidencia.</p>
             <div id="matriz-guardrails" class="matriz-scroll"></div>
           </div>
         </div>
@@ -262,6 +262,6 @@
   </dialog>
 
   <div id="notificacion" class="notificacion" role="status" aria-live="polite" hidden></div>
-  <script src="/recursos/aplicacion.js?v=3" defer></script>
+  <script src="/recursos/aplicacion.js?v=6" defer></script>
 </body>
 </html>

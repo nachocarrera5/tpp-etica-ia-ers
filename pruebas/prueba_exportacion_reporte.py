@@ -233,8 +233,8 @@ def prueba_exportacion_markdown_neutraliza_separadores_de_tabla() -> None:
         if linea.startswith("| D01 |")
     )
     assert "Proposito \\| contexto" in fila
-    # Seis columnas: solo los siete separadores reales quedan sin escapar.
-    assert fila.replace("\\|", "").count("|") == 7
+    # Siete columnas: solo los ocho separadores reales quedan sin escapar.
+    assert fila.replace("\\|", "").count("|") == 8
 
 
 def prueba_exportacion_html_escapa_el_texto_tomado_de_la_ers() -> None:

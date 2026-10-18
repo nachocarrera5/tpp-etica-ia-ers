@@ -15,6 +15,7 @@ from etica_ia_ers.dominio import (
     ResultadoCoberturaEtica,
     ResultadoDimensionEtica,
     ResultadoEvaluacionEtica,
+    resolver_dominio_aplicacion,
 )
 from etica_ia_ers.recomendaciones import generar_alertas_y_recomendaciones
 from etica_ia_ers.rubrica_y_agregacion import (
@@ -81,6 +82,8 @@ def _resultado_dimension_no_evaluada(
         ),
         "brechas_principales": [],
         "hallazgos_relacionados": [],
+        "porcentaje_cobertura_ponderada": None,
+        "guardrails_criticos_pendientes": [],
     }
 
 
@@ -129,6 +132,10 @@ def serializar_reporte_resultados(
         cobertura,
     )
     total_hallazgos = cobertura.indicadores_globales.total_hallazgos
+    dominio_declarado = evaluacion.metadatos.get("dominio")
+    if not isinstance(dominio_declarado, str) or not dominio_declarado.strip():
+        dominio_declarado = None
+    dominio_aplicacion = resolver_dominio_aplicacion(dominio_declarado)
 
     resultados_serializados = {
         resultado.dimension: _serializar_resultado_dimension(resultado)
@@ -150,6 +157,10 @@ def serializar_reporte_resultados(
             "fecha_inicio": evaluacion.fecha_inicio.isoformat(),
             "fecha_fin": evaluacion.fecha_fin.isoformat(),
             "estado": "EVALUADO",
+            "dominio_declarado": dominio_declarado,
+            "dominio_aplicacion": (
+                dominio_aplicacion.value if dominio_aplicacion else None
+            ),
         },
         "resumen_ejecutivo": _resumen_ejecutivo(total_hallazgos),
         "lectura_global": _lectura_global(
@@ -189,6 +200,7 @@ def _serializar_indicadores(
         "dimensiones_explicitas": globales.dimensiones_explicitas,
         "porcentaje_cobertura_explicita": globales.porcentaje_cobertura_explicita,
         "porcentaje_cobertura_no_ausente": globales.porcentaje_cobertura_no_ausente,
+        "porcentaje_cobertura_ponderada": globales.porcentaje_cobertura_ponderada,
         "total_hallazgos": globales.total_hallazgos,
         "total_alertas": len(resultado_recomendaciones.alertas),
         "total_recomendaciones": len(resultado_recomendaciones.recomendaciones),
@@ -249,6 +261,10 @@ def _serializar_resultado_dimension(
         "hallazgos_relacionados": [
             str(hallazgo_id) for hallazgo_id in resultado.hallazgos_relacionados
         ],
+        "porcentaje_cobertura_ponderada": resultado.porcentaje_cobertura_ponderada,
+        "guardrails_criticos_pendientes": list(
+            resultado.guardrails_criticos_pendientes
+        ),
     }
 
 
@@ -309,6 +325,9 @@ def _serializar_hallazgo(hallazgo: Any) -> Dict[str, Any]:
         "guardrail_version": hallazgo.guardrail_version,
         "guardrail_nombre": hallazgo.guardrail_nombre,
         "guardrail_descripcion": hallazgo.guardrail_descripcion,
+        "guardrail_dominios": [
+            dominio.value for dominio in hallazgo.guardrail_dominios
+        ],
         "familia_guardrail": hallazgo.familia_guardrail.value,
         "dimensiones_asociadas": [
             dimension.value for dimension in hallazgo.dimensiones_asociadas
@@ -317,6 +336,7 @@ def _serializar_hallazgo(hallazgo: Any) -> Dict[str, Any]:
         "nivel_preliminar": hallazgo.nivel_preliminar.value,
         "valor_auxiliar": valor_auxiliar,
         "prioridad_documental": hallazgo.prioridad_documental.value,
+        "peso": hallazgo.peso,
         "justificacion": hallazgo.justificacion,
         "justificacion_prioridad": hallazgo.justificacion_prioridad,
         "requiere_revision_humana": hallazgo.requiere_revision_humana,

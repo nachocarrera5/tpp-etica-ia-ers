@@ -6,6 +6,7 @@ from .calculador import (
     DIMENSIONES_POR_GRUPO,
     GRUPO_POR_DIMENSION,
     NOMBRES_DIMENSION,
+    UMBRAL_EXPLICITO_PONDERADO,
     calcular_cobertura_etica,
 )
 from .errores import (
@@ -19,5 +20,6 @@ __all__ = [
     "GRUPO_POR_DIMENSION",
     "NOMBRES_DIMENSION",
     "ResultadoEvaluacionInvalidoError",
+    "UMBRAL_EXPLICITO_PONDERADO",
     "calcular_cobertura_etica",
 ]

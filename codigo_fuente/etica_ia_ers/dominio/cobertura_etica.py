@@ -44,6 +44,8 @@ class ResultadoDimensionEtica:
     brechas_principales: Tuple[str, ...] = ()
     requiere_revision_humana: bool = False
     motivo_revision_humana: Optional[str] = None
+    porcentaje_cobertura_ponderada: float = 0.0
+    guardrails_criticos_pendientes: Tuple[str, ...] = ()
     id: UUID = field(default_factory=uuid4)
 
     def __post_init__(self) -> None:
@@ -53,6 +55,15 @@ class ResultadoDimensionEtica:
         object.__setattr__(
             self, "brechas_principales", tuple(self.brechas_principales)
         )
+        object.__setattr__(
+            self,
+            "guardrails_criticos_pendientes",
+            tuple(self.guardrails_criticos_pendientes),
+        )
+        if not 0 <= self.porcentaje_cobertura_ponderada <= 100:
+            raise ValueError(
+                "La cobertura ponderada debe estar entre 0 y 100."
+            )
         if not self.nombre_dimension.strip():
             raise ValueError("El nombre de la dimension no puede estar vacio.")
         if not self.justificacion.strip():
@@ -80,6 +91,7 @@ class IndicadoresGlobales:
     total_hallazgos: int
     hallazgos_con_revision_humana: int
     porcentaje_revision_humana: float
+    porcentaje_cobertura_ponderada: float = 0.0
 
 
 @dataclass(frozen=True)

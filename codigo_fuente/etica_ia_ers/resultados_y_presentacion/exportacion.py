@@ -27,7 +27,11 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Sequence, Union
 from uuid import UUID
 
-from etica_ia_ers.dominio import NivelCobertura, PrioridadDocumental
+from etica_ia_ers.dominio import (
+    DominioAplicacion,
+    NivelCobertura,
+    PrioridadDocumental,
+)
 
 from .errores import (
     ErrorEscrituraReporte,
@@ -74,6 +78,15 @@ _ETIQUETAS_PRIORIDAD = {
     PrioridadDocumental.ALTA.value: "Alta",
 }
 
+_NOMBRES_DOMINIO = {
+    DominioAplicacion.CREDITICIO.value: "Crédito y finanzas",
+    DominioAplicacion.SALUD.value: "Salud",
+    DominioAplicacion.EMPLEO.value: "Empleo",
+    DominioAplicacion.EDUCACION.value: "Educación",
+    DominioAplicacion.SECTOR_PUBLICO.value: "Sector público",
+    DominioAplicacion.RECOMENDACION.value: "Recomendación y contenidos",
+}
+
 _ETIQUETAS_INDICADOR = (
     ("total_dimensiones", "Dimensiones del modelo"),
     ("dimensiones_ausentes", "Dimensiones ausentes"),
@@ -81,6 +94,7 @@ _ETIQUETAS_INDICADOR = (
     ("dimensiones_explicitas", "Dimensiones explícitas"),
     ("porcentaje_cobertura_explicita", "Cobertura explícita (%)"),
     ("porcentaje_cobertura_no_ausente", "Cobertura no ausente (%)"),
+    ("porcentaje_cobertura_ponderada", "Cobertura ponderada (%)"),
     ("total_hallazgos", "Hallazgos registrados"),
     ("total_alertas", "Alertas generadas"),
     ("total_recomendaciones", "Recomendaciones generadas"),
@@ -345,6 +359,34 @@ def _etiqueta_prioridad(valor: Any) -> str:
     return _ETIQUETAS_PRIORIDAD.get(str(_valor_plano(valor)), _texto(valor))
 
 
+def _dominio(metadatos: Mapping[str, Any]) -> str:
+    aplicado = metadatos.get("dominio_aplicacion")
+    if aplicado:
+        nombre = _NOMBRES_DOMINIO.get(str(_valor_plano(aplicado)), _texto(aplicado))
+        return f"{nombre} (con guardrails específicos)"
+    declarado = metadatos.get("dominio_declarado")
+    if declarado:
+        return f"{_texto(declarado)} (sin guardrails específicos)"
+    return "Sin especificar"
+
+
+def _dominios_guardrail(hallazgo: Mapping[str, Any]) -> str:
+    dominios = hallazgo.get("guardrail_dominios") or []
+    if not dominios:
+        return "General"
+    return _lista(
+        [
+            _NOMBRES_DOMINIO.get(str(_valor_plano(dominio)), _texto(dominio))
+            for dominio in dominios
+        ]
+    )
+
+
+def _cobertura_ponderada(resultado: Mapping[str, Any]) -> str:
+    valor = resultado.get("porcentaje_cobertura_ponderada")
+    return _SIN_DATO if valor is None else f"{_texto(valor)}%"
+
+
 def _revision_humana(elemento: Mapping[str, Any]) -> str:
     if not elemento.get("requiere_revision_humana"):
         return "No"
@@ -395,6 +437,7 @@ def _filas_dimensiones(resultados: Sequence[Mapping[str, Any]]) -> List[List[str
             _texto(resultado.get("dimension_nombre")),
             _texto(resultado.get("grupo_tematico")),
             _etiqueta_nivel(resultado.get("nivel_consolidado")),
+            _cobertura_ponderada(resultado),
             _etiqueta_prioridad(resultado.get("prioridad_documental")),
             _texto(bool(resultado.get("requiere_revision_humana"))),
         ]
@@ -492,6 +535,7 @@ def _exportar_markdown(
                 ["ID del documento", _texto(metadatos.get("documento_id"))],
                 ["ID del análisis", _texto(metadatos.get("analisis_id"))],
                 ["Estado", _texto(metadatos.get("estado"))],
+                ["Dominio de aplicación", _dominio(metadatos)],
                 ["Inicio del análisis", _texto(metadatos.get("fecha_inicio"))],
                 ["Fin del análisis", _texto(metadatos.get("fecha_fin"))],
                 ["Fecha de exportación", fecha_generacion.isoformat()],
@@ -538,6 +582,7 @@ def _exportar_markdown(
                 "Dimensión",
                 "Grupo temático",
                 "Nivel",
+                "Cobertura ponderada",
                 "Prioridad",
                 "Revisión humana",
             ),
@@ -553,10 +598,13 @@ def _exportar_markdown(
                 f"{_texto(resultado.get('dimension_nombre'))}",
                 "",
                 f"- **Nivel consolidado:** {_etiqueta_nivel(resultado.get('nivel_consolidado'))}",
+                f"- **Cobertura ponderada:** {_cobertura_ponderada(resultado)}",
                 f"- **Prioridad documental:** "
                 f"{_etiqueta_prioridad(resultado.get('prioridad_documental'))}",
                 f"- **Justificación:** {_texto(resultado.get('justificacion'))}",
                 f"- **Brechas principales:** {_lista(resultado.get('brechas_principales'))}",
+                f"- **Guardrails críticos pendientes:** "
+                f"{_lista(resultado.get('guardrails_criticos_pendientes'))}",
                 f"- **Revisión humana:** {_revision_humana(resultado)}",
                 f"- **Hallazgos relacionados:** "
                 f"{len(resultado.get('hallazgos_relacionados', []))}",
@@ -582,12 +630,14 @@ def _exportar_markdown(
                 f"{_etiqueta_nivel(hallazgo.get('nivel_preliminar'))}",
                 "",
                 f"- **Familia:** {_texto(hallazgo.get('familia_guardrail'))}",
+                f"- **Dominio del guardrail:** {_dominios_guardrail(hallazgo)}",
                 f"- **Dimensiones asociadas:** "
                 f"{_lista(hallazgo.get('dimensiones_asociadas'))}",
                 f"- **Criterios asociados:** {_lista(hallazgo.get('criterios_asociados'))}",
                 f"- **Prioridad documental:** "
                 f"{_etiqueta_prioridad(hallazgo.get('prioridad_documental'))} "
                 f"({_texto(hallazgo.get('justificacion_prioridad'))})",
+                f"- **Peso en la cobertura ponderada:** {_texto(hallazgo.get('peso'))}",
                 f"- **Justificación:** {_texto(hallazgo.get('justificacion'))}",
                 f"- **Revisión humana:** {_revision_humana(hallazgo)}",
             ]
@@ -859,6 +909,7 @@ def _exportar_html(
                 ["ID del documento", _texto(metadatos.get("documento_id"))],
                 ["ID del análisis", _texto(metadatos.get("analisis_id"))],
                 ["Estado", _texto(metadatos.get("estado"))],
+                ["Dominio de aplicación", _dominio(metadatos)],
                 ["Inicio del análisis", _texto(metadatos.get("fecha_inicio"))],
                 ["Fin del análisis", _texto(metadatos.get("fecha_fin"))],
                 ["Fecha de exportación", fecha_generacion.isoformat()],
@@ -905,6 +956,7 @@ def _exportar_html(
             _texto(resultado.get("dimension_nombre")),
             _texto(resultado.get("grupo_tematico")),
             _nivel_html(resultado.get("nivel_consolidado")),
+            _cobertura_ponderada(resultado),
             _prioridad_html(resultado.get("prioridad_documental")),
             _texto(bool(resultado.get("requiere_revision_humana"))),
         ]
@@ -920,11 +972,12 @@ def _exportar_html(
                     "Dimensión",
                     "Grupo temático",
                     "Nivel",
+                    "Cobertura ponderada",
                     "Prioridad",
                     "Revisión humana",
                 ),
                 filas_dimensiones,
-                columnas_crudas=(3, 4),
+                columnas_crudas=(3, 5),
             ),
             "</div>",
         ]
@@ -937,6 +990,7 @@ def _exportar_html(
                 f"{_e(resultado.get('dimension_nombre'))} "
                 f"{_nivel_html(resultado.get('nivel_consolidado'))}</h3>",
                 '<div class="tarjeta">',
+                _dato_html("Cobertura ponderada", _cobertura_ponderada(resultado)),
                 _dato_html(
                     "Prioridad documental",
                     _etiqueta_prioridad(resultado.get("prioridad_documental")),
@@ -945,6 +999,10 @@ def _exportar_html(
                 _dato_html(
                     "Brechas principales",
                     _lista(resultado.get("brechas_principales")),
+                ),
+                _dato_html(
+                    "Guardrails críticos pendientes",
+                    _lista(resultado.get("guardrails_criticos_pendientes")),
                 ),
                 _dato_html("Revisión humana", _revision_humana(resultado)),
                 "</div>",
@@ -965,6 +1023,7 @@ def _exportar_html(
                 f"{_nivel_html(hallazgo.get('nivel_preliminar'))}</h3>",
                 '<div class="tarjeta">',
                 _dato_html("Familia", _texto(hallazgo.get("familia_guardrail"))),
+                _dato_html("Dominio del guardrail", _dominios_guardrail(hallazgo)),
                 _dato_html(
                     "Dimensiones asociadas",
                     _lista(hallazgo.get("dimensiones_asociadas")),
@@ -977,6 +1036,10 @@ def _exportar_html(
                     "Prioridad documental",
                     f"{_etiqueta_prioridad(hallazgo.get('prioridad_documental'))} "
                     f"({_texto(hallazgo.get('justificacion_prioridad'))})",
+                ),
+                _dato_html(
+                    "Peso en la cobertura ponderada",
+                    _texto(hallazgo.get("peso")),
                 ),
                 _dato_html("Justificación", _texto(hallazgo.get("justificacion"))),
                 _dato_html("Revisión humana", _revision_humana(hallazgo)),

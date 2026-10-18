@@ -2,7 +2,7 @@
 
 Prototipo académico para analizar la cobertura ética documental de una Especificación de Requisitos de Software (ERS) de un sistema de inteligencia artificial.
 
-La aplicación carga una ERS, procesa su texto localmente, aplica un catálogo auditable de 72 guardrails y presenta cobertura, hallazgos, evidencias, alertas y recomendaciones para revisión humana.
+La aplicación carga una ERS, procesa su texto localmente, aplica un catálogo auditable de 72 guardrails generales y 18 específicos por dominio, y presenta cobertura, hallazgos, evidencias, alertas y recomendaciones para revisión humana.
 
 ## Demo funcional
 
@@ -66,7 +66,7 @@ Normalización, segmentación y clasificación
 Actores, acciones, condiciones, vaguedad y ambigüedad
        │
        ▼
-Motor ético + 72 guardrails D01-D10
+Motor ético + 72 guardrails D01-D10 + 18 por dominio
        │
        ▼
 Rúbrica y cobertura por dimensión
@@ -96,9 +96,30 @@ Exportación JSON / Markdown / HTML
 
 ## Cómo leer el resultado
 
-Cada guardrail produce un hallazgo preliminar `AUSENTE`, `PARCIAL` o `EXPLICITO`, con prioridad documental y evidencia trazable a fragmentos de la ERS. Una dimensión es `AUSENTE` cuando ninguno de sus guardrails presenta evidencia, `PARCIAL` cuando combina evidencia con brechas o evidencia incompleta y `EXPLICITO` únicamente cuando todos sus hallazgos son explícitos. Esta consolidación mantiene una lectura exigente sin ocultar la evidencia encontrada.
+Cada guardrail produce un hallazgo preliminar `AUSENTE`, `PARCIAL` o `EXPLICITO`, con prioridad documental, peso y evidencia trazable a fragmentos de la ERS. Una dimensión es `AUSENTE` cuando ninguno de sus guardrails presenta evidencia, `PARCIAL` cuando combina evidencia con brechas o evidencia incompleta y `EXPLICITO` cuando todos sus hallazgos son explícitos o cuando sólo le quedan brechas menores. Esta consolidación mantiene una lectura exigente sin ocultar la evidencia encontrada.
 
-El porcentaje de cobertura no ausente se calcula sobre dimensiones efectivamente evaluadas. Los errores de reglas y las dimensiones no cubiertas por el catálogo se muestran como advertencias, no como ausencias inventadas.
+### Guardrails específicos por dominio
+
+Además del catálogo general, la ERS puede declarar el dominio del sistema en los metadatos (`{"dominio": "salud"}`) o desde el selector de la interfaz. Cada dominio suma tres guardrails propios, asociados a la dimensión que especializan:
+
+| Dominio | Guardrails |
+| --- | --- |
+| Crédito y finanzas (`crediticio`) | Exclusión de variables protegidas (D04), motivos comunicados al solicitante (D06), impugnación de la decisión (D09) |
+| Salud (`salud`) | Consentimiento y base legal de datos de salud (D03), decisión clínica final del profesional (D07), validación clínica del desempeño (D08) |
+| Empleo (`empleo`) | Prevención de discriminación en la selección (D04), información a candidatos (D05), revisión humana de decisiones laborales (D07) |
+| Educación (`educacion`) | Datos de estudiantes y menores (D03), equidad entre estudiantes (D04), revisión docente de decisiones académicas (D07) |
+| Sector público (`sector_publico`) | Transparencia algorítmica (D05), vías de recurso (D09), canal alternativo no automatizado (D10) |
+| Recomendación y contenidos (`recomendacion`) | Aviso de personalización (D05), control del usuario sobre la personalización (D07), protección de menores (D10) |
+
+El dominio se reconoce también por alias habituales, como `Finanzas`, `Administración pública` o `Contenidos`. Los guardrails de otros dominios figuran como no aplicables. Si el dominio declarado no tiene guardrails específicos, el resultado lo advierte y se aplica sólo el catálogo general. Sus hallazgos participan de la consolidación y de la ponderación de su dimensión como cualquier otro guardrail.
+
+### Ponderación de guardrails
+
+Cada guardrail aporta a su dimensión según su peso. Por defecto el peso deriva de la prioridad documental (`BAJA` = 1, `MEDIA` = 2, `ALTA` = 3) y el catálogo puede fijar uno explícito. La cobertura ponderada de una dimensión es la suma de los pesos multiplicados por el aporte del nivel (`AUSENTE` = 0, `PARCIAL` = 0,5, `EXPLICITO` = 1), dividida por la suma de los pesos.
+
+Una dimensión con hallazgos no explícitos se consolida como `EXPLICITO` sólo si su cobertura ponderada alcanza el 85 % **y** ningún guardrail de prioridad alta queda sin evidencia explícita. Los guardrails críticos pendientes se informan en cada dimensión y las brechas menores siguen visibles. El umbral se calibró contra la línea base de validación; el detalle está en `validacion/informes/SCRUM-155.md`.
+
+El porcentaje de cobertura no ausente y la cobertura ponderada global se calculan sobre dimensiones efectivamente evaluadas. Los errores de reglas y las dimensiones no cubiertas por el catálogo se muestran como advertencias, no como ausencias inventadas.
 
 Las recomendaciones provienen de plantillas locales y versionadas. No se usa un LLM para generar el resultado y el documento no se envía a servicios externos.
 

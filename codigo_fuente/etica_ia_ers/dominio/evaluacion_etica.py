@@ -6,6 +6,7 @@ from types import MappingProxyType
 from typing import Any, Mapping, Optional, Tuple
 from uuid import UUID, uuid4
 
+from .dominio_aplicacion import DominioAplicacion, resolver_dominio_aplicacion
 from .guardrail import (
     DimensionEtica,
     EstadoAplicacionGuardrail,
@@ -50,6 +51,10 @@ class ContextoEvaluacionEtica:
             "metadatos",
             _metadatos_inmutables(self.metadatos),
         )
+
+    @property
+    def dominio_aplicacion(self) -> Optional[DominioAplicacion]:
+        return resolver_dominio_aplicacion(self.metadatos.get("dominio"))
 
 
 @dataclass(frozen=True)
@@ -138,6 +143,8 @@ class HallazgoEvaluacion:
     fecha_generacion: datetime
     guardrail_nombre: Optional[str] = None
     guardrail_descripcion: Optional[str] = None
+    peso: float = 1.0
+    guardrail_dominios: Tuple[DominioAplicacion, ...] = ()
     id: UUID = field(default_factory=uuid4)
 
     def __post_init__(self) -> None:
@@ -152,6 +159,11 @@ class HallazgoEvaluacion:
             tuple(self.criterios_asociados),
         )
         object.__setattr__(self, "evidencias", tuple(self.evidencias))
+        object.__setattr__(
+            self, "guardrail_dominios", tuple(self.guardrail_dominios)
+        )
+        if self.peso <= 0:
+            raise ValueError("El peso del hallazgo debe ser positivo.")
 
 
 @dataclass(frozen=True)
