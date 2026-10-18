@@ -44,7 +44,7 @@ python validacion/ejecutar_validacion.py \
 
 La corrida genera:
 
-- `resultados_guardrails.csv`: salida de los 72 guardrails por documento;
+- `resultados_guardrails.csv`: salida de los guardrails aplicables por documento (72 generales y, si el dominio se reconoce, 3 específicos);
 - `resultados_dimensiones.csv`: consolidacion D01-D10;
 - `comparacion_referencia.csv`: comparacion con la referencia esperada;
 - `resumen_metricas.csv`: acuerdo y metricas por tarea;
@@ -94,3 +94,9 @@ corpus. La interpretacion se documenta en `informes/SCRUM-155.md`.
 ```bash
 python validacion/evaluar_ponderacion.py
 ```
+
+## Revisión y validación por dominio
+
+La ejecución completa del corpus y las correcciones del PR 32 se documentan
+en `informes/REVISION-PR-32.md`. Incluye el efecto conjunto de ponderación y
+guardrails por dominio, separado de la reconsolidación de la línea base.
