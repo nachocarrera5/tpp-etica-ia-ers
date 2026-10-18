@@ -306,6 +306,7 @@ GR_D03_CTRL_RETENCION = GuardrailLexico(
         ),
         senal(
             "destruccion_o_borrado_irrecuperable_condicionado",
+            r"(?=[^.;]{0,240}\b(?:datos|informacion|registros|archivos)\b)"
             r"(?:(?:una\s+vez\s+finalizado|al\s+finalizar|tras\s+la\s+"
             r"finalizacion|cuando|si|despues\s+de).{0,120}"
             r"(?:destruccion|borrado\s+irrecuperable)|"

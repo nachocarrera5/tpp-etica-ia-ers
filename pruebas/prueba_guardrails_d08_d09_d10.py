@@ -318,7 +318,7 @@ def prueba_d08_cubre_contingencia_monitoreo_e_incidentes() -> None:
         assert _nivel(resultado, codigo) == NivelCobertura.EXPLICITO
 
 
-def prueba_interlocutor_contractual_y_vigilancia_de_epis_no_es_evidencia_de_rol() -> None:  
+def prueba_interlocutor_contractual_y_vigilancia_de_epis_no_es_evidencia_de_rol() -> None:
     texto_interlocutor = (
         "FREMAP se reserva el derecho de solicitar otro interlocutor "
         "responsable. Cualquier cambio sera comunicado informando de los "
@@ -583,3 +583,9 @@ def prueba_evaluacion_ambiental_del_expediente_no_es_impacto_del_sistema() -> No
         and aplicacion.hallazgo.nivel_preliminar == NivelCobertura.AUSENTE
         for aplicacion in resultado.aplicaciones
     )
+
+
+def prueba_contingencias_laborales_no_son_verificacion_de_seguridad() -> None:
+    texto = "El contrato incluye seguridad y cobertura de contingencias profesionales."
+    resultado = _evaluar_texto(texto, GUARDRAILS_D08[6])
+    assert _nivel(resultado, "GR-D08-QUAL-DECLARATIVO") != NivelCobertura.EXPLICITO

@@ -571,3 +571,10 @@ def prueba_reconoce_control_y_responsable_de_revision_de_sesgos() -> None:
         aplicacion.hallazgo.nivel_preliminar == NivelCobertura.EXPLICITO
         for aplicacion in resultado.aplicaciones
     )
+
+
+def prueba_destruccion_condicionada_de_bienes_no_es_retencion_de_datos() -> None:
+    texto = "Al finalizar la obra se procedera a la destruccion del edificio."
+    resultado = _evaluar_texto(texto, GR_D03_CTRL_RETENCION)
+    aplicacion = _hallazgo_de(resultado, "GR-D03-CTRL-RETENCION")
+    assert aplicacion.hallazgo.nivel_preliminar != NivelCobertura.EXPLICITO
